@@ -4,3 +4,9 @@
 *.jar
 *.war
 *.ear
+
+/MobilisServer/bin
+
+/MobilisXMPP/bin
+/SportEventAnalyserClient/bin
+/TrafficInflator/bin
