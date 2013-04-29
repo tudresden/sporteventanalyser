@@ -24,7 +24,8 @@ public class SEADispatcher implements ISportEventAnalyserIncoming {
 		}
 		i++;
 		long t = System.currentTimeMillis() - cT;
-		if (t > 60000 && t < 61000)
+		if (i % 10000 == 0)
+//		if (t > 60000 && t < 61000)
 			System.out.println(i + ", " + t);
 	}
 

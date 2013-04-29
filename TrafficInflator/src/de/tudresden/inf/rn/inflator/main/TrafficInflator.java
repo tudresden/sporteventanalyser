@@ -14,11 +14,11 @@ public class TrafficInflator {
 	 */
 	public static void main(String[] args) {
 		MobilisConnectionManager manager = new MobilisConnectionManager();
-		manager.connect("127.0.0.1", 5222, "sea");
+		manager.connect("127.0.0.1", 5222, "localhost");
 		manager.performLogin("seaclient", "sea", "SEAClient", "mobilis@sea/SEA");
 		SportEventAnalyserProxy proxy = new SportEventAnalyserProxy(manager);
 		try {
-			Reader reader = new Reader(new File("H:\\full-game"), 5l, proxy);
+			Reader reader = new Reader(new File("H:\\t-full-game"), 5l, proxy); // "C:\\Users\\Concept-X\\Desktop\\full-game"
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
