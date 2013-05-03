@@ -1,3 +1,6 @@
+li {
+  list-style: none;
+}
 article {
   display: table;
 }
