@@ -5,6 +5,7 @@ var start_time = (new Date()).getTime();
 
 var bg_color = 0xfffff0;
 var resolution = [640, 480];
+var cam_mode = "BIRD";
 
 var field_tex = new THREE.ImageUtils.loadTexture("img/Soccer_field_-_empty1.png");
 //field_tex.wrapS = field_tex.wrapT = THREE.RepeatWrapping;
@@ -18,6 +19,12 @@ var field = {
 $(document).ready(function() {
   init();
   animate();
+
+  $("#perspectives_menu li button").each(function (i, b) {
+    b.onclick = function() { cam_mode = b.id; };
+  });
+
+  window.setTimeout("cam_mode=\"TAUMEL\";", 10000);
 });
 
 function init() {
@@ -86,17 +93,18 @@ function render() {
   ballshadow.scale.x = ball.position.y - ball.geometry.height;
   ballshadow.scale.y = ball.position.y - ball.geometry.height;
 
-
-  if (time < 10000) {
-    camera.position.y = 60;
-    camera.position.x = 0;
-    camera.position.z = 0;
-    camera.rotation.set(-Math.PI/2, 0, 0);
-  } else {
-    camera.position.y = 33 + 5 * Math.sin(time / 600);
-    camera.position.x = 5 * Math.cos(time / 1200);
-    camera.position.z = 50 + 25 * Math.sin(time / 2700);
-    camera.lookAt(field.position);
+  switch(cam_mode) {
+    case "BIRD":
+      camera.position.y = 60;
+      camera.position.x = 0;
+      camera.position.z = 0;
+      camera.rotation.set(-Math.PI/2, 0, 0);
+      break;
+    default:
+      camera.position.y = 33 + 5 * Math.sin(time / 600);
+      camera.position.x = 5 * Math.cos(time / 1200);
+      camera.position.z = 50 + 25 * Math.sin(time / 2700);
+      camera.lookAt(field.position);
   }
 
   renderer.render( scene, camera );
