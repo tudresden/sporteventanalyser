@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <link media="all" rel="stylesheet" href="css/layout.css" type="text/css"/>
+  <link media="all" rel="stylesheet" href="css/colors.css" type="text/css"/>
+  <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+  <script src="js/three.min.js"></script>
+  <script src="js/field.js"></script>
+  <title>SEA</title>
+</head>
+<body>
+  <header>
+  <h1>Sport Event Analyzer</h1>
+  </header>
+  <article>
+    <div id="content">
+      <div id="left">
+        <div id="team_a">
+          <table id="team_a">
+            <tr>
+              <th><input type="checkbox" name="selectteama"/></th>
+              <th>team a</th>
+              <th>Stats</th>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="SelectAPlayer"/></td>
+              <td>Dummy</td>
+              <td>4%</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="SelectAPlayer"/></td>
+              <td>Pacman</td>
+              <td>50%</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="SelectAPlayer"/></td>
+              <td>Sonic</td>
+              <td>55%</td>
+            </tr>
+          </table>
+        </div>
+      <div id="PlayerStatsLeft">
+        Bla
+      </div>
+    </div>
+    <div id="center">
+      <div id="goals">
+        <h1><span id="title_team_A">Team A</span> <span id="goals_team_a">0</span>:<span id="goals_team_b">0</span> <span id="title_team_B">Team B</span></h1>
+        <p id="time">0:00:00</p>
+      </div>
+      <div>
+        <video />
+      </div>
+      <div id="field">
+        <ul id="perspectives_menu">
+          <li><button id="BIRD">^</button</li>
+          <li><button id="TAUMEL">~</button</li>
+          <li><button id="PLAYER">v</button</li>
+        </ul>
+      </div>
+    </div>
+    <div id="right">
+      <div id="team_a">
+        <table id="team_B">
+          <tr>
+            <th><input type="checkbox" name="SelectTeamB"/></th>
+            <th>Team B</th>
+            <th>Stats</th>
+          </tr>
+          <tr>
+            <td><input type="checkbox" name="SelectBPlayer"/></td>
+            <td>Super Mario</td>
+            <td>2%</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" name="SelectBPlayer"/></td>
+            <td>Zelda</td>
+            <td>6%</td>
+          </tr>
+        </table>
+      </div>
+      <div id="PlayerStatsRight">
+        Bla
+      </div>
+    </div>
+  </article>
+  <footer>SEA (c) copyright tu-dresden</footer>
+</body>
+</html>

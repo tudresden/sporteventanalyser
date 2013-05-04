@@ -1,0 +1,29 @@
+li {
+  list-style: none;
+}
+article {
+  display: table;
+}
+#content {
+  display: table-row;
+}
+video {
+  display: none;
+  width: 100%;
+  height: 128ptk
+  border: 1pt solid #000;
+}
+#goals {
+  text-align: center;
+}
+#left {
+  width: 33%;
+  display: table-cell;
+}
+#right {
+  width: 33%;
+  display: table-cell;
+}
+#field {
+  display: table-cell;
+}
