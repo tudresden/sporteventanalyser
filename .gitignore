@@ -9,3 +9,6 @@
 /MobilisXMPP/bin
 /SportEventAnalyserClient/bin
 /TrafficInflator/bin
+/SportEventAnalyserService/bin
+/SimpleGenerator/bin
+/GameFileMapper/bin
