@@ -7,12 +7,21 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import de.tudresden.inf.rn.mobilis.sea.client.proxy.Event;
 import de.tudresden.inf.rn.mobilis.sea.client.proxy.SportEventAnalyserProxy;
 
 public class Reader {
+
+	private static final int OUTPUT_FREQUENCY_IN_MESSAGES_PER_CYCLE = 5000;
+	private static final int MAX_EVENTS_PER_MESSAGE = 200;
+	private static int eventCounter = 0;
+	private static int messageCounter = 0;
+	private static long firstTimeStamp = 0;
+	private static long timeOfCycleStart = 0;
 
 	/**
 	 * Queue for <code>Event</code>'s (also used as mutex)
@@ -113,7 +122,6 @@ public class Reader {
 										- (queue.getFirst().getTimestamp() + bufferLength) > 0)
 							queue.wait();
 
-
 						// Append Event to queue
 						queue.add(ev); // O(1)-op
 
@@ -138,7 +146,7 @@ public class Reader {
 	}
 
 	private void processQueue() {
-		Event ev;
+		List<Event> eventsToSend;
 		try {
 			while (true) {
 				synchronized (queue) {
@@ -146,21 +154,51 @@ public class Reader {
 					while (queue.isEmpty())
 						queue.wait();
 
-					// Pop Event from list
-					ev = queue.pop(); // O(1)-op
+					eventsToSend = new ArrayList<Event>();
+
+					// Pop Events from list
+					while (!queue.isEmpty()
+							&& eventsToSend.size() < MAX_EVENTS_PER_MESSAGE)
+						eventsToSend.add(queue.pop());
+
+					// queue.wait(1000, 0);
 
 					// Done => Notify
 					queue.notifyAll();
 				}
 
-				// Process Event
-				proxy.EventNotification("mobilis@sea/SEA", ev.getSender(),
-						ev.getTimestamp(), ev.getPositionX(),
-						ev.getPositionY(), ev.getPositionZ(), ev.getVelocity(),
-						ev.getAcceleration(), ev.getVelocityX(),
-						ev.getVelocityY(), ev.getVelocityZ(),
-						ev.getAccelerationX(), ev.getAccelerationY(),
-						ev.getAccelerationZ());
+				// send
+				proxy.EventNotification("mobilis@sea/SEA", eventsToSend);
+
+				// following code for console output
+				if (firstTimeStamp == 0)
+					firstTimeStamp = eventsToSend.get(0).getTimestamp();
+
+				eventCounter += eventsToSend.size();
+				messageCounter++;
+
+				if (messageCounter > OUTPUT_FREQUENCY_IN_MESSAGES_PER_CYCLE) {
+
+					long timeNeededInThisCycleInMS = System.currentTimeMillis()
+							- timeOfCycleStart;
+
+					int messagesPerSecond = (int) (OUTPUT_FREQUENCY_IN_MESSAGES_PER_CYCLE * 1000l / timeNeededInThisCycleInMS);
+					int eventsPerSecond = (int) (eventCounter * 1000l / timeNeededInThisCycleInMS);
+					long playtimeInMillisecs = (eventsToSend.get(0)
+							.getTimestamp() - firstTimeStamp) / 1000 / 1000 / 1000;
+					int playtimeInMinutesOnly = (int) (playtimeInMillisecs / 1000 / 60);
+					int playtimeInSecondsOnly = (int) (playtimeInMillisecs / 1000 - (playtimeInMinutesOnly * 60));
+					System.out.println("OUTGOING:  " + playtimeInMinutesOnly
+							+ "min " + playtimeInSecondsOnly + "s"
+							+ " playtime" + " | " + messagesPerSecond
+							+ " messages/s" + " | " + eventsPerSecond
+							+ " events/s");
+
+					timeOfCycleStart = System.currentTimeMillis();
+					eventCounter = 0;
+					messageCounter = 0;
+				}
+
 			}
 		} catch (InterruptedException eIE) {
 			// TODO Auto-generated catch block
@@ -190,7 +228,6 @@ public class Reader {
 						queue.notifyAll();
 						queue.wait();
 					}
-						
 
 					// Append Event to queue
 					queue.add(ev); // O(1)-op
