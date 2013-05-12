@@ -1,5 +1,6 @@
 package de.core;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -41,6 +42,28 @@ public class Player extends Entity
 	public Player(int id, long timeStamp, float posX, float posY, float posZ, float velX, float velY, float velZ, float accX, float accY, float accZ, String team)
 	{
 		this(id, timeStamp, new Vector3f(posX, posY, posZ), new Vector3f(velX, velY, velZ), new Vector3f(accX, accY, accZ), team);
+	}
+	
+	public Player(int id, String team, String name, int age, PlayingPosition playingPosition, int preferedFoot, int leftFootID, int rightFootID)
+	{
+		super(id, 0, new Vector3f(), new Vector3f(), new Vector3f());
+		this.team=team;
+		this.name=name;
+		this.age=age;
+		this.playingPosition=playingPosition;
+		this.preferedFoot=preferedFoot;
+		this.leftFootID=leftFootID;
+		this.rightFootID=rightFootID;	
+		this.goals=0;
+		this.shotsOnGoal=0;
+		this.shots=0;
+		this.passes=0;
+		this.successfulPasses=0;
+		this.ballContacts=0;
+		this.ballPossessionTime=0;
+		this.passesFrom = new HashMap<Integer, Integer>();
+		this.passesTo = new HashMap<Integer, Integer>();
+		this.runDistance=0;
 	}
 
 	public String getTeam()
