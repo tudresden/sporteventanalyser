@@ -118,6 +118,16 @@ public class Main
 	{
 		return eventDecoder;
 	}
+	
+	public Entity getEntityFromId(int id)
+	 {
+	  if (getEventDecoder().getEntityList().containsKey(id))
+	  {
+	   return getEventDecoder().getEntityList().get(id);
+	  }
+	  
+	  return null;
+	 }
 
 	class CallableDecode implements Callable<Void>
 	{
