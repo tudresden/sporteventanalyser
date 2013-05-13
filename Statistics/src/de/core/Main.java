@@ -121,9 +121,9 @@ public class Main
 
 	public Entity getEntityFromId(int id)
 	{
-		if (getEventDecoder().getPlayerList().containsKey(id))
+		if (getEventDecoder().getEntityList().containsKey(id))
 		{
-			return getEventDecoder().getPlayerList().get(id);
+			return getEventDecoder().getEntityList().get(id);
 		}
 
 		return null;
