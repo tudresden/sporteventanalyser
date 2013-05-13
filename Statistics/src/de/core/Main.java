@@ -103,14 +103,13 @@ public class Main
 		// eventDecoder.decode(100, "full-game.gz");
 
 		// start decoding the file async
-		Callable<Void> c = new CallableDecode(eventDecoder, 10000000, "full-game.gz");
+		Callable<Void> c = new CallableDecode(eventDecoder, 100000000, "full-game.gz");
 		executor.submit(c);
 
 		System.out.println("============================================");
 
-		// get sensor id 47 from the past 30sek
 		// esperTest.getAllFromSensorId(47, 1); // the past 30 seconds
-		esperTest.getAllFromSensorIdPerSecond(47, 1); // every second
+		esperTest.getAllFromSensorIdPerMillisecond(47, 10); // every 10ms
 		// esperTest.getTimedFromSensorId(47, 10); //
 	}
 

@@ -55,9 +55,9 @@ public class EsperTest
 		cepStatement.addListener(new CEPListener());
 	}
 
-	public void getAllFromSensorIdPerSecond(int id, int timeFrame)
+	public void getAllFromSensorIdPerMillisecond(int id, int timeFrame)
 	{
-		EPStatement cepStatement = cepAdm.createEPL("select * from " + "StockEvent().win:time_batch(" + timeFrame + ") where id=" + id);
+		EPStatement cepStatement = cepAdm.createEPL("select * from " + "StockEvent().win:time_batch(" + timeFrame + "milliseconds) where id=" + id);
 		cepStatement.addListener(new CEPListener());
 	}
 
