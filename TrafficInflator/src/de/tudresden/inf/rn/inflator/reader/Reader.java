@@ -16,12 +16,12 @@ import de.tudresden.inf.rn.mobilis.sea.client.proxy.SportEventAnalyserProxy;
 
 public class Reader {
 
-	private static final int OUTPUT_FREQUENCY_IN_MESSAGES_PER_CYCLE = 5000;
-	private static final int MAX_EVENTS_PER_MESSAGE = 200;
-	private static int eventCounter = 0;
-	private static int messageCounter = 0;
-	private static long firstTimeStamp = 0;
-	private static long timeOfCycleStart = 0;
+	private static final int MAX_EVENTS_PER_MESSAGE = 50;
+	private static final int MIN_EVENTS_PER_MESSAGE = 100;
+	private static final boolean SEND_DATA_IN_PLAY_TIME = true;
+	private static int eventCounter = 0, messageCounter = 0;
+	private static long startPlayTime = 0, startSystemTime = 0;
+	private static long timeOfCycleStart = System.currentTimeMillis();
 
 	/**
 	 * Queue for <code>Event</code>'s (also used as mutex)
@@ -114,12 +114,26 @@ public class Reader {
 							bb.getInt(), bb.getInt(), bb.getInt(), bb.getInt(),
 							bb.getInt(), bb.getInt(), bb.getInt(), bb.getInt(),
 							bb.getInt(), bb.getInt(), bb.getInt());
+
+					if (startPlayTime == 0) {
+						startPlayTime = ev.getTimestamp();
+						startSystemTime = System.currentTimeMillis();
+					}
+
+					if (SEND_DATA_IN_PLAY_TIME) {
+						long timeAhead = (((lT - startPlayTime) / 1000l / 1000l / 1000l) - (System
+								.currentTimeMillis() - startSystemTime));
+						if (timeAhead > 0)
+							Thread.sleep(timeAhead);
+					}
+
 					synchronized (queue) {
 						// Wait for continue (Queue should not cause
 						// OutOfMemoryError!)
-						while (!queue.isEmpty()
-								&& lT
-										- (queue.getFirst().getTimestamp() + bufferLength) > 0)
+						// (lT - (queue.getFirst().getTimestamp() +
+						// bufferLength) > 0
+
+						while (queue.size() > MAX_EVENTS_PER_MESSAGE)
 							queue.wait();
 
 						// Append Event to queue
@@ -151,7 +165,7 @@ public class Reader {
 			while (true) {
 				synchronized (queue) {
 					// Wait till we get first input!
-					while (queue.isEmpty())
+					while (queue.size() < MIN_EVENTS_PER_MESSAGE)
 						queue.wait();
 
 					eventsToSend = new ArrayList<Event>();
@@ -171,28 +185,36 @@ public class Reader {
 				proxy.EventNotification("mobilis@sea/SEA", eventsToSend);
 
 				// following code for console output
-				if (firstTimeStamp == 0)
-					firstTimeStamp = eventsToSend.get(0).getTimestamp();
 
 				eventCounter += eventsToSend.size();
 				messageCounter++;
 
-				if (messageCounter > OUTPUT_FREQUENCY_IN_MESSAGES_PER_CYCLE) {
+				if (System.currentTimeMillis() - timeOfCycleStart > 1000) {
 
 					long timeNeededInThisCycleInMS = System.currentTimeMillis()
 							- timeOfCycleStart;
-
-					int messagesPerSecond = (int) (OUTPUT_FREQUENCY_IN_MESSAGES_PER_CYCLE * 1000l / timeNeededInThisCycleInMS);
+					int messagesPerSecond = (int) (messageCounter * 1000l / timeNeededInThisCycleInMS);
 					int eventsPerSecond = (int) (eventCounter * 1000l / timeNeededInThisCycleInMS);
 					long playtimeInMillisecs = (eventsToSend.get(0)
-							.getTimestamp() - firstTimeStamp) / 1000 / 1000 / 1000;
+							.getTimestamp() - startPlayTime) / 1000 / 1000 / 1000;
 					int playtimeInMinutesOnly = (int) (playtimeInMillisecs / 1000 / 60);
 					int playtimeInSecondsOnly = (int) (playtimeInMillisecs / 1000 - (playtimeInMinutesOnly * 60));
-					System.out.println("OUTGOING:  " + playtimeInMinutesOnly
-							+ "min " + playtimeInSecondsOnly + "s"
-							+ " playtime" + " | " + messagesPerSecond
-							+ " messages/s" + " | " + eventsPerSecond
-							+ " events/s");
+					System.out
+							.println("OUTGOING:  "
+									+ playtimeInMinutesOnly
+									+ "min "
+									+ playtimeInSecondsOnly
+									+ "s"
+									+ " playtime"
+									+ " | "
+									+ messagesPerSecond
+									+ " messages/s"
+									+ " | "
+									+ eventsPerSecond
+									+ " events/s"
+									+ " | "
+									+ ((messagesPerSecond != 0) ? (eventsPerSecond / messagesPerSecond)
+											: "-") + " events/message");
 
 					timeOfCycleStart = System.currentTimeMillis();
 					eventCounter = 0;
