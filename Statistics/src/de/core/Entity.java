@@ -13,13 +13,11 @@ public class Entity
 	private Vector3f topSpeed;
 	private long timeStamp = 0;
 	private float totalDistance = 0;
-	private int id;
-	String symbol = "47";
+	public int id;
 
 	public Entity(int id, long timeStamp, Vector3f position, Vector3f velocity, Vector3f acceleration)
 	{
 		this.id = id;
-		this.symbol = Integer.toString(getId());
 		this.timeStamp = timeStamp;
 		this.setPosition(position);
 		this.setVelocity(velocity);

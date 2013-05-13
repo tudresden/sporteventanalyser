@@ -43,19 +43,19 @@ public class EsperTest
 
 	public void getAllFromSensorId(int id, int timeFrame)
 	{
-		EPStatement cepStatement = cepAdm.createEPL("select * from " + "StockEntity().win:time(" + timeFrame + ") where symbol='" + id + "'");
+		EPStatement cepStatement = cepAdm.createEPL("select * from " + "StockEntity().win:time(" + timeFrame + ") where id=" + id);
 		cepStatement.addListener(new CEPListener());
 	}
 
 	public void getTimedFromSensorId(int id, int timeFrame)
 	{
-		EPStatement cepStatement = cepAdm.createEPL("select * from " + "StockEntity().win:ext_timed(timeStamp," + timeFrame + ") where symbol='" + id + "'");
+		EPStatement cepStatement = cepAdm.createEPL("select * from " + "StockEntity().win:ext_timed(timeStamp," + timeFrame + ") where id=" + id);
 		cepStatement.addListener(new CEPListener());
 	}
 
 	public void getAllFromSensorIdPerSecond(int id, int timeFrame)
 	{
-		EPStatement cepStatement = cepAdm.createEPL("select * from " + "StockEntity().win:time_batch(" + timeFrame + ") where symbol='" + id + "'");
+		EPStatement cepStatement = cepAdm.createEPL("select * from " + "StockEntity().win:time_batch(" + timeFrame + ") where id=" + id);
 		cepStatement.addListener(new CEPListener());
 	}
 
