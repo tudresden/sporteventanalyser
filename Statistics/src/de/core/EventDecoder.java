@@ -103,7 +103,7 @@ public class EventDecoder
 
 		entityList.put(63, new Player(63, "B", "Kevin Baer", 18, PlayingPosition.LB, 0, 63, 64));
 		entityList.put(65, new Player(65, "B", "Luca Ziegler", 29, PlayingPosition.SW, 1, 65, 66));
-		entityList.put(67, new Player(67, "B", "Ben Mueller", 26, PlayingPosition.RB, 1, 67, 68));
+		entityList.put(67, new Player(67, "B", "Ben Müller", 26, PlayingPosition.RB, 1, 67, 68));
 		entityList.put(69, new Player(69, "B", "Vale Reitstetter", 22, PlayingPosition.CM, 1, 69, 38));
 		entityList.put(71, new Player(71, "B", "Christopher Lee", 23, PlayingPosition.CM, 1, 71, 40));
 		entityList.put(73, new Player(73, "B", "Leon Heinze", 27, PlayingPosition.FW, 0, 73, 74));
