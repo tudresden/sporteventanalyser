@@ -18,7 +18,7 @@ public class EventDecoder
 		this.cepRT = cepRT;
 	}
 
-	public ConcurrentHashMap<Integer, Entity> getEntityList()
+	public ConcurrentHashMap<Integer, Entity> getPlayerList()
 	{
 		return entityList;
 	}
@@ -88,7 +88,7 @@ public class EventDecoder
 		// rightFootID)
 
 		// Team A
-		entityList.put(13, new Player(13, "A", "Nick Gertje", 29, PlayingPosition.GK, 1, 13, 14));
+		entityList.put(13, new Goalkeeper(13, "A", "Nick Gertje", 29, 1, 13, 14, 97, 98));
 
 		entityList.put(47, new Player(47, "A", "Dennis Dotterweich", 21, PlayingPosition.LB, 0, 47, 16));
 		entityList.put(49, new Player(49, "A", "Niklas Waelzlein", 19, PlayingPosition.DF, 1, 49, 88));
@@ -99,7 +99,7 @@ public class EventDecoder
 		entityList.put(59, new Player(59, "A", "Sandro Schneider", 27, PlayingPosition.CF, 0, 59, 28));
 
 		// Team V
-		entityList.put(61, new Player(61, "B", "Leon Krapf", 26, PlayingPosition.GK, 0, 61, 62));
+		entityList.put(61, new Goalkeeper(61, "B", "Leon Krapf", 26, 0, 61, 62, 99, 100));
 
 		entityList.put(63, new Player(63, "B", "Kevin Baer", 18, PlayingPosition.LB, 0, 63, 64));
 		entityList.put(65, new Player(65, "B", "Luca Ziegler", 29, PlayingPosition.SW, 1, 65, 66));
@@ -108,5 +108,12 @@ public class EventDecoder
 		entityList.put(71, new Player(71, "B", "Christopher Lee", 23, PlayingPosition.CM, 1, 71, 40));
 		entityList.put(73, new Player(73, "B", "Leon Heinze", 27, PlayingPosition.FW, 0, 73, 74));
 		entityList.put(75, new Player(75, "B", "Leo Langhans", 21, PlayingPosition.RW, 1, 75, 44));
+		
+		//Balls
+		entityList.put(4, new Ball(4));
+		entityList.put(8, new Ball(4));
+		entityList.put(10, new Ball(4));
+		entityList.put(12, new Ball(4));
+		
 	}
 }
