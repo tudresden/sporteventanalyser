@@ -7,22 +7,42 @@ package de.core;
  */
 public class Entity
 {
-	private Vector3f position;
-	private Vector3f velocity;
-	private Vector3f acceleration;
-	private Vector3f topSpeed;
-	private long timeStamp = 0;
+	public int positionX;
+	public int positionY;
+	public int positionZ;
+
+	public int velocityX;
+	public int velocityY;
+	public int velocityZ;
+
+	public int accelerationX;
+	public int accelerationY;
+	public int accelerationZ;
+
+	public int topSpeedX;
+	public int topSpeedY;
+	public int topSpeedZ;
+
+	public long timeStamp = 0;
 	private float totalDistance = 0;
 	public int id;
 
-	public Entity(int id, long timeStamp, Vector3f position, Vector3f velocity, Vector3f acceleration)
+	public Entity(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ)
 	{
 		this.id = id;
 		this.timeStamp = timeStamp;
-		this.setPosition(position);
-		this.setVelocity(velocity);
-		this.setAcceleration(acceleration);
-		this.setTopSpeed(new Vector3f());
+
+		this.positionX = posX;
+		this.positionY = posY;
+		this.positionZ = posZ;
+
+		this.velocityX = velX;
+		this.velocityY = velY;
+		this.velocityZ = velZ;
+
+		this.accelerationX = accX;
+		this.accelerationY = accY;
+		this.accelerationZ = accZ;
 	}
 
 	public int getId()
@@ -50,51 +70,6 @@ public class Entity
 		this.timeStamp = timeStamp;
 	}
 
-	public Vector3f getPosition()
-	{
-		return position;
-	}
-
-	public float getPositionX()
-	{
-		return position.x;
-	}
-
-	public void setPosition(Vector3f position)
-	{
-		this.position = position;
-	}
-
-	public Vector3f getAcceleration()
-	{
-		return acceleration;
-	}
-
-	public void setAcceleration(Vector3f acceleration)
-	{
-		this.acceleration = acceleration;
-	}
-
-	public Vector3f getVelocity()
-	{
-		return velocity;
-	}
-
-	public void setVelocity(Vector3f velocity)
-	{
-		this.velocity = velocity;
-	}
-
-	public Vector3f getTopSpeed()
-	{
-		return topSpeed;
-	}
-
-	public void setTopSpeed(Vector3f topSpeed)
-	{
-		this.topSpeed = topSpeed;
-	}
-
 	public float getTotalDistance()
 	{
 		return totalDistance;
@@ -107,18 +82,40 @@ public class Entity
 
 	public void update(Entity entity)
 	{
-		this.totalDistance += this.position.distanceBetween(entity.getPosition());
+		this.totalDistance += distanceBetween(entity.positionX, entity.positionY, entity.positionZ);
 
 		// update values
-		this.position = entity.getPosition();
-		this.velocity = entity.getVelocity();
-		this.acceleration = entity.getAcceleration();
+		this.positionX = entity.positionX;
+		this.positionY = entity.positionY;
+		this.positionZ = entity.positionZ;
+
+		this.velocityX = entity.velocityX;
+		this.velocityY = entity.velocityY;
+		this.velocityZ = entity.velocityZ;
+
+		this.accelerationX = entity.accelerationX;
+		this.accelerationY = entity.accelerationY;
+		this.accelerationZ = entity.accelerationZ;
+
 		this.timeStamp = entity.getTimeStamp();
+	}
+
+	private float distanceBetweenSquared(int posX, int posY, int posZ)
+	{
+		double dX = positionX - posX;
+		double dY = positionY - posY;
+		double dZ = positionZ - posZ;
+		return (float) (dX * dX + dY * dY + dZ * dZ);
+	}
+
+	private float distanceBetween(int posX, int posY, int posZ)
+	{
+		return (float) Math.sqrt(distanceBetweenSquared(posX, posY, posZ));
 	}
 
 	@Override
 	public String toString()
 	{
-		return "Entity " + this.getId() + " " + this.getTimeStamp() + " " + this.getPosition() + " " + this.getVelocity() + " " + this.getAcceleration();
+		return "Entity " + this.getId() + " " + this.getTimeStamp() + " (" + this.positionX + ", " + this.positionY + ", " + this.positionZ + ") (" + this.velocityX + ", " + this.velocityY + ", " + this.velocityZ + ") (" + this.accelerationX + ", " + this.accelerationY + ", " + this.accelerationZ + ")";
 	}
 }

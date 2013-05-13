@@ -11,13 +11,13 @@ import java.util.Map;
 public class Player extends Entity
 {
 	private String team;
-	
-	//neu
+
+	// neu
 	private String name;
 	private int age;
 	private PlayingPosition playingPosition;
 	private int preferedFoot;
-		
+
 	private int goals;
 	private int shotsOnGoal;
 	private int shots;
@@ -30,40 +30,34 @@ public class Player extends Entity
 	private Map<Integer, Integer> passesFrom;
 	private Map<Integer, Integer> passesTo;
 	private float runDistance;
-	
+	private boolean onBall;
 
-	public Player(int id, long timeStamp, Vector3f position, Vector3f velocity, Vector3f acceleration, String team)
+	public Player(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, String team)
 	{
-		super(id, timeStamp, position, velocity, acceleration);
+		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ);
 		this.team = team;
 		playingPosition = PlayingPosition.DF;
 	}
 
-	public Player(int id, long timeStamp, float posX, float posY, float posZ, float velX, float velY, float velZ, float accX, float accY, float accZ, String team)
-	{
-		this(id, timeStamp, new Vector3f(posX, posY, posZ), new Vector3f(velX, velY, velZ), new Vector3f(accX, accY, accZ), team);
-	}
-	
 	public Player(int id, String team, String name, int age, PlayingPosition playingPosition, int preferedFoot, int leftFootID, int rightFootID)
 	{
-		super(id, 0, new Vector3f(), new Vector3f(), new Vector3f());
-		this.team=team;
-		this.name=name;
-		this.age=age;
-		this.playingPosition=playingPosition;
-		this.preferedFoot=preferedFoot;
-		this.leftFootID=leftFootID;
-		this.rightFootID=rightFootID;	
-		this.goals=0;
-		this.shotsOnGoal=0;
-		this.shots=0;
-		this.passes=0;
-		this.successfulPasses=0;
-		this.ballContacts=0;
-		this.ballPossessionTime=0;
+		this(id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, team);
+		this.name = name;
+		this.age = age;
+		this.playingPosition = playingPosition;
+		this.preferedFoot = preferedFoot;
+		this.leftFootID = leftFootID;
+		this.rightFootID = rightFootID;
+		this.goals = 0;
+		this.shotsOnGoal = 0;
+		this.shots = 0;
+		this.passes = 0;
+		this.successfulPasses = 0;
+		this.ballContacts = 0;
+		this.ballPossessionTime = 0;
 		this.passesFrom = new HashMap<Integer, Integer>();
 		this.passesTo = new HashMap<Integer, Integer>();
-		this.runDistance=0;
+		this.runDistance = 0;
 	}
 
 	public String getTeam()
@@ -78,6 +72,6 @@ public class Player extends Entity
 
 	public String toString()
 	{
-		return "Player " + super.getPosition();
+		return "Player " + this.getId() + " " + this.getTimeStamp() + " (" + this.positionX + ", " + this.positionY + ", " + this.positionZ + ") (" + this.velocityX + ", " + this.velocityY + ", " + this.velocityZ + ") (" + this.accelerationX + ", " + this.accelerationY + ", " + this.accelerationZ + ")";
 	}
 }
