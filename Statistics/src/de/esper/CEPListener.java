@@ -15,15 +15,14 @@ public class CEPListener implements UpdateListener
 	public void update(EventBean[] newData, EventBean[] oldData)
 	{
 		// System.out.println("Event received: " + newData[0].getUnderlying());
-
 		Event event = ((Event) newData[0].getUnderlying());
-
 		Entity entity = Main.main.getEntityFromId(event.getId());
+		Entity newEntity = new Entity(event.getId(), event.getTimeStamp(), event.getPositionX(), event.getPositionY(), event.getPositionZ(), event.getVelocityX(), event.getVelocityY(), event.getVelocityZ(), event.getAccelerationX(), event.getAccelerationY(), event.getAccelerationZ());
 
 		if (entity instanceof Player)
 		{
 			Player player = (Player) entity;
-			player.update(entity);
+			player.update(newEntity);
 
 			System.out.println(player);
 			System.out.println(player.getTotalDistance());
