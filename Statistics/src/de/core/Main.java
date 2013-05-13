@@ -25,8 +25,8 @@ public class Main
 	public static void main(String[] args)
 	{
 		Main main = new Main();
-		// main.test();
-		main.test2();
+		main.test();
+		// main.test2();
 	}
 
 	public void test2()
@@ -107,8 +107,8 @@ public class Main
 		System.out.println("============================================");
 
 		// get sensor id 47 from the past 30sek
-		// esperTest.getAllFromSensorId(47, 30); // the past 30 seconds
-		esperTest.getAllFromSensorIdPerSecond(47, 1); // every second
+		esperTest.getAllFromSensorId(47, 30); // the past 30 seconds
+		// esperTest.getAllFromSensorIdPerSecond(47, 1); // every second
 		// esperTest.getTimedFromSensorId(47, 10); //
 	}
 
