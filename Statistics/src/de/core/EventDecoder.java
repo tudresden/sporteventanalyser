@@ -90,11 +90,7 @@ public class EventDecoder
 
 		int id = Integer.parseInt(data[0]);
 		long timeStamp = Long.parseLong(data[1]);
-		Vector3f position = new Vector3f(Float.parseFloat(data[2]), Float.parseFloat(data[3]), Float.parseFloat(data[4]));
-		Vector3f velocity = new Vector3f(Float.parseFloat(data[7]), Float.parseFloat(data[8]), Float.parseFloat(data[9]));
-		Vector3f acceleration = new Vector3f(Float.parseFloat(data[10]), Float.parseFloat(data[11]), Float.parseFloat(data[12]));
-
-		return new Entity(id, timeStamp, position, velocity, acceleration);
+		return new Entity(id, timeStamp, Integer.parseInt(data[2]), Integer.parseInt(data[3]), Integer.parseInt(data[4]), Integer.parseInt(data[7]), Integer.parseInt(data[8]), Integer.parseInt(data[9]), Integer.parseInt(data[10]), Integer.parseInt(data[11]), Integer.parseInt(data[12]));
 	}
 
 	public static void printData(String[] data)
@@ -114,13 +110,14 @@ public class EventDecoder
 		System.out.println("Beschl. (y)->" + data[11]);
 		System.out.println("Beschl. (z)->" + data[12]);
 	}
-	
+
 	public void createPlayerList()
-	{	
-		//key = left Leg,  Leg 0 = left, 1 = right
-		//Player(int id, String team, String name, int age, PlayingPosition playingPosition, int preferedFoot, int leftFootID, int rightFootID)
-		
-		//Team A
+	{
+		// key = left Leg, Leg 0 = left, 1 = right
+		// Player(int id, String team, String name, int age, PlayingPosition playingPosition, int preferedFoot, int leftFootID, int
+		// rightFootID)
+
+		// Team A
 		playerList.put(13, new Player(13, "A", "Nick Gertje", 29, PlayingPosition.GK, 1, 13, 14));
 		playerList.put(47, new Player(47, "A", "Dennis Dotterweich", 21, PlayingPosition.LB, 0, 47, 16));
 		playerList.put(49, new Player(49, "A", "Niklas Waelzlein", 19, PlayingPosition.DF, 1, 49, 88));
@@ -129,8 +126,8 @@ public class EventDecoder
 		playerList.put(23, new Player(23, "A", "Roman Hartleb", 22, PlayingPosition.CM, 1, 23, 24));
 		playerList.put(57, new Player(57, "A", "Erik Engelhardt", 21, PlayingPosition.RM, 1, 57, 58));
 		playerList.put(59, new Player(59, "A", "Sandro Schneider", 27, PlayingPosition.CF, 0, 59, 28));
-		
-		//Team V
+
+		// Team V
 		playerList.put(61, new Player(61, "B", "Leon Krapf", 26, PlayingPosition.GK, 0, 61, 62));
 		playerList.put(63, new Player(63, "B", "Kevin Baer", 18, PlayingPosition.LB, 0, 63, 64));
 		playerList.put(65, new Player(65, "B", "Luca Ziegler", 29, PlayingPosition.SW, 1, 65, 66));

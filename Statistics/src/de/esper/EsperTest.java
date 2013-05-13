@@ -11,6 +11,7 @@ import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 
 import de.core.Entity;
+import de.core.Player;
 
 public class EsperTest
 {
@@ -29,6 +30,8 @@ public class EsperTest
 
 		// We register Ticks as objects the engine will have to handle
 		cepConfig.addEventType("StockEntity", Entity.class.getName());
+		cepConfig.addEventType("StockPlayer", Player.class.getName());
+
 		// We setup the engine
 		EPServiceProvider cep = EPServiceProviderManager.getProvider("myCEPEngine", cepConfig);
 
