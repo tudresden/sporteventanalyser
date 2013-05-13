@@ -14,11 +14,11 @@ public class EventDecoder
 	public EventDecoder(EPRuntime cepRT)
 	{
 		entityList = new ConcurrentHashMap<Integer, Entity>();
-		createPlayerList();
+		createEntityList();
 		this.cepRT = cepRT;
 	}
 
-	public ConcurrentHashMap<Integer, Entity> getPlayerList()
+	public ConcurrentHashMap<Integer, Entity> getEntityList()
 	{
 		return entityList;
 	}
@@ -81,7 +81,7 @@ public class EventDecoder
 		System.out.println("Beschl. (z)->" + data[12]);
 	}
 
-	public void createPlayerList()
+	public void createEntityList()
 	{
 		// key = left Leg, Leg 0 = left, 1 = right
 		// Player(int id, String team, String name, int age, PlayingPosition playingPosition, int preferedFoot, int leftFootID, int
