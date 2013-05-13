@@ -79,7 +79,7 @@ public class Main
 					// Nachname
 					System.out.print(name[1]);
 
-					// System.out.print(data[2]);
+					System.out.print(data[2]);
 
 					try
 					{
