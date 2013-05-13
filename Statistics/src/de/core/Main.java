@@ -3,6 +3,8 @@ package de.core;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,14 +29,15 @@ public class Main
 	public static void main(String[] args)
 	{
 		main = new Main();
-		main.test();
-		// main.test2();
+		// main.test();
+		main.test2();
 	}
 
 	public void test2()
 	{
 		GZipReader reader;
 		String[] data;
+		String[] name;
 
 		try
 		{
@@ -42,7 +45,9 @@ public class Main
 
 			int lines = 1000000;
 
-			SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+			Date date;
 
 			for (int i = 0; i < lines; i++)
 			{
@@ -65,17 +70,25 @@ public class Main
 					}
 
 					System.out.print(eventNumber);
-					System.out.print(data[1]);
+					// System.out.print(data[1]);
+
+					name = data[1].replace("\"", "").split("\\s* \\s*");
+
+					// Vorname
+					System.out.print(name[0]);
+					// Nachname
+					System.out.print(name[1]);
+
 					// System.out.print(data[2]);
 
 					try
 					{
-						System.out.println(dateFormat.parse(data[2]).getTime());
+						date = dateFormat.parse("1970-01-01 " + data[2]);
+						System.out.print(date.getTime());
 					}
 					catch (ParseException e)
 					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						// e.printStackTrace();
 					}
 
 					System.out.println(data[3]);
