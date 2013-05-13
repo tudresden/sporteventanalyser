@@ -24,7 +24,7 @@ public class Entity
 	public int topSpeedZ;
 
 	public long timeStamp = 0;
-	private float totalDistance = 0;
+	private float totalDistance = -1f;
 	public int id;
 
 	public Entity(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ)
@@ -82,7 +82,14 @@ public class Entity
 
 	public void update(Entity entity)
 	{
-		this.totalDistance += distanceBetween(entity.positionX, entity.positionY, entity.positionZ);
+		if (this.totalDistance < 0)
+		{
+			this.totalDistance = 0;
+		}
+		else
+		{
+			this.totalDistance += distanceBetween(entity.positionX, entity.positionY, entity.positionZ);
+		}
 
 		// update values
 		this.positionX = entity.positionX;
