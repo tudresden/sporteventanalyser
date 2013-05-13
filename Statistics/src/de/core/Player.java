@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class Player extends Entity
 {
-	private String team;
+	private String team = " lol";
 
 	// neu
 	private String name;
@@ -58,6 +58,11 @@ public class Player extends Entity
 		this.passesFrom = new HashMap<Integer, Integer>();
 		this.passesTo = new HashMap<Integer, Integer>();
 		this.runDistance = 0;
+	}
+
+	public int getId()
+	{
+		return id;
 	}
 
 	public String getTeam()

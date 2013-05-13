@@ -30,48 +30,16 @@ public class EventDecoder
 
 			for (int i = 0; i < lines; i++)
 			{
-				// System.out.println(reader.readRawNextLine());
-
 				data = reader.readNextLine();
 
 				if (data != null)
 				{
-					// print data
-					// printData(data);
-
-					Entity entity = decodeData(data);
-
-					cepRT.sendEvent(entity);
-
-					if (!cache.containsKey(entity.getId()))
-					{
-						cache.put(entity.getId(), entity);
-					}
-					else
-					{
-						cache.get(entity.getId()).update(entity);
-					}
-
-					// float dist = cache.get(entity.getId()).getTotalDistance();
-					//
-					// if (dist != 0)
-					// {
-					// System.out.println(dist);
-					// }
-
-					// if (data[0].startsWith("98"))
-					// {
-					// reader.printStatistic(data);
-					// }
+					Event event = decodeData(data);
+					cepRT.sendEvent(event);
 				}
 			}
 
-			// for (Entry<Integer, Entity> e : cache.entrySet())
-			// {
-			// System.out.println(e.getValue());
-			// }
-
-			System.out.println(cache.size() + " verchieden IDs");
+			System.out.println(cache.size() + " verschiedene Sender IDs");
 		}
 		catch (Exception e)
 		{
@@ -79,7 +47,7 @@ public class EventDecoder
 		}
 	}
 
-	public Entity decodeData(String[] data)
+	public Event decodeData(String[] data)
 	{
 		final int length = data.length;
 
@@ -90,7 +58,8 @@ public class EventDecoder
 
 		int id = Integer.parseInt(data[0]);
 		long timeStamp = Long.parseLong(data[1]);
-		return new Entity(id, timeStamp, Integer.parseInt(data[2]), Integer.parseInt(data[3]), Integer.parseInt(data[4]), Integer.parseInt(data[7]), Integer.parseInt(data[8]), Integer.parseInt(data[9]), Integer.parseInt(data[10]), Integer.parseInt(data[11]), Integer.parseInt(data[12]));
+
+		return new Event(id, timeStamp, Integer.parseInt(data[2]), Integer.parseInt(data[3]), Integer.parseInt(data[4]), Integer.parseInt(data[5]), Integer.parseInt(data[6]), Integer.parseInt(data[7]), Integer.parseInt(data[8]), Integer.parseInt(data[9]), Integer.parseInt(data[10]), Integer.parseInt(data[11]), Integer.parseInt(data[12]));
 	}
 
 	public static void printData(String[] data)
