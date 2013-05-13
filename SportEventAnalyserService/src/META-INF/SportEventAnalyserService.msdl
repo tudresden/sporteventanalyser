@@ -2,48 +2,59 @@
 <msdl:description targetNamespace="http://mobilis.inf.tu-dresden.de/SportEventAnalyser"
 	xmlns:msdl="http://mobilis.inf.tu-dresden.de/msdl/" xmlns:xmpp="http://mobilis.inf.tu-dresden.de/xmpp/"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://mobilis.inf.tu-dresden.de/SportEventAnalyser"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	
-	
-	<!--   MSDL TYPES SECTION   -->
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://mobilis.inf.tu-dresden.de/msdl/ http://mobilis.inf.tu-dresden.de/msdl.xsd ">
+
+
+	<!-- MSDL TYPES SECTION -->
 	<msdl:types>
 		<xs:schema targetNamespace="http://mobilis.inf.tu-dresden.de/SportEventAnalyser">
 
-		<xs:element name="Event">
-			<xs:complexType>
-				<xs:sequence>
-					<xs:element name="Sender" type="xs:int" />
-					<xs:element name="Timestamp" type="xs:long" />
-					<xs:element name="PositionX" type="xs:int" />
-					<xs:element name="PositionY" type="xs:int" />
-					<xs:element name="PositionZ" type="xs:int" />
-					<xs:element name="Velocity" type="xs:int" />
-					<xs:element name="Acceleration" type="xs:int" />
-					<xs:element name="VelocityX" type="xs:int" />
-					<xs:element name="VelocityY" type="xs:int" />
-					<xs:element name="VelocityZ" type="xs:int" />
-					<xs:element name="AccelerationX" type="xs:int" />
-					<xs:element name="AccelerationY" type="xs:int" />
-					<xs:element name="AccelerationZ" type="xs:int" />
-				</xs:sequence>
-			</xs:complexType>
-		</xs:element>
+			<xs:element name="Events">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Sender" type="tns:Event" minOccurs="1"
+							maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="Event">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Sender" type="xs:int" />
+						<xs:element name="Timestamp" type="xs:long" />
+						<xs:element name="PositionX" type="xs:int" />
+						<xs:element name="PositionY" type="xs:int" />
+						<xs:element name="PositionZ" type="xs:int" />
+						<xs:element name="Velocity" type="xs:int" />
+						<xs:element name="Acceleration" type="xs:int" />
+						<xs:element name="VelocityX" type="xs:int" />
+						<xs:element name="VelocityY" type="xs:int" />
+						<xs:element name="VelocityZ" type="xs:int" />
+						<xs:element name="AccelerationX" type="xs:int" />
+						<xs:element name="AccelerationY" type="xs:int" />
+						<xs:element name="AccelerationZ" type="xs:int" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 
 		</xs:schema>
 	</msdl:types>
-	
-	
-	<!--   MSDL INTERFACE SECTION   -->
-	
+
+
+	<!-- MSDL INTERFACE SECTION -->
+
 	<msdl:interface name="SEAInterface">
 
-		<msdl:operation name="EventNotification" pattern="http://www.w3.org/ns/wsdl/in-only">
-			<msdl:input element="tns:Event" />
+		<msdl:operation name="EventNotification"
+			pattern="http://www.w3.org/ns/wsdl/in-only">
+			<msdl:input element="tns:Events" />
 		</msdl:operation>
 
 	</msdl:interface>
-	
-	<!--   MSDL BINDING SECTION   -->
+
+	<!-- MSDL BINDING SECTION -->
 
 	<msdl:binding name="SEABinding" interface="tns:SEAInterface"
 		type="http://mobilis.inf.tu-dresden.de/xmpp/">
@@ -55,7 +66,7 @@
 	</msdl:binding>
 
 
-	<!--   MSDL SERVICE SECTION   -->
+	<!-- MSDL SERVICE SECTION -->
 
 	<msdl:service name="SportEventAnalyser" interface="tns:SEAInterface"
 		ident="http://mobilis.inf.tu-dresden.de#services/SportEventAnalyserService"
@@ -63,5 +74,5 @@
 		<msdl:endpoint name="SEAEndpoint" binding="tns:SEABinding" />
 		<msdl:dependencies />
 	</msdl:service>
-	
+
 </msdl:description>

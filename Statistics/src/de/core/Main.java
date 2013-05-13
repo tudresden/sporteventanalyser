@@ -3,6 +3,8 @@ package de.core;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,14 +19,16 @@ import de.esper.EsperTest;
  */
 public class Main
 {
-	ExecutorService executor = Executors.newFixedThreadPool(4);
+	private ExecutorService executor = Executors.newFixedThreadPool(4);
+	private EventDecoder eventDecoder;
+	public static Main main;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args)
 	{
-		Main main = new Main();
+		main = new Main();
 		// main.test();
 		main.test2();
 	}
@@ -33,6 +37,7 @@ public class Main
 	{
 		GZipReader reader;
 		String[] data;
+		String[] name;
 
 		try
 		{
@@ -40,7 +45,9 @@ public class Main
 
 			int lines = 1000000;
 
-			SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+			Date date;
 
 			for (int i = 0; i < lines; i++)
 			{
@@ -63,17 +70,25 @@ public class Main
 					}
 
 					System.out.print(eventNumber);
-					System.out.print(data[1]);
-					// System.out.print(data[2]);
+					// System.out.print(data[1]);
+
+					name = data[1].replace("\"", "").split("\\s* \\s*");
+
+					// Vorname
+					System.out.print(name[0]);
+					// Nachname
+					System.out.print(name[1]);
+
+					System.out.print(data[2]);
 
 					try
 					{
-						System.out.println(dateFormat.parse(data[2]).getTime());
+						date = dateFormat.parse("1970-01-01 " + data[2]);
+						System.out.print(date.getTime());
 					}
 					catch (ParseException e)
 					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						// e.printStackTrace();
 					}
 
 					System.out.println(data[3]);
@@ -92,7 +107,7 @@ public class Main
 	{
 		EsperTest esperTest = new EsperTest();
 
-		EventDecoder eventDecoder = new EventDecoder(esperTest.getCepRT());
+		eventDecoder = new EventDecoder(esperTest.getCepRT());
 
 		// get sensor id 47 from the past 30sek
 		// esperTest.getSensorId(47, 300);
@@ -101,15 +116,29 @@ public class Main
 		// eventDecoder.decode(100, "full-game.gz");
 
 		// start decoding the file async
-		Callable<Void> c = new CallableDecode(eventDecoder, 10000000, "full-game.gz");
+		Callable<Void> c = new CallableDecode(eventDecoder, 100000000, "full-game.gz");
 		executor.submit(c);
 
 		System.out.println("============================================");
 
-		// get sensor id 47 from the past 30sek
-		// esperTest.getAllFromSensorId(47, 30); // the past 30 seconds
-		esperTest.getAllFromSensorIdPerSecond(47, 1); // every second
+		// esperTest.getAllFromSensorId(47, 1); // the past 30 seconds
+		esperTest.getAllFromSensorIdPerMillisecond(47, 10); // every 10ms
 		// esperTest.getTimedFromSensorId(47, 10); //
+	}
+
+	public EventDecoder getEventDecoder()
+	{
+		return eventDecoder;
+	}
+
+	public Entity getEntityFromId(int id)
+	{
+		if (getEventDecoder().getEntityList().containsKey(id))
+		{
+			return getEventDecoder().getEntityList().get(id);
+		}
+
+		return null;
 	}
 
 	class CallableDecode implements Callable<Void>

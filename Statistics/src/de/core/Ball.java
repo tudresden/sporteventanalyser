@@ -1,4 +1,5 @@
 package de.core;
+
 /**
  * 
  * @author Alrik Geselle
@@ -6,18 +7,18 @@ package de.core;
  */
 public class Ball extends Entity
 {
-	public Ball(int id, long timeStamp, Vector3f position, Vector3f velocity, Vector3f acceleration)
+	public Ball(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ)
 	{
-		super(id, timeStamp, position, velocity, acceleration);
+		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ);
 	}
-
-	public Ball(int id, long timeStamp, float posX, float posY, float posZ, float velX, float velY, float velZ, float accX, float accY, float accZ)
+	
+	public Ball(int id)
 	{
-		this(id, timeStamp, new Vector3f(posX, posY, posZ), new Vector3f(velX, velY, velZ), new Vector3f(accX, accY, accZ));
+		this(id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	}
 
 	public String toString()
 	{
-		return "Ball " + super.getPosition();
+		return "Ball " + this.getId() + " " + this.getTimeStamp() + " (" + this.positionX + ", " + this.positionY + ", " + this.positionZ + ") (" + this.velocityX + ", " + this.velocityY + ", " + this.velocityZ + ") (" + this.accelerationX + ", " + this.accelerationY + ", " + this.accelerationZ + ")";
 	}
 }
