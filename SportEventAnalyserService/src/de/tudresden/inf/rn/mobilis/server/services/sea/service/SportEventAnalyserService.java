@@ -7,6 +7,7 @@ import de.tudresden.inf.rn.mobilis.server.agents.MobilisAgent;
 import de.tudresden.inf.rn.mobilis.server.services.MobilisService;
 import de.tudresden.inf.rn.mobilis.server.services.sea.service.listener.IQListener;
 import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.Event;
+import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.Events;
 import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.impl.SEADispatcher;
 import de.tudresden.inf.rn.mobilis.xmpp.beans.XMPPBean;
 import de.tudresden.inf.rn.mobilis.xmpp.server.BeanProviderAdapter;
@@ -14,7 +15,29 @@ import de.tudresden.inf.rn.mobilis.xmpp.server.BeanProviderAdapter;
 public class SportEventAnalyserService extends MobilisService {
 
 	public SportEventAnalyserService() {
+		new Thread() {
 
+			public void run() {
+
+				Object o = new Object();
+
+				synchronized (o) {
+
+					try {
+
+						o.wait();
+
+					} catch (InterruptedException e) {
+
+						// Ignore (just -nogui --keep-alive)
+
+					}
+
+				}
+
+			}
+
+		}.start();
 	}
 
 	@Override
@@ -37,6 +60,8 @@ public class SportEventAnalyserService extends MobilisService {
 	public void registerXMPPExtensions() {
 		// Event
 		registerXMPPBean(new Event());
+		registerXMPPBean(new Events());
+
 	}
 
 	/**

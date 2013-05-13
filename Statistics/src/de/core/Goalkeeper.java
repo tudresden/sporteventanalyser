@@ -8,7 +8,7 @@ import java.util.Map;
  * @author Alrik Geselle
  * @version 1.0
  */
-public class Player extends Entity
+public class Goalkeeper extends Entity
 {
 	private String team = " lol";
 
@@ -19,38 +19,44 @@ public class Player extends Entity
 	private int preferedFoot;
 
 	private int goals;
-	private int shotsOnGoal;
-	private int shots;
+	private int shotsOnOwnGoal;
+	private int heldShots;
+	private int goalAgainst;
 	private int passes;
 	private int successfulPasses;
 	private int ballContacts;
 	private long ballPossessionTime;
 	private int leftFootID;
 	private int rightFootID;
+	private int leftArmID;
+	private int rightArmID;
 	private Map<Integer, Integer> passesFrom;
 	private Map<Integer, Integer> passesTo;
 	private float runDistance;
 	private boolean onBall;
 
-	public Player(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, String team)
+	public Goalkeeper(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, String team)
 	{
 		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ);
 		this.team = team;
-		playingPosition = PlayingPosition.DF;
+		playingPosition = PlayingPosition.GK;
 	}
 
-	public Player(int id, String team, String name, int age, PlayingPosition playingPosition, int preferedFoot, int leftFootID, int rightFootID)
+	public Goalkeeper(int id, String team, String name, int age, int preferedFoot, int leftFootID, int rightFootID, int leftArmID, int rightArmID)
 	{
 		this(id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, team);
 		this.name = name;
 		this.age = age;
-		this.playingPosition = playingPosition;
+		this.playingPosition = PlayingPosition.GK;
 		this.preferedFoot = preferedFoot;
 		this.leftFootID = leftFootID;
 		this.rightFootID = rightFootID;
+		this.leftArmID = leftArmID;
+		this.rightArmID = rightArmID;
 		this.goals = 0;
-		this.shotsOnGoal = 0;
-		this.shots = 0;
+		this.shotsOnOwnGoal = 0;
+		this.heldShots = 0;
+		this.goalAgainst = 0;
 		this.passes = 0;
 		this.successfulPasses = 0;
 		this.ballContacts = 0;

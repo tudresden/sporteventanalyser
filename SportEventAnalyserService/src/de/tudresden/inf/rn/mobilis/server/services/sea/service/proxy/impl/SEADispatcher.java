@@ -1,32 +1,45 @@
 package de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.impl;
 
-import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.Event;
+import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.Events;
 import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.ISportEventAnalyserIncoming;
 
 public class SEADispatcher implements ISportEventAnalyserIncoming {
 
-	private long cT;
-
-	private int i;
-
-	private boolean bench;
+	private static int eventCounter = 0;
+	private static int messageCounter = 0;
+	private static long startPlayTime = 0;
+	private static long timeOfCycleStart = System.currentTimeMillis();
 
 	public SEADispatcher() {
-		bench = true;
 	}
 
 	@Override
-	public void onEventNotification(Event in) {
-		if (bench) {
-			bench = false;
-			cT = System.currentTimeMillis();
-			i = 0;
-		}
-		i++;
-		long t = System.currentTimeMillis() - cT;
-		if (i % 10000 == 0)
-//		if (t > 60000 && t < 61000)
-			System.out.println(i + ", " + t);
-	}
+	public void onEventNotification(Events in) {
 
+		if (startPlayTime == 0)
+			startPlayTime = in.getSender().get(0).getTimestamp();
+
+		eventCounter += in.getSender().size();
+		messageCounter++;
+
+		if (System.currentTimeMillis() - timeOfCycleStart > 1000) {
+
+			long timeNeededInThisCycleInMS = System.currentTimeMillis()
+					- timeOfCycleStart;
+			int messagesPerSecond = (int) (messageCounter * 1000l / timeNeededInThisCycleInMS);
+			int eventsPerSecond = (int) (eventCounter * 1000l / timeNeededInThisCycleInMS);
+			long playtimeInMillisecs = (in.getSender().get(0).getTimestamp() - startPlayTime) / 1000 / 1000 / 1000;
+			int playtimeInMinutesOnly = (int) (playtimeInMillisecs / 1000 / 60);
+			int playtimeInSecondsOnly = (int) (playtimeInMillisecs / 1000 - (playtimeInMinutesOnly * 60));
+			System.out.println("INCOMING:  " + playtimeInMinutesOnly + "min "
+					+ playtimeInSecondsOnly + "s" + " playtime" + " | "
+					+ messagesPerSecond + " messages/s" + " | "
+					+ eventsPerSecond + " events/s");
+
+			timeOfCycleStart = System.currentTimeMillis();
+			eventCounter = 0;
+			messageCounter = 0;
+		}
+
+	}
 }
