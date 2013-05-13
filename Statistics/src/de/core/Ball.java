@@ -11,6 +11,11 @@ public class Ball extends Entity
 	{
 		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ);
 	}
+	
+	public Ball(int id)
+	{
+		this(id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	}
 
 	public String toString()
 	{
