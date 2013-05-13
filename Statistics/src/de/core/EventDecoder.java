@@ -1,7 +1,6 @@
 package de.core;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -9,15 +8,19 @@ import com.espertech.esper.client.EPRuntime;
 
 public class EventDecoder
 {
-	private Map<Integer, Entity> cache;
-	private Map<Integer, Player> playerList;
+	private ConcurrentHashMap<Integer, Entity> playerList;
 	private EPRuntime cepRT;
 
 	public EventDecoder(EPRuntime cepRT)
 	{
-		cache = new HashMap<Integer, Entity>();
-		playerList = new HashMap<Integer, Player>();
+		playerList = new ConcurrentHashMap<Integer, Entity>();
+		createPlayerList();
 		this.cepRT = cepRT;
+	}
+
+	public ConcurrentHashMap<Integer, Entity> getPlayerList()
+	{
+		return playerList;
 	}
 
 	public void decode(int lines, String filePath)
@@ -38,8 +41,6 @@ public class EventDecoder
 					cepRT.sendEvent(event);
 				}
 			}
-
-			System.out.println(cache.size() + " verschiedene Sender IDs");
 		}
 		catch (Exception e)
 		{
@@ -88,6 +89,7 @@ public class EventDecoder
 
 		// Team A
 		playerList.put(13, new Player(13, "A", "Nick Gertje", 29, PlayingPosition.GK, 1, 13, 14));
+
 		playerList.put(47, new Player(47, "A", "Dennis Dotterweich", 21, PlayingPosition.LB, 0, 47, 16));
 		playerList.put(49, new Player(49, "A", "Niklas Waelzlein", 19, PlayingPosition.DF, 1, 49, 88));
 		playerList.put(19, new Player(19, "A", "Wili Sommer", 23, PlayingPosition.RB, 1, 19, 52));
@@ -98,6 +100,7 @@ public class EventDecoder
 
 		// Team V
 		playerList.put(61, new Player(61, "B", "Leon Krapf", 26, PlayingPosition.GK, 0, 61, 62));
+
 		playerList.put(63, new Player(63, "B", "Kevin Baer", 18, PlayingPosition.LB, 0, 63, 64));
 		playerList.put(65, new Player(65, "B", "Luca Ziegler", 29, PlayingPosition.SW, 1, 65, 66));
 		playerList.put(67, new Player(67, "B", "Ben Mueller", 26, PlayingPosition.RB, 1, 67, 68));

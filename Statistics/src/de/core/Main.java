@@ -17,14 +17,16 @@ import de.esper.EsperTest;
  */
 public class Main
 {
-	ExecutorService executor = Executors.newFixedThreadPool(4);
+	private ExecutorService executor = Executors.newFixedThreadPool(4);
+	private EventDecoder eventDecoder;
+	public static Main main;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args)
 	{
-		Main main = new Main();
+		main = new Main();
 		main.test();
 		// main.test2();
 	}
@@ -92,7 +94,7 @@ public class Main
 	{
 		EsperTest esperTest = new EsperTest();
 
-		EventDecoder eventDecoder = new EventDecoder(esperTest.getCepRT());
+		eventDecoder = new EventDecoder(esperTest.getCepRT());
 
 		// get sensor id 47 from the past 30sek
 		// esperTest.getSensorId(47, 300);
@@ -110,6 +112,11 @@ public class Main
 		// esperTest.getAllFromSensorId(47, 1); // the past 30 seconds
 		esperTest.getAllFromSensorIdPerSecond(47, 1); // every second
 		// esperTest.getTimedFromSensorId(47, 10); //
+	}
+
+	public EventDecoder getEventDecoder()
+	{
+		return eventDecoder;
 	}
 
 	class CallableDecode implements Callable<Void>
