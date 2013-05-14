@@ -32,7 +32,7 @@ public class Main
 		main = new Main();
 
 		main.test2();
-		// main.test();
+		main.test();
 	}
 
 	public void test2()
