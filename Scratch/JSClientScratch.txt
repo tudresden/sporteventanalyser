@@ -1,0 +1,112 @@
+mobilis.core:
+-> .HTTPBIND: bind muss nun angegeben werden und wird in service.js definiert!
+-> .SERVICES: Kein "jid" mehr, sondern nurnoch agent!
+-> .SERVER.mBareJid: Barejid des Mobilis-Servers
+-> connect: uFullJid, uPassword, mBareJid, [bind, callback] -> Geringste Information, um Verbindung aufzubauen! (außer natürlich uFullJid^^)
+-> createServiceInstance: Constraints : { serviceNamespace : undefined, serviceName : undefined, servicePassword : undefined }
+-> mobilisServiceDiscovery: Constraints : { serviceNamespace : undefined, serviceVersion : undefined }
+
+mobilis.service:
+-> ZIEL: Abschottung des Nutzers vom Kernservice (mobilis.core) und Strophe! Der Nutzer soll nur seinen JS-Code erstellen!
+-> Decorators mit den Handlern werden erstellt (Verarbeiten IQs in Rückgabewerte => Kann nicht direkt von IQ in Typ umgewandelt werden, da Arrays vorkommen können -> Macht das nur unnötig kompliziert und auch nicht erweiterbar!)
+-> errorcallback bekommt IQ dennoch zurück :-/ Bislang wird daher der errorcallback gekonnt ignoriert => Hier wären die eigenen Faults angebracht mit den entsprechenden Decorators
+-> in-only: Kein resultcallback!
+-> in-out: Mit resultcallback (Alternativ kann über den Handler die IQ geholt werden) -> Siehe Fragen!
+
+Anmerkungen:
+-> MSDL-Wiki: Sind nicht output/input "parameterS" => Nur ein Parameter im Interface, der auch ein Element sein muss! (Kein xs!)
+-> Interface: InOnlyOperationWithoutElement, OutOnlyOperationWithoutElement (Operationen ohne Element geht nicht! => notify() geht somit nicht!)
+-> Types: InComplex, OutComplex (ComplexType ohne Elemente wird fehlerhaft erstellt! => Eigentlich nicht wichtig, höchstens als Flag denkbar!)
+-> Allgemein: Es werden keine Elemente aus Element oder complexType erstellt (Ist eigentlich auch besser so! Aber erwaehnenswert)
+
+Sonstige Anmerkungen:
+-> Typo in XHunt-Service: DeprtureData
+-> Fehler in XSLT (Service und Client): Faults werden bei I"Service"Incoming bei vorherigem Sibbling angelegt und heißen auch nicht mehr wie der Original-Fault
+-> Fehler in XSLT? Es werden auch selbst erstellte Fault-Elemente nicht erstellt?!
+
+Fragen:
+-> addHandlers(): Auch bei mepInOut den onOutHandler bei addHandler hinzufuegen? Theoretisch sollte man den callback nutzen!
+-> nach xmpp:type zusätzlich filtern?
+
+TODO:
+-> Test mit Fällen:
+=> Out-only ohne output element? Ist das möglich? Also output in msdl definiert, aber kein Element! (analog für OutIn, InOut)
+=> Out-only mit xs:int element? Ist das möglich? Bislang wurden konkrete Elemente verlangt!
+=> Outfault und infault!!! Näher spezifizieren! (Wie wird das von Strophe interpretiert? Als Error?!)
+=> OutIn: Also packetID-Test! Wird packetID uebergeben? Gibt es Zusatzparameter packetID bei Aufruf?
+
+=> Element und auch complexType mit eigenem Typ "unbounded" und mit Standard-Typ
+=> Rekursive Elementverbindung: z.B. ein Baum mit Knoten und Blättern! (Als Element/complexType, complexTypeA/complexTypeB, complexTypeA/complexTypeA)
+=> Einfaches Element mit verschiedenen Elementen (In beide Richtungen: Out-only, In-only)
+=> Einfaches Element ohne Sequence von Elementen! (In beide Richtungen! Und auch für complexType -> Theoretisch nur als Marker halbsinnvoll xD)
+=> Alle möglichen Typen bei Element testen! (Auch wenn kein Cast erfolgt! Typen: int, long, boolean, double, float, byte, short, string (tns wird implizit mitgetestet))
+=> Element in Element, wenn beide Elemente in jeweils einer Operation definiert! (Vermutlich mgl, aber wuerde dann Paradigma brechen!)
+=> parseFloat/Int? Notwendig? Oder reicht Text aus?
+
+\> Test-Elemente:
+=> OutComplexXSSequence -> OutElementFull
+=> InComplexXSSequence -> InElementFull
+=> OutComplexXS -> OutComplexFull
+=> InComplexXS -> InComplexFull
+=> OutComplexATree -> OutElementFull
+=> InComplexATree -> InElementFull
+=> OutComplexBTree -> OutComplexATree
+=> InComplexBTree -> InComplexATree
+=> OutComplexFull -> OutElementFault
+=> InComplexFull -> InElementFault
+
+=> OutElementXSSequence -> OutOnlyOperation
+=> InElementXSSequence -> InOnlyOperation
+=> OutElementXS -> OutInOperationWithFault
+=> InElementXS -> OutInOperationWithFault
+=> OutElement -> InOutOperationWithFault
+=> InElement -> InOutOperationWithFault
+=> OutElementFull -> TODO (Element muss direkt in Operation gesetzt sein => Kopplung mit complexType-Baum!)
+=> InElementFull -> TODO (Element muss direkt in Operation gesetzt sein => Kopplung mit complexType-Baum!)
+=> OutElementFault -> InOutOperationWithFault
+=> InElementFault -> OutInOperationWithFault
+
+\> Operations:
+=> InOnlyOperation(InElementXSSequence)
+=> InOnlyOperationWithFault(InElementFull) throws OutFaultWithoutElement
+
+=> OutOnlyOperation() : OutElementXSSequence
+=> OutOnlyOperationWithFault() : OutElementFull throws OutFaultWithoutElement
+
+=> InOutOperationWithFault(InElement) : OutElement throws OutFault
+=> OutInOperationWithFault(InElementXS) : OutElementXS throws InFault
+
+\> Binding (xmpp-type):
+=> Chat: out: OutOnlyOperation
+=> Get: in : InOutOperationWithFault, out: OutInOperationWithFault
+=> Result: out : InOutOperationWithFault, in: OutInOperationWithFault
+=> Set: *
+
+
+Fehler vor Test (aufgrund von MSDL2Service):
+\> Test-Elemente
+=> OutComplex
+=> InComplex
+=> OutComplexElementTree
+=> InComplexElementTree
+=> OutComplexElementSequence
+=> InComplexElementSequence
+=> OutElementElementSequence
+=> InElementElementSequence
+=> OutElementComplexTree (kein Fehler, aber da Element/complexType-Tree nicht funktioniert ueberfluessig!)
+=> InElementComplexTree -> InOnlyOperationWithFault
+
+\> Operations:
+=> InOnlyOperationWithoutElement()
+=> OutOnlyOperationWithoutElement()
+=> InOnlyOperationXS(xs:long)
+=> OutOnlyOperationXS() : xs:long
+
+Erkannte Fehler:
+=> callback bei InOut-Operation fehlt!
+=> packetID fehlt bei Handlern und bei OutIn!
+
+TODO:
+=> Element in Element, wenn beide Elemente in jeweils einer Operation definiert! (Vermutlich mgl, aber wuerde dann Paradigma brechen!)
+
+
