@@ -10,6 +10,7 @@ import com.espertech.esper.client.EPStatement;
 
 import de.core.Entity;
 import de.core.Event;
+import de.core.EventBallPossession;
 import de.core.Player;
 
 public class EsperTest
@@ -26,9 +27,10 @@ public class EsperTest
 		cepConfig.getEngineDefaults().getTimeSource().setTimeSourceType(ConfigurationEngineDefaults.TimeSourceType.NANO);
 
 		// We register Ticks as objects the engine will have to handle
-		cepConfig.addEventType("StockEvent", Event.class.getName());
-		cepConfig.addEventType("StockEntity", Entity.class.getName());
-		cepConfig.addEventType("StockPlayer", Player.class.getName());
+		cepConfig.addEventType("Event", Event.class.getName());
+		cepConfig.addEventType("Entity", Entity.class.getName());
+		cepConfig.addEventType("Player", Player.class.getName());
+		cepConfig.addEventType("EventBallPossession", EventBallPossession.class.getName());
 
 		// We setup the engine
 		EPServiceProvider cep = EPServiceProviderManager.getProvider("myCEPEngine", cepConfig);
@@ -45,20 +47,26 @@ public class EsperTest
 
 	public void getAllFromSensorId(int id, int timeFrame)
 	{
-		EPStatement cepStatement = cepAdm.createEPL("select * from " + "StockEvent().win:time(" + timeFrame + ") where id=" + id);
+		EPStatement cepStatement = cepAdm.createEPL("select * from " + "Event().win:time(" + timeFrame + ") where id=" + id);
 		cepStatement.addListener(new CEPListener());
 	}
 
 	public void getTimedFromSensorId(int id, int timeFrame)
 	{
-		EPStatement cepStatement = cepAdm.createEPL("select * from " + "StockEvent().win:ext_timed(timeStamp," + timeFrame + ") where id=" + id);
+		EPStatement cepStatement = cepAdm.createEPL("select * from " + "Event().win:ext_timed(timeStamp," + timeFrame + ") where id=" + id);
 		cepStatement.addListener(new CEPListener());
 	}
 
 	public void getAllFromSensorIdPerMillisecond(int id, int timeFrame)
 	{
-		EPStatement cepStatement = cepAdm.createEPL("select * from " + "StockEvent().win:time_batch(" + timeFrame + "milliseconds) where id=" + id);
+		EPStatement cepStatement = cepAdm.createEPL("select * from " + "Event().win:time_batch(" + timeFrame + "milliseconds) where id=" + id);
 		cepStatement.addListener(new CEPListener());
+	}
+
+	public void ballPossession(int timeFrame)
+	{
+		EPStatement cepStatement = cepAdm.createEPL("select * from " + "EventBallPossession().win:time_batch(" + timeFrame + "milliseconds)");
+		cepStatement.addListener(new BallPossessionListener());
 	}
 
 	public EPRuntime getCepRT()
