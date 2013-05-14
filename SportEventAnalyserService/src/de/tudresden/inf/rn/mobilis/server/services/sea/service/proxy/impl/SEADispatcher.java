@@ -5,11 +5,10 @@ import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.ISportEvent
 
 public class SEADispatcher implements ISportEventAnalyserIncoming {
 
-	private static final int OUTPUT_FREQUENCY_IN_MESSAGES_PER_CYCLE = 2000;
 	private static int eventCounter = 0;
 	private static int messageCounter = 0;
-	private static long firstTimeStamp = 0;
-	private static long timeOfCycleStart = 0;
+	private static long startPlayTime = 0;
+	private static long timeOfCycleStart = System.currentTimeMillis();
 
 	public SEADispatcher() {
 	}
@@ -17,20 +16,19 @@ public class SEADispatcher implements ISportEventAnalyserIncoming {
 	@Override
 	public void onEventNotification(Events in) {
 
-		if (firstTimeStamp == 0)
-			firstTimeStamp = in.getSender().get(0).getTimestamp();
+		if (startPlayTime == 0)
+			startPlayTime = in.getSender().get(0).getTimestamp();
 
 		eventCounter += in.getSender().size();
 		messageCounter++;
 
-		if (messageCounter > OUTPUT_FREQUENCY_IN_MESSAGES_PER_CYCLE) {
+		if (System.currentTimeMillis() - timeOfCycleStart > 1000) {
 
 			long timeNeededInThisCycleInMS = System.currentTimeMillis()
 					- timeOfCycleStart;
-
-			int messagesPerSecond = (int) (OUTPUT_FREQUENCY_IN_MESSAGES_PER_CYCLE * 1000l / timeNeededInThisCycleInMS);
+			int messagesPerSecond = (int) (messageCounter * 1000l / timeNeededInThisCycleInMS);
 			int eventsPerSecond = (int) (eventCounter * 1000l / timeNeededInThisCycleInMS);
-			long playtimeInMillisecs = (in.getSender().get(0).getTimestamp() - firstTimeStamp) / 1000 / 1000 / 1000;
+			long playtimeInMillisecs = (in.getSender().get(0).getTimestamp() - startPlayTime) / 1000 / 1000 / 1000;
 			int playtimeInMinutesOnly = (int) (playtimeInMillisecs / 1000 / 60);
 			int playtimeInSecondsOnly = (int) (playtimeInMillisecs / 1000 - (playtimeInMinutesOnly * 60));
 			System.out.println("INCOMING:  " + playtimeInMinutesOnly + "min "
