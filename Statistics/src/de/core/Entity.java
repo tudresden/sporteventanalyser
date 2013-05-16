@@ -115,7 +115,7 @@ public class Entity
 		return (float) (dX * dX + dY * dY + dZ * dZ);
 	}
 
-	private float distanceBetween(int posX, int posY, int posZ)
+	public float distanceBetween(int posX, int posY, int posZ)
 	{
 		return (float) Math.sqrt(distanceBetweenSquared(posX, posY, posZ));
 	}

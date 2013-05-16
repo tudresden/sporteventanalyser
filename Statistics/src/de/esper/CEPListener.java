@@ -9,6 +9,7 @@ import de.core.Event;
 import de.core.Goalkeeper;
 import de.core.Main;
 import de.core.Player;
+import de.core.Utils;
 
 public class CEPListener implements UpdateListener
 {
@@ -24,19 +25,20 @@ public class CEPListener implements UpdateListener
 			Player player = (Player) entity;
 			player.update(newEntity);
 			
-			player.updateHeatmap();
+//			player.updateHeatmap();
 
 //			System.out.println(player);
 //			System.out.println(player.getTotalDistance());
 //			System.out.println("-->" + player.getHeatmap().getSum());
-			if (player.getHeatmap().getSum()==50)
-				player.getHeatmap().drawGrid();
+//			if (player.getHeatmap().getSum()==50)
+//				player.getHeatmap().drawGrid();
 		}
 		else if (entity instanceof Ball)
 		{
 			Ball ball = (Ball) entity;
 			ball.update(newEntity);
-			System.out.println(ball);
+			Utils.nearestPlayers(Main.main.getEventDecoder(), ball);
+//			System.out.println(ball);
 		}
 		else if (entity instanceof Goalkeeper)
 		{
