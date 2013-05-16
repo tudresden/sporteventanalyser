@@ -111,9 +111,9 @@ public class EventDecoder
 
 		// Balls
 		entityList.put(4, new Ball(4));
-		entityList.put(8, new Ball(4));
-		entityList.put(10, new Ball(4));
-		entityList.put(12, new Ball(4));
+		entityList.put(8, new Ball(8));
+		entityList.put(10, new Ball(10));
+		entityList.put(12, new Ball(12));
 
 	}
 }
