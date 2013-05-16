@@ -1,6 +1,7 @@
 package de.core;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,7 +32,7 @@ public class Main
 	{
 		main = new Main();
 
-		main.test2();
+//		main.test2();
 		main.test();
 	}
 
@@ -116,7 +117,10 @@ public class Main
 		System.out.println("============================================");
 
 		// esperTest.getAllFromSensorId(47, 1); // the past 30 seconds
-		esperTest.getAllFromSensorIdPerMillisecond(47, 10); // every 10ms
+		int[] playerIds = {47,49,19,53,23,57,59,63,65,67,69,71,73,75};
+		for (int a: playerIds)
+			esperTest.getAllFromSensorIdPerMillisecond(a, 100);
+		esperTest.getAllFromSensorIdPerMillisecond(4, 100); // every 10ms
 		// esperTest.getTimedFromSensorId(47, 10); //
 
 	}
