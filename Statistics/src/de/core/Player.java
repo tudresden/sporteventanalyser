@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class Player extends Entity
 {
-	private String team = " lol";
+	private String team;
 
 	// neu
 	private String name;
@@ -31,6 +31,8 @@ public class Player extends Entity
 	private Map<Integer, Integer> passesTo;
 	private float runDistance;
 	private boolean onBall;
+	
+	private HeatMapGrid heatmap;
 
 	public Player(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, String team)
 	{
@@ -58,6 +60,11 @@ public class Player extends Entity
 		this.passesFrom = new HashMap<Integer, Integer>();
 		this.passesTo = new HashMap<Integer, Integer>();
 		this.runDistance = 0;
+		this.heatmap = new HeatMapGrid(20, 67925, 52477);
+	}
+	
+	public void updateHeatmap() {
+		heatmap.incrementCellValue(super.positionY, super.positionX);
 	}
 
 	public int getId()
@@ -73,6 +80,11 @@ public class Player extends Entity
 	public void setTeam(String team)
 	{
 		this.team = team;
+	}
+	
+	public HeatMapGrid getHeatmap()
+	{
+		return heatmap;
 	}
 
 	public String toString()

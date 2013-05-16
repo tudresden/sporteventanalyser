@@ -23,18 +23,25 @@ public class CEPListener implements UpdateListener
 		{
 			Player player = (Player) entity;
 			player.update(newEntity);
+			
+			player.updateHeatmap();
 
-			System.out.println(player);
-			System.out.println(player.getTotalDistance());
+//			System.out.println(player);
+//			System.out.println(player.getTotalDistance());
+//			System.out.println("-->" + player.getHeatmap().getSum());
+			if (player.getHeatmap().getSum()==50)
+				player.getHeatmap().drawGrid();
 		}
 		else if (entity instanceof Ball)
 		{
 			Ball ball = (Ball) entity;
+			ball.update(newEntity);
 			System.out.println(ball);
 		}
 		else if (entity instanceof Goalkeeper)
 		{
 			Goalkeeper goalkeeper = (Goalkeeper) entity;
+			goalkeeper.update(newEntity);
 			System.out.println(goalkeeper);
 		}
 	}
