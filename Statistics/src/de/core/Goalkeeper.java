@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class Goalkeeper extends Entity
 {
-	private String team = " lol";
+	private String team;
 
 	// neu
 	private String name;
@@ -83,6 +83,6 @@ public class Goalkeeper extends Entity
 
 	public String toString()
 	{
-		return "Player " + this.getId() + " " + this.getTimeStamp() + " (" + this.positionX + ", " + this.positionY + ", " + this.positionZ + ") (" + this.velocityX + ", " + this.velocityY + ", " + this.velocityZ + ") (" + this.accelerationX + ", " + this.accelerationY + ", " + this.accelerationZ + ")";
+		return "Goalkeeper " + this.getId() + " " + this.getTimeStamp() + " (" + this.positionX + ", " + this.positionY + ", " + this.positionZ + ") (" + this.velocityX + ", " + this.velocityY + ", " + this.velocityZ + ") (" + this.accelerationX + ", " + this.accelerationY + ", " + this.accelerationZ + ")";
 	}
 }
