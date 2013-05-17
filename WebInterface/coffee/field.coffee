@@ -1,6 +1,5 @@
 class Drawable
   constructor: ->
-    @registered = false
     @drawables = []
     @followers = []
 
@@ -35,24 +34,25 @@ class Ball extends Drawable
     geometry = new THREE.PlaneGeometry(2, 2)
     mat_cfg =
       map:       new THREE.ImageUtils.loadTexture "img/ball.png"
-      side:      THREE.DoubleSide
       alphaTest: 0.5
     material = new THREE.MeshBasicMaterial mat_cfg
     @ball = new THREE.Mesh(geometry, material)
     geometry = new THREE.PlaneGeometry 1, 1
     mat_cfg =
-      color: 0x003300
-      side:      THREE.DoubleSide
+      map:         new THREE.ImageUtils.loadTexture "img/shadow.png"
+      transparent: true
     material = new THREE.MeshBasicMaterial mat_cfg
     @shadow = new THREE.Mesh geometry, material
+    @shadow.rotation.x = -Math.PI/2
+    @shadow.position.y = 0.01
     @followers = [@ball]
     @drawables = [@ball, @shadow]
   animate: (time) ->
-    @ball.position.y = @ball.geometry.height/2
-    @ball.position.y += Math.abs @ball.geometry.height * Math.sin time/120
+    @ball.position.y = 1
+    @ball.position.y += Math.abs 2 * Math.sin time/120
     
-    @ball.position.x = @ball.geometry.height/2
-    @ball.position.x += Math.abs @ball.geometry.height * Math.cos time/240
+    @ball.position.x = 2
+    @ball.position.x += 2 * Math.cos time/120
 
     @shadow.position.x = @ball.position.x
     @shadow.position.z = @ball.position.z
@@ -62,5 +62,58 @@ class Ball extends Drawable
 
     @shadow.scale.y = @ball.position.y
     @shadow.scale.y -= @ball.geometry.height
+
+    @shadow.scale.z = @ball.position.y
+    @shadow.scale.z -= @ball.geometry.height
   toString: ->
     "Ball"
+
+class Player extends Drawable
+  constructor: (@tricot_image) ->
+    geometry = new THREE.PlaneGeometry(2, 2)
+    mat_cfg =
+      map:       new THREE.ImageUtils.loadTexture @tricot_image
+      alphaTest: 0.5
+    material = new THREE.MeshBasicMaterial mat_cfg
+    @shirt = new THREE.Mesh(geometry, material)
+    @shirt.position.y = @shirt.geometry.height/2
+    geometry = new THREE.PlaneGeometry 2, 2
+    mat_cfg =
+      map:         new THREE.ImageUtils.loadTexture "img/shadow.png"
+      transparent: true
+    material = new THREE.MeshBasicMaterial mat_cfg
+    @shadow = new THREE.Mesh geometry, material
+    @shadow.rotation.x = -Math.PI/2
+    @shadow.position.y = 0.01
+    @followers = [@shirt]
+    @drawables = [@shirt, @shadow]
+    @last_update = 0
+    @target_pos =
+      x: 0,
+      y: 0  # middle of the field
+    console.log @shadow
+
+  update: (time, data) ->
+    @target_pos = data.pos
+    @last_update = time
+
+  animate: (time) ->
+    factor = 10
+    @shirt.position.x = (factor * @shirt.position.x + @target_pos.x )/(factor + 1)
+    @shirt.position.z = (factor * @shirt.position.z + @target_pos.y )/(factor + 1)
+    console.log(@shirt.position)
+
+    @shadow.position.x = @shirt.position.x
+    @shadow.position.z = @shirt.position.z
+
+    @shadow.scale.x = @shirt.position.y
+    @shadow.scale.x -= @shirt.geometry.height
+
+    @shadow.scale.y = @shirt.position.y
+    @shadow.scale.y -= @shirt.geometry.height
+
+    @shadow.scale.z = @shirt.position.y
+    @shadow.scale.z -= @shirt.geometry.height
+
+  toString: ->
+    "Player(" + @tricot_image + ")"
