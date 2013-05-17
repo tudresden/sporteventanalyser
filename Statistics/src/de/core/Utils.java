@@ -45,19 +45,22 @@ public class Utils
 		Map<Integer, Player> playerDistancesToBall = new TreeMap<Integer, Player>();
 		for (Map.Entry<Integer, Entity> e:  ed.getEntityList().entrySet()) {
 			if (e.getValue() instanceof Player) {
-				Integer distance = (int) ball.distanceBetween(e.getValue().positionX, e.getValue().positionY, e.getValue().positionZ);
+				Integer distance = (int) ball.distanceBetween1(e.getValue().positionX, e.getValue().positionY);
+				//if(distance<=2000){
 				playerDistancesToBall.put(distance, (Player) e.getValue());
+				//}
 			}
 		}
-//		System.out.println(playerDistancesToBall.keySet().);
-		System.out.println("--------------");
-//		for (int key: playerDistancesToBall.keySet())
-//			System.out.println(playerDistancesToBall.get(key).getId());
-		boolean first = true;
-		for (Map.Entry<Integer, Player> p:  playerDistancesToBall.entrySet()) {
-			if (first)
-				System.out.println(p.getValue().id);
-			first = false;
-		}
+		
+		 boolean first = true;
+		  for (Map.Entry<Integer, Player> p:  playerDistancesToBall.entrySet()) {
+		   if (first==true){
+		    System.out.println("--------------");
+		    System.out.println("Aktuelle Zeit: "+Math.ceil((ball.timeStamp-10629342490369879L)/(Math.pow(10, 12)))+" s");
+		    System.out.println("Name des Spielers am Ball: "+p.getValue().getName());
+		    System.out.println("Spieler: (ID: "+p.getValue().getId()+") --- Zeitstempel: "+p.getValue().timeStamp);
+		    System.out.println("Ball:    (ID: 0"+ball.id+") --- Zeitstempel: "+ball.timeStamp);
+		   first = false;}
+		  }
 	}
 }

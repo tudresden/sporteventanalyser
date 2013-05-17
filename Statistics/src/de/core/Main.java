@@ -120,7 +120,7 @@ public class Main
 		int[] playerIds = {47,49,19,53,23,57,59,63,65,67,69,71,73,75};
 		for (int a: playerIds)
 			esperTest.getAllFromSensorIdPerMillisecond(a, 100);
-		esperTest.getAllFromSensorIdPerMillisecond(4, 100); // every 10ms
+		esperTest.getAllFromSensorIdPerMillisecond(4, 100); // Ball every 100ms
 		// esperTest.getTimedFromSensorId(47, 10); //
 
 	}

@@ -119,6 +119,18 @@ public class Entity
 	{
 		return (float) Math.sqrt(distanceBetweenSquared(posX, posY, posZ));
 	}
+	
+	private float distanceBetweenSquared1(int posX, int posY)
+	{
+		double dX = positionX - posX;
+		double dY = positionY - posY;
+		return (float) (dX * dX + dY * dY);
+	}
+
+	public float distanceBetween1(int posX, int posY)
+	{
+		return (float) Math.sqrt(distanceBetweenSquared1(posX, posY));
+	}
 
 	@Override
 	public String toString()
