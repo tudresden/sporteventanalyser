@@ -31,8 +31,8 @@ class Engine
     # console.log "rendering"
     time = (new Date).getTime() - @start_time
 
-    obj.follow @camera.position for obj in @obj_stack
-    obj.animate time for obj in @obj_stack
+    obj.follow(@camera.position) for obj in @obj_stack
+    obj.animate(time) for obj in @obj_stack
 
     switch @camera_mode
       when "BIRD"
