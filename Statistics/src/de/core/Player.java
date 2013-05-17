@@ -82,6 +82,16 @@ public class Player extends Entity
 		this.team = team;
 	}
 	
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	
 	public HeatMapGrid getHeatmap()
 	{
 		return heatmap;
