@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<msdl:description targetNamespace="http://mobilis.inf.tu-dresden.de/XSLTTest"
+	xmlns:msdl="http://mobilis.inf.tu-dresden.de/msdl/" xmlns:xmpp="http://mobilis.inf.tu-dresden.de/xmpp/"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://mobilis.inf.tu-dresden.de/XSLTTest"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	
+	<!--   MSDL TYPES SECTION   -->
+	<msdl:types>
+		<xs:schema targetNamespace="http://mobilis.inf.tu-dresden.de/XSLTTest">
+
+		<xs:complexType name="OutComplexXSSequence">
+			<xs:sequence>
+				<xs:element name="outSeq" type="xs:long" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+		
+		<xs:complexType name="InComplexXSSequence">
+			<xs:sequence>
+				<xs:element name="inSeq" type="xs:long" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+
+		<xs:complexType name="OutComplexXS">
+			<xs:sequence>
+				<xs:element name="outVal" type="xs:long" />
+			</xs:sequence>
+		</xs:complexType>
+		
+		<xs:complexType name="InComplexXS">
+			<xs:sequence>
+				<xs:element name="inVal" type="xs:long" />
+			</xs:sequence>
+		</xs:complexType>
+		
+		<xs:complexType name="OutComplexATree">
+			<xs:sequence>
+				<xs:element name="sameTypeLeaf" type="tns:OutComplexATree" />
+				<xs:element name="leaf" type="tns:OutComplexBTree" />
+			</xs:sequence>
+		</xs:complexType>
+		
+		<xs:complexType name="InComplexATree">
+			<xs:sequence>
+				<xs:element name="sameTypeLeaf" type="tns:InComplexATree" />
+				<xs:element name="leaf" type="tns:InComplexBTree" />
+			</xs:sequence>
+		</xs:complexType>
+		
+		<xs:complexType name="OutComplexBTree">
+			<xs:sequence>
+				<xs:element name="leaf" type="tns:OutComplexATree" />
+			</xs:sequence>
+		</xs:complexType>
+		
+		<xs:complexType name="InComplexBTree">
+			<xs:sequence>
+				<xs:element name="leaf" type="tns:InComplexATree" />
+			</xs:sequence>
+		</xs:complexType>
+		
+		<xs:complexType name="OutComplexFull">
+			<xs:sequence>
+				<xs:element name="intVal" type="xs:int" />
+				<xs:element name="longVal" type="xs:long" />
+				<xs:element name="booleanVal" type="xs:boolean" />
+				<xs:element name="doubleVal" type="xs:double" />
+				<xs:element name="floatVal" type="xs:float" />
+				<xs:element name="byteVal" type="xs:byte" />
+				<xs:element name="shortVal" type="xs:short" />
+				<xs:element name="stringVal" type="xs:string" />
+				<xs:element name="outVal" type="tns:OutComplexXS" />
+			</xs:sequence>
+		</xs:complexType>
+		
+		<xs:complexType name="InComplexFull">
+			<xs:sequence>
+				<xs:element name="intVal" type="xs:int" />
+				<xs:element name="longVal" type="xs:long" />
+				<xs:element name="booleanVal" type="xs:boolean" />
+				<xs:element name="doubleVal" type="xs:double" />
+				<xs:element name="floatVal" type="xs:float" />
+				<xs:element name="byteVal" type="xs:byte" />
+				<xs:element name="shortVal" type="xs:short" />
+				<xs:element name="stringVal" type="xs:string" />
+				<xs:element name="inVal" type="tns:InComplexXS" />
+			</xs:sequence>
+		</xs:complexType>
+		
+		<xs:element name="OutElementXSSequence">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="outSeq" type="xs:long" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element>
+		
+		<xs:element name="InElementXSSequence">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="inSeq" type="xs:long" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element>
+		
+		<xs:element name="OutElementXS">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="outVal" type="xs:long" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element>
+		
+		<xs:element name="InElementXS">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="inVal" type="xs:long" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element>
+		
+		<xs:element name="OutElement" />
+		
+		<xs:element name="InElement" />
+
+		<xs:element name="OutElementFull">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="intVal" type="xs:int" />
+					<xs:element name="longVal" type="xs:long" />
+					<xs:element name="booleanVal" type="xs:boolean" />
+					<xs:element name="doubleVal" type="xs:double" />
+					<xs:element name="floatVal" type="xs:float" />
+					<xs:element name="byteVal" type="xs:byte" />
+					<xs:element name="shortVal" type="xs:short" />
+					<xs:element name="stringVal" type="xs:string" />
+					<xs:element name="outTree" type="tns:OutComplexATree" />
+					<xs:element name="outComplexSeq" type="tns:OutComplexXSSequence" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element>
+		
+		<xs:element name="InElementFull">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="intVal" type="xs:int" />
+					<xs:element name="longVal" type="xs:long" />
+					<xs:element name="booleanVal" type="xs:boolean" />
+					<xs:element name="doubleVal" type="xs:double" />
+					<xs:element name="floatVal" type="xs:float" />
+					<xs:element name="byteVal" type="xs:byte" />
+					<xs:element name="shortVal" type="xs:short" />
+					<xs:element name="stringVal" type="xs:string" />
+					<xs:element name="inTree" type="tns:InComplexATree" />
+					<xs:element name="inComplexSeq" type="tns:InComplexXSSequence" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element>
+		
+		<xs:element name="OutElementFault">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="intVal" type="xs:int" />
+					<xs:element name="fullVal" type="tns:OutComplexFull" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element>
+		
+		<xs:element name="InElementFault">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="intVal" type="xs:int" />
+					<xs:element name="fullVal" type="tns:InComplexFull" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element>
+		
+		
+		
+		
+		<!-- Errors within generated files -->
+		<!-- <xs:complexType name="OutComplex" />
+		
+		<xs:complexType name="InComplex" /> -->
+		
+		
+		
+		
+		<!-- Not generated (due to "Element as param") -->
+		<!-- <xs:complexType name="OutComplexElementSequence">
+			<xs:sequence>
+				<xs:element name="outSeq" type="tns:OutElementFull" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+		
+		<xs:complexType name="InComplexElementSequence">
+			<xs:sequence>
+				<xs:element name="inSeq" type="tns:InElementFull" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+		
+		<xs:complexType name="OutComplexElementTree">
+			<xs:sequence>
+				<xs:element name="leaf" type="tns:OutElementComplexTree" />
+			</xs:sequence>
+		</xs:complexType>
+		
+		<xs:complexType name="InComplexElementTree">
+			<xs:sequence>
+				<xs:element name="leaf" type="tns:InElementComplexTree" />
+			</xs:sequence>
+		</xs:complexType>
+		
+		<xs:element name="OutElementElementSequence">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="outSeq" type="tns:OutElementFull" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element>
+		
+		<xs:element name="InElementElementSequence">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="inSeq" type="tns:InElementFull" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element> -->
+		
+		<!-- now redundant (complexType/Element-tree causes errors) -->
+		<!-- <xs:element name="OutElementComplexTree">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="leaf" type="tns:OutComplexElementTree" />
+					<xs:element name="outElementFull" type="tns:OutElementFull" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element>
+		
+		<xs:element name="InElementComplexTree">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="leaf" type="tns:InComplexElementTree" />
+					<xs:element name="inElementFull" type="tns:InElementFull" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element> -->
+		
+		</xs:schema>
+	</msdl:types>
+	
+	
+	<!--   MSDL INTERFACE SECTION   -->
+	
+	<msdl:interface name="XSLTTInterface">
+
+		<msdl:fault name="OutFault" element="tns:OutElementFault" />
+		<msdl:fault name="InFault" element="tns:InElementFault" />
+		<msdl:fault name="OutFaultWithoutElement" />
+    	<msdl:fault name="InFaultWithoutElement" />
+    	
+		<msdl:operation name="InOnlyOperation" pattern="http://www.w3.org/ns/wsdl/in-only">
+			<msdl:input element="tns:InElementXSSequence" />
+		</msdl:operation>
+		
+		<msdl:operation name="InOnlyOperationWithFault" pattern="http://www.w3.org/ns/wsdl/in-only">
+			<msdl:input element="tns:InElementFull" />
+			<msdl:outfault ref="tns:OutFaultWithoutElement" />
+		</msdl:operation>
+		
+		<msdl:operation name="OutOnlyOperation" pattern="http://www.w3.org/ns/wsdl/out-only">
+			<msdl:output element="tns:OutElementXSSequence" />
+		</msdl:operation>
+		
+		<msdl:operation name="OutOnlyOperationWithFault" pattern="http://www.w3.org/ns/wsdl/out-only">
+			<msdl:output element="tns:OutElementFull" />
+			<msdl:infault ref="tns:InFaultWithoutElement" />
+		</msdl:operation>
+		
+		<msdl:operation name="InOutOperationWithFault" pattern="http://www.w3.org/ns/wsdl/in-out">
+			<msdl:input element="tns:InElement" />
+			<msdl:output element="tns:OutElement" />
+			<msdl:outfault ref="tns:OutFault" />
+		</msdl:operation>
+		
+		<msdl:operation name="OutInOperationWithFault" pattern="http://www.w3.org/ns/wsdl/out-in">
+			<msdl:input element="tns:InElementXS" />
+			<msdl:output element="tns:OutElementXS" />
+			<msdl:infault ref="tns:InFault" />
+		</msdl:operation>
+
+
+
+
+
+		<!-- Errors on creation -->
+		<!-- <msdl:operation name="InOnlyOperationXS" pattern="http://www.w3.org/ns/wsdl/in-only">
+			<msdl:input element="xs:long" />
+		</msdl:operation>
+		
+		<msdl:operation name="OutOnlyOperationXS" pattern="http://www.w3.org/ns/wsdl/out-only">
+			<msdl:output element="xs:long" />
+		</msdl:operation> -->
+
+
+		<!-- Partially generated -->
+		<!-- <msdl:operation name="InOnlyOperationWithoutElement" pattern="http://www.w3.org/ns/wsdl/in-only">
+			<msdl:input />
+		</msdl:operation>
+
+		<msdl:operation name="OutOnlyOperationWithoutElement" pattern="http://www.w3.org/ns/wsdl/out-only">
+			<msdl:output />
+		</msdl:operation> -->
+
+		<!-- Errors within generated files -->
+		
+	</msdl:interface>
+	
+	<!--   MSDL BINDING SECTION   -->
+
+	<msdl:binding name="XSLTTBinding" interface="tns:XSLTTInterface"
+		type="http://mobilis.inf.tu-dresden.de/xmpp/">
+		<msdl:fault ref="tns:InFault" xmpp:errortype="modify"
+			xmpp:errorcondition="bad-request" xmpp:errortext="Fault incoming" />
+		<msdl:fault ref="tns:OutFault" xmpp:errortype="cancel"
+			xmpp:errorcondition="conflict" xmpp:errortext="Fault outgoing" />
+		<msdl:fault ref="tns:InFaultWithoutElement" xmpp:errortype="auth"
+			xmpp:errorcondition="forbidden" xmpp:errortext="Simple fault incoming" />
+		<msdl:fault ref="tns:OutFaultWithoutElement" xmpp:errortype="wait"
+			xmpp:errorcondition="internal-server-error" xmpp:errortext="Simple fault outgoing" />
+		
+		<msdl:operation ref="tns:InOnlyOperation" xmpp:ident="xsltt:iq:inonly">
+			<msdl:input xmpp:type="set" />
+		</msdl:operation>
+		
+		<msdl:operation ref="tns:InOnlyOperationWithFault" xmpp:ident="xsltt:iq:inonlywithfault">
+			<msdl:input xmpp:type="set" />
+			<msdl:outfault ref="tns:OutFaultWithoutElement" />
+		</msdl:operation>
+		
+		<msdl:operation ref="tns:OutOnlyOperation" xmpp:ident="xsltt:iq:outonly">
+			<msdl:output xmpp:type="chat" />
+		</msdl:operation>
+		
+		<msdl:operation ref="tns:OutOnlyOperationWithFault" xmpp:ident="xsltt:iq:outonlywithfault">
+			<msdl:output xmpp:type="set" />
+			<msdl:infault ref="tns:InFaultWithoutElement" />
+		</msdl:operation>
+		
+		<msdl:operation ref="tns:InOutOperationWithFault" xmpp:ident="xsltt:iq:inoutwithfault">
+			<msdl:input xmpp:type="get" />
+			<msdl:output xmpp:type="result" />
+			<msdl:outfault ref="tns:OutFault" />
+		</msdl:operation>
+		
+		<msdl:operation ref="tns:OutInOperationWithFault" xmpp:ident="xsltt:iq:outinwithfault">
+			<msdl:input xmpp:type="result" />
+			<msdl:output xmpp:type="get" />
+			<msdl:infault ref="tns:InFault" />
+		</msdl:operation>
+		
+		
+		
+		
+		<!-- Errors on creation -->
+		<!-- <msdl:operation ref="tns:InOnlyOperationXS" xmpp:ident="xsltt:iq:inonlyxs">
+			<msdl:input xmpp:type="set" />
+		</msdl:operation>
+
+		<msdl:operation ref="tns:OutOnlyOperationXS" xmpp:ident="xsltt:iq:outonlyxs">
+			<msdl:output xmpp:type="set" />
+		</msdl:operation> -->
+
+
+
+		<!-- Partially generated -->
+		<!-- <msdl:operation ref="tns:InOnlyOperationWithoutElement" xmpp:ident="xsltt:iq:inonlywithoutelement">
+			<msdl:input xmpp:type="chat" />
+		</msdl:operation>
+		
+		<msdl:operation ref="tns:OutOnlyOperationWithoutElement" xmpp:ident="xsltt:iq:outonlywithoutelement">
+			<msdl:output xmpp:type="set" />
+		</msdl:operation> -->
+		
+		
+	</msdl:binding>
+
+	<!--   MSDL SERVICE SECTION   -->
+
+	<msdl:service name="XSLTTest" interface="tns:XSLTTInterface"
+		ident="http://mobilis.inf.tu-dresden.de#services/XSLTTestService"
+		version="1">
+		<msdl:endpoint name="XSLTTEndpoint" binding="tns:XSLTTBinding" />
+		<msdl:dependencies />
+	</msdl:service>
+	
+</msdl:description>
