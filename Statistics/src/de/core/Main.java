@@ -25,6 +25,7 @@ public class Main
 	public static Main main;
 
 	public int currentBallPossessionId = 0;
+	public final static float ballPossessionThreshold = 1000f; // 1000mm = 1m
 
 	/**
 	 * @param args
