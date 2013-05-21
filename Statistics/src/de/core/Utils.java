@@ -1,14 +1,8 @@
 package de.core;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.espertech.esper.client.soda.InstanceOfExpression;
 
 public class Utils
 {
@@ -39,28 +33,54 @@ public class Utils
 			throw new IllegalArgumentException("Invalid format " + period);
 		}
 	}
-	
-	public static void nearestPlayers(EventDecoder ed, Ball ball) {
-//		System.out.println(ed.getEntityList().size());
-		Map<Integer, Player> playerDistancesToBall = new TreeMap<Integer, Player>();
-		for (Map.Entry<Integer, Entity> e:  ed.getEntityList().entrySet()) {
-			if (e.getValue() instanceof Player) {
-				Integer distance = (int) ball.distanceBetween1(e.getValue().positionX, e.getValue().positionY);
-				//if(distance<=2000){
-				playerDistancesToBall.put(distance, (Player) e.getValue());
-				//}
+
+	public static Player getNearestPlayer(EventDecoder eventDecoder, Ball ball)
+	{
+		float nearestPlayerDistance = Float.MAX_VALUE;
+		float distance;
+		Player nearestPlayer = null;
+		Player player = null;
+
+		for (Map.Entry<Integer, Entity> entry : eventDecoder.getEntityList().entrySet())
+		{
+			if (entry.getValue() instanceof Player)
+			{
+				player = (Player) entry.getValue();
+
+				distance = ball.distanceBetween(player.positionX, player.positionY);
+
+				if (distance < 1000f && distance < nearestPlayerDistance)
+				{
+					nearestPlayerDistance = distance;
+					nearestPlayer = player;
+					player.ballContacts += 1;
+
+					// System.out.println("Distanz zum Ball: " + nearestPlayerDistance / 10f + "cm");
+				}
 			}
 		}
-		
-		 boolean first = true;
-		  for (Map.Entry<Integer, Player> p:  playerDistancesToBall.entrySet()) {
-		   if (first==true){
-		    System.out.println("--------------");
-		    System.out.println("Aktuelle Zeit: "+Math.ceil((ball.timeStamp-10629342490369879L)/(Math.pow(10, 12)))+" s");
-		    System.out.println("Name des Spielers am Ball: "+p.getValue().getName());
-		    System.out.println("Spieler: (ID: "+p.getValue().getId()+") --- Zeitstempel: "+p.getValue().timeStamp);
-		    System.out.println("Ball:    (ID: 0"+ball.id+") --- Zeitstempel: "+ball.timeStamp);
-		   first = false;}
-		  }
+
+		return nearestPlayer;
+	}
+
+	private static final int BIG_ENOUGH_INT = 16 * 1024;
+	private static final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
+	private static final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5D;
+
+	public static final int fastRound(double x)
+	{
+		return (int) (x + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
+	}
+
+	public static final int fastFloor(double x)
+	{
+		return (int) (x + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
+	}
+
+	private final static double timeFormat = Math.pow(10, 12);
+
+	public static int convertTimeToOffset(long timeStamp)
+	{
+		return (int) fastFloor((timeStamp - 10629342490369879L) / timeFormat);
 	}
 }
