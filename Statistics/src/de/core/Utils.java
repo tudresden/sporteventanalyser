@@ -49,7 +49,7 @@ public class Utils
 
 				distance = ball.distanceBetween(player.positionX, player.positionY);
 
-				if (distance < Main.main.ballPossessionThreshold && distance < nearestPlayerDistance)
+				if (distance < Main.ballPossessionThreshold && distance < nearestPlayerDistance)
 				{
 					nearestPlayerDistance = distance;
 					nearestPlayer = player;
