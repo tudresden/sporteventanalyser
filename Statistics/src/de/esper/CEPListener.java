@@ -41,19 +41,27 @@ public class CEPListener implements UpdateListener
 			ball.update(newEntity);
 			Player nearestPlayer = Utils.getNearestPlayer(Main.main.getEventDecoder(), ball);
 
-			if (nearestPlayer != null && Main.main.currentBallPossessionId != nearestPlayer.id)
+			if (nearestPlayer != null)
 			{
-				Main.main.currentBallPossessionId = nearestPlayer.id;
+				if (Main.main.currentBallPossessionId != nearestPlayer.id)
+				{
+					Main.main.currentBallPossessionId = nearestPlayer.id;
 
-				System.out.println("--------------");
-				// print game time
-				int duration = Utils.convertTimeToOffset(ball.getTimeStamp());
-				String time = String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(duration), TimeUnit.SECONDS.toSeconds(duration) % 60);
-				System.out.println("Spielzeit: " + time);
-				System.out.println("Team: " + nearestPlayer.getTeam());
-				System.out.println("Name des Spielers am Ball: " + nearestPlayer.getName());
-				System.out.println("Spieler: (ID: " + nearestPlayer.getId() + ") --- Zeitstempel: " + nearestPlayer.getTimeStamp());
-				System.out.println("Ball:    (ID: 0" + ball.id + ") --- Zeitstempel: " + ball.getTimeStamp());
+					System.out.println("--------------");
+					// print game time
+					int duration = Utils.convertTimeToOffset(ball.getTimeStamp());
+					String time = String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(duration), TimeUnit.SECONDS.toSeconds(duration) % 60);
+					System.out.println("Spielzeit: " + time);
+					System.out.println("Team: " + nearestPlayer.getTeam());
+					System.out.println("Name des Spielers am Ball: " + nearestPlayer.getName());
+					System.out.println("Spieler: (ID: " + nearestPlayer.getId() + ") --- Zeitstempel: " + nearestPlayer.getTimeStamp());
+					System.out.println("Ball:    (ID: 0" + ball.id + ") --- Zeitstempel: " + ball.getTimeStamp());
+				}
+			}
+			else
+			{
+				// no one has the ball
+				Main.main.currentBallPossessionId = 0;
 			}
 		}
 		else if (entity instanceof Goalkeeper)
