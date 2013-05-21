@@ -1,5 +1,7 @@
 package de.esper;
 
+import java.util.concurrent.TimeUnit;
+
 import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.UpdateListener;
 
@@ -24,21 +26,35 @@ public class CEPListener implements UpdateListener
 		{
 			Player player = (Player) entity;
 			player.update(newEntity);
-			
-//			player.updateHeatmap();
 
-//			System.out.println(player);
-//			System.out.println(player.getTotalDistance());
-//			System.out.println("-->" + player.getHeatmap().getSum());
-//			if (player.getHeatmap().getSum()==50)
-//				player.getHeatmap().drawGrid();
+			// player.updateHeatmap();
+
+			// System.out.println(player);
+			// System.out.println(player.getTotalDistance());
+			// System.out.println("-->" + player.getHeatmap().getSum());
+			// if (player.getHeatmap().getSum()==50)
+			// player.getHeatmap().drawGrid();
 		}
 		else if (entity instanceof Ball)
 		{
 			Ball ball = (Ball) entity;
 			ball.update(newEntity);
-			Utils.nearestPlayers(Main.main.getEventDecoder(), ball);
-//			System.out.println(ball);
+			Player nearestPlayer = Utils.getNearestPlayer(Main.main.getEventDecoder(), ball);
+
+			if (nearestPlayer != null && Main.main.currentBallPossessionId != nearestPlayer.id)
+			{
+				Main.main.currentBallPossessionId = nearestPlayer.id;
+
+				System.out.println("--------------");
+				// print game time
+				int duration = Utils.convertTimeToOffset(ball.getTimeStamp());
+				String time = String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(duration), TimeUnit.SECONDS.toSeconds(duration) % 60);
+				System.out.println("Spielzeit: " + time);
+				System.out.println("Team: " + nearestPlayer.getTeam());
+				System.out.println("Name des Spielers am Ball: " + nearestPlayer.getName());
+				System.out.println("Spieler: (ID: " + nearestPlayer.getId() + ") --- Zeitstempel: " + nearestPlayer.getTimeStamp());
+				System.out.println("Ball:    (ID: 0" + ball.id + ") --- Zeitstempel: " + ball.getTimeStamp());
+			}
 		}
 		else if (entity instanceof Goalkeeper)
 		{

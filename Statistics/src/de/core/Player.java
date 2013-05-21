@@ -13,25 +13,25 @@ public class Player extends Entity
 	private String team;
 
 	// neu
-	private String name;
-	private int age;
-	private PlayingPosition playingPosition;
-	private int preferedFoot;
+	protected String name;
+	protected int age;
+	protected PlayingPosition playingPosition;
+	protected int preferedFoot;
 
 	private int goals;
 	private int shotsOnGoal;
-	private int shots;
-	private int passes;
-	private int successfulPasses;
-	private int ballContacts;
-	private long ballPossessionTime;
+	protected int shots;
+	protected int passes;
+	protected int successfulPasses;
+	protected int ballContacts;
+	protected long ballPossessionTime;
 	private int leftFootID;
 	private int rightFootID;
 	private Map<Integer, Integer> passesFrom;
 	private Map<Integer, Integer> passesTo;
 	private float runDistance;
-	private boolean onBall;
-	
+	protected boolean onBall;
+
 	private HeatMapGrid heatmap;
 
 	public Player(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, String team)
@@ -62,8 +62,9 @@ public class Player extends Entity
 		this.runDistance = 0;
 		this.heatmap = new HeatMapGrid(20, 67925, 52477);
 	}
-	
-	public void updateHeatmap() {
+
+	public void updateHeatmap()
+	{
 		heatmap.incrementCellValue(super.positionY, super.positionX);
 	}
 
@@ -81,7 +82,7 @@ public class Player extends Entity
 	{
 		this.team = team;
 	}
-	
+
 	public String getName()
 	{
 		return name;
@@ -91,7 +92,7 @@ public class Player extends Entity
 	{
 		this.name = name;
 	}
-	
+
 	public HeatMapGrid getHeatmap()
 	{
 		return heatmap;

@@ -8,16 +8,8 @@ import java.util.Map;
  * @author Alrik Geselle
  * @version 1.0
  */
-public class Goalkeeper extends Entity
+public class Goalkeeper extends Player
 {
-	private String team;
-
-	// neu
-	private String name;
-	private int age;
-	private PlayingPosition playingPosition;
-	private int preferedFoot;
-
 	private int goals;
 	private int shotsOnOwnGoal;
 	private int heldShots;
@@ -37,9 +29,8 @@ public class Goalkeeper extends Entity
 
 	public Goalkeeper(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, String team)
 	{
-		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ);
-		this.team = team;
-		playingPosition = PlayingPosition.GK;
+		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ, team);
+		this.playingPosition = PlayingPosition.GK;
 	}
 
 	public Goalkeeper(int id, String team, String name, int age, int preferedFoot, int leftFootID, int rightFootID, int leftArmID, int rightArmID)
@@ -64,21 +55,6 @@ public class Goalkeeper extends Entity
 		this.passesFrom = new HashMap<Integer, Integer>();
 		this.passesTo = new HashMap<Integer, Integer>();
 		this.runDistance = 0;
-	}
-
-	public int getId()
-	{
-		return id;
-	}
-
-	public String getTeam()
-	{
-		return team;
-	}
-
-	public void setTeam(String team)
-	{
-		this.team = team;
 	}
 
 	public String toString()

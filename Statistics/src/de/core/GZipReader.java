@@ -13,6 +13,7 @@ public class GZipReader
 	private GZIPInputStream gzs;
 	private DataInputStream in;
 	private BufferedReader br;
+
 	private String source;
 
 	public GZipReader(String source) throws IOException
