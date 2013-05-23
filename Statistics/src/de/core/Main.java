@@ -23,6 +23,8 @@ public class Main
 	private EventDecoder eventDecoder;
 	private EsperTest esperTest = new EsperTest();
 	public static Main main;
+	private int ballPosX = 0;
+	private int ballPosY = 0;
 
 	public int currentBallPossessionId = 0;
 	public final static float ballPossessionThreshold = 1000f; // 1000mm = 1m
@@ -124,7 +126,7 @@ public class Main
 		{
 			esperTest.getAllFromSensorIdPerMillisecond(player, 100);
 		}
-		esperTest.getAllFromSensorIdPerMillisecond(4, 100); // Ball every 100ms
+		esperTest.getAllFromSensorIdPerMillisecond(4, 10); // Ball every 100ms
 		// esperTest.getTimedFromSensorId(47, 10); //
 
 	}
@@ -143,6 +145,23 @@ public class Main
 
 		return null;
 	}
+	
+	public int getBallPosX(){
+		return ballPosX;
+	}
+	
+	public void setBallPosX(int posX){
+		this.ballPosX = posX;
+	}
+	
+	public int getBallPosY(){
+		return ballPosY;
+	}
+	
+	public void setBallPosY(int posY){
+		this.ballPosY = posY;
+	}
+	
 
 	class CallableDecode implements Callable<Void>
 	{
