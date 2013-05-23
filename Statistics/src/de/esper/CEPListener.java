@@ -20,7 +20,7 @@ public class CEPListener implements UpdateListener
 		// System.out.println("Event received: " + newData[0].getUnderlying());
 		Event event = ((Event) newData[0].getUnderlying());
 		Entity entity = Main.main.getEntityFromId(event.getId());
-		Entity newEntity = new Entity(event.getId(), event.getTimeStamp(), event.getPositionX(), event.getPositionY(), event.getPositionZ(), event.getVelocityX(), event.getVelocityY(), event.getVelocityZ(), event.getAccelerationX(), event.getAccelerationY(), event.getAccelerationZ());
+		Entity newEntity = new Entity(event.getId(), event.getTimeStamp(), event.getPositionX(), event.getPositionY(), event.getPositionZ(), event.getVelocityX(), event.getVelocityY(), event.getVelocityZ(), event.getAccelerationX(), event.getAccelerationY(), event.getAccelerationZ(), event.getAcceleration(), event.getVelocity());
 
 		if (entity instanceof Player)
 		{
@@ -41,7 +41,7 @@ public class CEPListener implements UpdateListener
 			ball.update(newEntity);
 			Player nearestPlayer = Utils.getNearestPlayer(Main.main.getEventDecoder(), ball);
 
-			if (nearestPlayer != null)
+			if (nearestPlayer != null && Utils.getBallHit(Main.main.getEventDecoder(), nearestPlayer, ball))
 			{
 				if (Main.main.currentBallPossessionId != nearestPlayer.id)
 				{
@@ -50,7 +50,7 @@ public class CEPListener implements UpdateListener
 					System.out.println("--------------");
 					// print game time
 					int duration = Utils.convertTimeToOffset(ball.getTimeStamp());
-					String time = String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(duration), TimeUnit.SECONDS.toSeconds(duration) % 60);
+					String time = String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(duration), TimeUnit.SECONDS.toSeconds(duration) % 60);					System.out.println((int) nearestPlayer.acceleration/1000000);
 					System.out.println("Spielzeit: " + time);
 					System.out.println("Team: " + nearestPlayer.getTeam());
 					System.out.println("Name des Spielers am Ball: " + nearestPlayer.getName());
