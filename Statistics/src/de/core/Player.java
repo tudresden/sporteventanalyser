@@ -34,16 +34,16 @@ public class Player extends Entity
 
 	private HeatMapGrid heatmap;
 
-	public Player(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, String team)
+	public Player(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, int acc, int vel, String team)
 	{
-		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ);
+		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ, acc, vel);
 		this.team = team;
 		playingPosition = PlayingPosition.DF;
 	}
 
 	public Player(int id, String team, String name, int age, PlayingPosition playingPosition, int preferedFoot, int leftFootID, int rightFootID)
 	{
-		this(id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, team);
+		this(id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, team);
 		this.name = name;
 		this.age = age;
 		this.playingPosition = playingPosition;
