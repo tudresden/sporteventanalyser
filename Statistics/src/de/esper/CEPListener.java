@@ -41,15 +41,16 @@ public class CEPListener implements UpdateListener
 			ball.update(newEntity);
 			Player nearestPlayer = Utils.getNearestPlayer(Main.main.getEventDecoder(), ball);
 
-			if (nearestPlayer != null)
+			if (nearestPlayer != null && Utils.getBallHit(Main.main.getEventDecoder(), nearestPlayer, ball))
 			{
-				if (Main.main.currentBallPossessionId != nearestPlayer.id)
+				int duration = Utils.convertTimeToOffset(ball.getTimeStamp());
+
+				if (duration >= 0 && Main.main.currentBallPossessionId != nearestPlayer.id)
 				{
 					Main.main.currentBallPossessionId = nearestPlayer.id;
 
 					System.out.println("--------------");
 					// print game time
-					int duration = Utils.convertTimeToOffset(ball.getTimeStamp());
 					String time = String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(duration), TimeUnit.SECONDS.toSeconds(duration) % 60);
 					System.out.println("Spielzeit: " + time);
 					System.out.println("Team: " + nearestPlayer.getTeam());
