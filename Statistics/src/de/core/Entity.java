@@ -19,6 +19,9 @@ public class Entity
 	public int accelerationY;
 	public int accelerationZ;
 
+	public int acceleration;
+	public int velocity;
+	
 	public int topSpeedX;
 	public int topSpeedY;
 	public int topSpeedZ;
@@ -27,7 +30,7 @@ public class Entity
 	private float totalDistance = -1f;
 	public int id;
 
-	public Entity(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ)
+	public Entity(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, int acc, int vel)
 	{
 		this.id = id;
 		this.timeStamp = timeStamp;
@@ -39,6 +42,9 @@ public class Entity
 		this.velocityX = velX;
 		this.velocityY = velY;
 		this.velocityZ = velZ;
+		
+		this.velocity = vel;
+		this.acceleration = acc;
 
 		this.accelerationX = accX;
 		this.accelerationY = accY;
@@ -75,6 +81,26 @@ public class Entity
 		return totalDistance;
 	}
 
+	public void setAcceleration(int acceleration)
+	{
+		this.acceleration = acceleration;
+	}
+	
+	public int getAcceleration()
+	{
+		return acceleration;
+	}
+	
+	public void setVelocity(int velocity)
+	{
+		this.velocity = velocity;
+	}
+	
+	public int getVelocity()
+	{
+		return velocity;
+	}
+
 	public void setTotalDistance(long totalDistance)
 	{
 		this.totalDistance = totalDistance;
@@ -103,6 +129,9 @@ public class Entity
 		this.accelerationX = entity.accelerationX;
 		this.accelerationY = entity.accelerationY;
 		this.accelerationZ = entity.accelerationZ;
+		
+		this.acceleration = entity.acceleration;
+		this.velocity = entity.velocity;
 
 		this.timeStamp = entity.getTimeStamp();
 	}

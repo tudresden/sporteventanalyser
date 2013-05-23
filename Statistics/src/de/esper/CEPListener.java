@@ -20,7 +20,7 @@ public class CEPListener implements UpdateListener
 		// System.out.println("Event received: " + newData[0].getUnderlying());
 		Event event = ((Event) newData[0].getUnderlying());
 		Entity entity = Main.main.getEntityFromId(event.getId());
-		Entity newEntity = new Entity(event.getId(), event.getTimeStamp(), event.getPositionX(), event.getPositionY(), event.getPositionZ(), event.getVelocityX(), event.getVelocityY(), event.getVelocityZ(), event.getAccelerationX(), event.getAccelerationY(), event.getAccelerationZ());
+		Entity newEntity = new Entity(event.getId(), event.getTimeStamp(), event.getPositionX(), event.getPositionY(), event.getPositionZ(), event.getVelocityX(), event.getVelocityY(), event.getVelocityZ(), event.getAccelerationX(), event.getAccelerationY(), event.getAccelerationZ(), event.getAcceleration(), event.getVelocity());
 
 		if (entity instanceof Player)
 		{

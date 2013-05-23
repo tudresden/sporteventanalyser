@@ -27,15 +27,15 @@ public class Goalkeeper extends Player
 	private float runDistance;
 	private boolean onBall;
 
-	public Goalkeeper(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, String team)
+	public Goalkeeper(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, int acc, int vel, String team)
 	{
-		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ, team);
+		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ, acc, vel, team);
 		this.playingPosition = PlayingPosition.GK;
 	}
 
 	public Goalkeeper(int id, String team, String name, int age, int preferedFoot, int leftFootID, int rightFootID, int leftArmID, int rightArmID)
 	{
-		this(id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, team);
+		this(id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, team);
 		this.name = name;
 		this.age = age;
 		this.playingPosition = PlayingPosition.GK;
