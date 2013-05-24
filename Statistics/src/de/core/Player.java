@@ -25,12 +25,16 @@ public class Player extends Entity
 	protected int successfulPasses;
 	protected int ballContacts;
 	protected long ballPossessionTime;
-	private int leftFootID;
-	private int rightFootID;
+	public int leftFootID;
+	public int rightFootID;
 	private Map<Integer, Integer> passesFrom;
 	private Map<Integer, Integer> passesTo;
 	private float runDistance;
 	protected boolean onBall;
+	protected Event leftFootEvent;
+	protected Event rightFootEvent;
+
+	protected Map<Integer, Event> Ids;
 
 	private HeatMapGrid heatmap;
 
@@ -39,6 +43,7 @@ public class Player extends Entity
 		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ, acc, vel);
 		this.team = team;
 		playingPosition = PlayingPosition.DF;
+		Ids = new HashMap<Integer, Event>();
 	}
 
 	public Player(int id, String team, String name, int age, PlayingPosition playingPosition, int preferedFoot, int leftFootID, int rightFootID)
@@ -61,6 +66,9 @@ public class Player extends Entity
 		this.passesTo = new HashMap<Integer, Integer>();
 		this.runDistance = 0;
 		this.heatmap = new HeatMapGrid(20, 67925, 52477);
+
+		Ids.put(leftFootID, new Event(leftFootID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+		Ids.put(rightFootID, new Event(rightFootID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
 	}
 
 	public void updateHeatmap()
@@ -102,4 +110,63 @@ public class Player extends Entity
 	{
 		return "Player " + this.getId() + " " + this.getTimeStamp() + " (" + this.positionX + ", " + this.positionY + ", " + this.positionZ + ") (" + this.velocityX + ", " + this.velocityY + ", " + this.velocityZ + ") (" + this.accelerationX + ", " + this.accelerationY + ", " + this.accelerationZ + ")";
 	}
+
+	private void updateTotalDistance(int x, int y, int z)
+	{
+		if (this.totalDistance < 0)
+		{
+			this.totalDistance = 0;
+		}
+		else
+		{
+			this.totalDistance += distanceBetween(x, y, z);
+		}
+	}
+
+	private void updatePosition()
+	{
+		int newPosX = (Ids.get(leftFootID).getPositionX() + Ids.get(rightFootID).getPositionX()) / 2;
+		int newPosY = (Ids.get(leftFootID).getPositionY() + Ids.get(rightFootID).getPositionY()) / 2;
+		int newPosZ = (Ids.get(leftFootID).getPositionZ() + Ids.get(rightFootID).getPositionZ()) / 2;
+
+		// update total distance
+		updateTotalDistance(newPosX, newPosY, newPosZ);
+
+		this.positionX = newPosX;
+		this.positionY = newPosY;
+		this.positionZ = newPosZ;
+	}
+
+	private void updateVelocity()
+	{
+		this.velocityX = (Ids.get(leftFootID).getVelocityX() + Ids.get(rightFootID).getVelocityX()) / 2;
+		this.velocityY = (Ids.get(leftFootID).getVelocityY() + Ids.get(rightFootID).getVelocityY()) / 2;
+		this.velocityZ = (Ids.get(leftFootID).getVelocityZ() + Ids.get(rightFootID).getVelocityZ()) / 2;
+		this.velocity = (Ids.get(leftFootID).getVelocity() + Ids.get(rightFootID).getVelocity()) / 2;
+	}
+
+	private void updateAcceleration()
+	{
+		this.accelerationX = (Ids.get(leftFootID).getAccelerationX() + Ids.get(rightFootID).getAccelerationX()) / 2;
+		this.accelerationY = (Ids.get(leftFootID).getAccelerationY() + Ids.get(rightFootID).getAccelerationY()) / 2;
+		this.accelerationZ = (Ids.get(leftFootID).getAccelerationZ() + Ids.get(rightFootID).getAccelerationZ()) / 2;
+		this.acceleration = (Ids.get(leftFootID).getAcceleration() + Ids.get(rightFootID).getAcceleration()) / 2;
+	}
+
+	@Override
+	public void update(Event event)
+	{
+		// update events holder
+		if (Ids.containsKey(event.getId()))
+		{
+			Ids.put(event.getId(), event);
+		}
+
+		updatePosition();
+		updateVelocity();
+		updateAcceleration();
+
+		this.timeStamp = event.getTimeStamp();
+	}
+
 }
