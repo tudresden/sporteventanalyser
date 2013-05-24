@@ -146,23 +146,26 @@ public class Main
 
 		return null;
 	}
-	
-	public int getBallPosX(){
+
+	public int getBallPosX()
+	{
 		return ballPosX;
 	}
-	
-	public void setBallPosX(int posX){
+
+	public void setBallPosX(int posX)
+	{
 		this.ballPosX = posX;
 	}
-	
-	public int getBallPosY(){
+
+	public int getBallPosY()
+	{
 		return ballPosY;
 	}
-	
-	public void setBallPosY(int posY){
+
+	public void setBallPosY(int posY)
+	{
 		this.ballPosY = posY;
 	}
-	
 
 	class CallableDecode implements Callable<Void>
 	{

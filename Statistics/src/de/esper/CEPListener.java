@@ -43,8 +43,8 @@ public class CEPListener implements UpdateListener
 			ball.update(event);
 			Player nearestPlayer = Utils.getNearestPlayer(Main.main.getEventDecoder(), ball);
 
-			//Utils.shotOnGoal(Main.main.getEventDecoder(), ball);
-			
+			// Utils.shotOnGoal(Main.main.getEventDecoder(), ball);
+
 			if (nearestPlayer != null)
 			{
 				int duration = Utils.convertTimeToOffset(ball.getTimeStamp());
@@ -57,8 +57,10 @@ public class CEPListener implements UpdateListener
 					// print game time
 					String time = String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(duration), TimeUnit.SECONDS.toSeconds(duration) % 60);
 					System.out.println("Spielzeit: " + time);
+
 					System.out.println("Team: " + nearestPlayer.getTeam());
 					System.out.println("Name des Spielers am Ball: " + nearestPlayer.getName());
+
 					// System.out.println("Spieler: (ID: " + nearestPlayer.leftFootID + ", " + nearestPlayer.rightFootID +
 					// ") --- Zeitstempel: " + nearestPlayer.getTimeStamp());
 					// System.out.println("Ball:    (ID: 0" + ball.id + ") --- Zeitstempel: " + ball.getTimeStamp());
@@ -67,6 +69,7 @@ public class CEPListener implements UpdateListener
 			else
 			{
 				// no one has the ball
+
 				// Main.main.currentBallPossessionId = 0;
 			}
 		}
