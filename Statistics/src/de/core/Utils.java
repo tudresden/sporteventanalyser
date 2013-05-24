@@ -107,7 +107,7 @@ public class Utils
 		// return (int) fastFloor((timeStamp - 10629342490369879L) / timeFormat);
 		return (int) fastFloor((timeStamp - 10753295594424116L) / timeFormat);
 	}
-	
+
 	public static void shotOnGoal(EventDecoder ed, Ball ball)
 	{
 		int oldX = Main.main.getBallPosX();
@@ -116,22 +116,25 @@ public class Utils
 		int newY = ball.positionY;
 		int vecX = newX - oldX;
 		int vecY = newY - oldY;
-		
-		//siehe Blatt
-		double xZumTor1 = (33941/vecY)-oldY;
-		double xZumTor2 = (-33968/vecY)-oldY;
-		double xAmTor1 = oldX+(xZumTor1*vecX);
-		double xAmTor2 = oldX+(xZumTor2*vecX);
-				
-		if((xAmTor1>22578.5)&&(xAmTor1<29898.5)&&((ball.getAcceleration()/1000000f)>=15f)&&(oldX!=0)){
+
+		// siehe Blatt
+		double xZumTor1 = (33941 / vecY) - oldY;
+		double xZumTor2 = (-33968 / vecY) - oldY;
+		double xAmTor1 = oldX + (xZumTor1 * vecX);
+		double xAmTor2 = oldX + (xZumTor2 * vecX);
+
+		if ((xAmTor1 > 22578.5) && (xAmTor1 < 29898.5) && ((ball.getAcceleration() / 1000000f) >= 15f) && (oldX != 0))
+		{
 			System.out.println("TORSCHUSS AUF TOR1");
 		}
-		if((xAmTor2>22560.0)&&(xAmTor2<29880.0)&&((ball.getAcceleration()/1000000f)>=15f)&&(oldX!=0)){
+		if ((xAmTor2 > 22560.0) && (xAmTor2 < 29880.0) && ((ball.getAcceleration() / 1000000f) >= 15f) && (oldX != 0))
+		{
 			System.out.println("TORSCHUSS AUF TOR2");
 		}
 		Main.main.setBallPosX(newX);
 		Main.main.setBallPosY(newY);
 	}
+
 	/*
 	 * public static void ballContacts(EventDecoder ed, Ball ball) { // System.out.println(ed.getEntityList().size()); Map<Integer, Integer>
 	 * allBallContacts = new TreeMap<Integer, Integer>(); for (Map.Entry<Integer, Entity> e: ed.getEntityList().entrySet()){ if(e.getValue()
