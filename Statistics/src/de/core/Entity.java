@@ -5,7 +5,7 @@ package de.core;
  * @author Alrik Geselle
  * @version 1.0
  */
-public class Entity
+public abstract class Entity
 {
 	public int positionX;
 	public int positionY;
@@ -21,13 +21,13 @@ public class Entity
 
 	public int acceleration;
 	public int velocity;
-	
+
 	public int topSpeedX;
 	public int topSpeedY;
 	public int topSpeedZ;
 
 	public long timeStamp = 0;
-	private float totalDistance = -1f;
+	protected float totalDistance = -1f;
 	public int id;
 
 	public Entity(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, int acc, int vel)
@@ -42,7 +42,7 @@ public class Entity
 		this.velocityX = velX;
 		this.velocityY = velY;
 		this.velocityZ = velZ;
-		
+
 		this.velocity = vel;
 		this.acceleration = acc;
 
@@ -85,17 +85,17 @@ public class Entity
 	{
 		this.acceleration = acceleration;
 	}
-	
+
 	public int getAcceleration()
 	{
 		return acceleration;
 	}
-	
+
 	public void setVelocity(int velocity)
 	{
 		this.velocity = velocity;
 	}
-	
+
 	public int getVelocity()
 	{
 		return velocity;
@@ -106,7 +106,9 @@ public class Entity
 		this.totalDistance = totalDistance;
 	}
 
-	public void update(Entity entity)
+	public abstract void update(Event event);
+
+	public void update2(Entity entity)
 	{
 		if (this.totalDistance < 0)
 		{
@@ -129,7 +131,7 @@ public class Entity
 		this.accelerationX = entity.accelerationX;
 		this.accelerationY = entity.accelerationY;
 		this.accelerationZ = entity.accelerationZ;
-		
+
 		this.acceleration = entity.acceleration;
 		this.velocity = entity.velocity;
 
@@ -148,17 +150,10 @@ public class Entity
 	{
 		return (float) Math.sqrt(distanceBetweenSquared(posX, posY, posZ));
 	}
-	
-	private float distanceBetweenSquared(int posX, int posY)
-	{
-		double dX = positionX - posX;
-		double dY = positionY - posY;
-		return (float) (dX * dX + dY * dY);
-	}
 
 	public float distanceBetween(int posX, int posY)
 	{
-		return (float) Math.sqrt(distanceBetweenSquared(posX, posY));
+		return (float) Math.hypot((double) (positionX - posX), (double) (positionY - posY));
 	}
 
 	@Override

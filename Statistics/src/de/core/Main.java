@@ -23,6 +23,8 @@ public class Main
 	private EventDecoder eventDecoder;
 	private EsperTest esperTest = new EsperTest();
 	public static Main main;
+	private int ballPosX = 0;
+	private int ballPosY = 0;
 
 	public int currentBallPossessionId = 0;
 	public final static float ballPossessionThreshold = 1000f; // 1000mm = 1m
@@ -119,12 +121,13 @@ public class Main
 		System.out.println("============================================");
 
 		// esperTest.getAllFromSensorId(47, 1); // the past 30 seconds
-		int[] playerIds = { 47, 49, 19, 53, 23, 57, 59, 63, 65, 67, 69, 71, 73, 75 };
+		// int[] playerIds = { 47, 49, 19, 53, 23, 57, 59, 63, 65, 67, 69, 71, 73, 75 };
+		int[] playerIds = { 47, 16, 49, 88, 19, 52, 53, 54, 23, 24, 57, 58, 59, 28, 63, 64, 65, 66, 67, 68, 69, 38, 71, 40, 73, 74, 75, 44 };
 		for (int player : playerIds)
 		{
-			esperTest.getAllFromSensorIdPerMillisecond(player, 100);
+			esperTest.getAllFromSensorId(player, 100);
 		}
-		esperTest.getAllFromSensorIdPerMillisecond(4, 100); // Ball every 100ms
+		esperTest.getAllFromSensorId(4, 100); // Ball every 100ms
 		// esperTest.getTimedFromSensorId(47, 10); //
 
 	}
@@ -143,6 +146,23 @@ public class Main
 
 		return null;
 	}
+	
+	public int getBallPosX(){
+		return ballPosX;
+	}
+	
+	public void setBallPosX(int posX){
+		this.ballPosX = posX;
+	}
+	
+	public int getBallPosY(){
+		return ballPosY;
+	}
+	
+	public void setBallPosY(int posY){
+		this.ballPosY = posY;
+	}
+	
 
 	class CallableDecode implements Callable<Void>
 	{
