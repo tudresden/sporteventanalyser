@@ -1,9 +1,11 @@
 package de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy;
 
-import org.xmlpull.v1.XmlPullParser;
-import de.tudresden.inf.rn.mobilis.xmpp.beans.XMPPBean;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.List;import java.util.ArrayList;
+import org.xmlpull.v1.XmlPullParser;
+
+import de.tudresden.inf.rn.mobilis.xmpp.beans.XMPPBean;
 
 public class Events extends XMPPBean {
 
