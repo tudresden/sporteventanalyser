@@ -1,8 +1,10 @@
 package de.tudresden.inf.rn.mobilis.sea.client.proxy;
 
-import org.xmlpull.v1.XmlPullParser;import java.util.List;import java.util.ArrayList;import de.tudresden.inf.rn.mobilis.xmpp.beans.XMPPBean;
+import org.xmlpull.v1.XmlPullParser;
 
-public class Event extends XMPPBean {
+import de.tudresden.inf.rn.mobilis.xmpp.beans.XMPPInfo;
+
+public class Event implements XMPPInfo {
 
 	private int Sender = Integer.MIN_VALUE;
 	private long Timestamp = Long.MIN_VALUE;
@@ -34,13 +36,10 @@ public class Event extends XMPPBean {
 		this.AccelerationX = AccelerationX;
 		this.AccelerationY = AccelerationY;
 		this.AccelerationZ = AccelerationZ;
-
-		this.setType( XMPPBean.TYPE_SET );
 	}
 
-	public Event(){
-		this.setType( XMPPBean.TYPE_SET );
-	}
+	public Event(){}
+
 
 
 	@Override
@@ -94,9 +93,6 @@ public class Event extends XMPPBean {
 				else if (tagName.equals( "AccelerationZ" ) ) {
 					this.AccelerationZ = Integer.parseInt( parser.nextText() );
 				}
-				else if (tagName.equals("error")) {
-					parser = parseErrorAttributes(parser);
-				}
 				else
 					parser.next();
 				break;
@@ -122,7 +118,7 @@ public class Event extends XMPPBean {
 		return CHILD_ELEMENT;
 	}
 
-	public static final String NAMESPACE = "sea:iq:eventnoti";
+	public static final String NAMESPACE = "http://mobilis.inf.tu-dresden.de#services/SportEventAnalyserService#type:Event";
 
 	@Override
 	public String getNamespace() {
@@ -130,15 +126,7 @@ public class Event extends XMPPBean {
 	}
 
 	@Override
-	public XMPPBean clone() {
-		Event clone = new Event( Sender, Timestamp, PositionX, PositionY, PositionZ, Velocity, Acceleration, VelocityX, VelocityY, VelocityZ, AccelerationX, AccelerationY, AccelerationZ );
-		clone.cloneBasicAttributes( clone );
-
-		return clone;
-	}
-
-	@Override
-	public String payloadToXML() {
+	public String toXML() {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append( "<Sender>" )
@@ -193,10 +181,9 @@ public class Event extends XMPPBean {
 			.append( this.AccelerationZ )
 			.append( "</AccelerationZ>" );
 
-		sb = appendErrorPayload(sb);
-
 		return sb.toString();
 	}
+
 
 
 	public int getSender() {

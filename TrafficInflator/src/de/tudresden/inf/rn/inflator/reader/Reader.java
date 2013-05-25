@@ -16,7 +16,7 @@ import de.tudresden.inf.rn.mobilis.sea.client.proxy.SportEventAnalyserProxy;
 
 public class Reader {
 
-	private static final int MAX_EVENTS_PER_MESSAGE = 50;
+	private static final int MAX_EVENTS_PER_MESSAGE = 500;
 	private static final int MIN_EVENTS_PER_MESSAGE = 100;
 	private static final boolean SEND_DATA_IN_PLAY_TIME = true;
 	private static int eventCounter = 0, messageCounter = 0;

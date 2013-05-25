@@ -12,7 +12,7 @@ import de.tudresden.inf.rn.mobilis.xslttest.client.proxy.XSLTTestProxy;
 
 public class XSLTTestDispatcher implements IXSLTTestIncoming {
 
-	public XSLTTestProxy _proxy;
+	private XSLTTestProxy _proxy;
 
 	public XSLTTestDispatcher(XSLTTestProxy proxy) {
 		_proxy = proxy;

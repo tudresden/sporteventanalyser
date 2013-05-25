@@ -1,6 +1,7 @@
 package de.tudresden.inf.rn.mobilis.sea.client.proxy;
 
-import java.util.List;import java.util.ArrayList;public class SportEventAnalyserProxy {
+import java.util.List;
+public class SportEventAnalyserProxy {
 
 	private ISportEventAnalyserOutgoing _bindingStub;
 

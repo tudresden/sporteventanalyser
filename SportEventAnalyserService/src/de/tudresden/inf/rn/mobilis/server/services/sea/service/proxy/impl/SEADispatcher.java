@@ -2,15 +2,19 @@ package de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.impl;
 
 import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.Events;
 import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.ISportEventAnalyserIncoming;
+import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.SportEventAnalyserProxy;
 
 public class SEADispatcher implements ISportEventAnalyserIncoming {
+
+	private SportEventAnalyserProxy _proxy;
 
 	private static int eventCounter = 0;
 	private static int messageCounter = 0;
 	private static long startPlayTime = 0;
 	private static long timeOfCycleStart = System.currentTimeMillis();
 
-	public SEADispatcher() {
+	public SEADispatcher(SportEventAnalyserProxy proxy) {
+		this._proxy = proxy;
 	}
 
 	@Override
