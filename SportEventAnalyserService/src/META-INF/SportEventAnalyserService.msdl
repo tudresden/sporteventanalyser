@@ -19,25 +19,23 @@
 				</xs:complexType>
 			</xs:element>
 
-			<xs:element name="Event">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Sender" type="xs:int" />
-						<xs:element name="Timestamp" type="xs:long" />
-						<xs:element name="PositionX" type="xs:int" />
-						<xs:element name="PositionY" type="xs:int" />
-						<xs:element name="PositionZ" type="xs:int" />
-						<xs:element name="Velocity" type="xs:int" />
-						<xs:element name="Acceleration" type="xs:int" />
-						<xs:element name="VelocityX" type="xs:int" />
-						<xs:element name="VelocityY" type="xs:int" />
-						<xs:element name="VelocityZ" type="xs:int" />
-						<xs:element name="AccelerationX" type="xs:int" />
-						<xs:element name="AccelerationY" type="xs:int" />
-						<xs:element name="AccelerationZ" type="xs:int" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
+			<xs:complexType name="Event">
+				<xs:sequence>
+					<xs:element name="Sender" type="xs:int" />
+					<xs:element name="Timestamp" type="xs:long" />
+					<xs:element name="PositionX" type="xs:int" />
+					<xs:element name="PositionY" type="xs:int" />
+					<xs:element name="PositionZ" type="xs:int" />
+					<xs:element name="Velocity" type="xs:int" />
+					<xs:element name="Acceleration" type="xs:int" />
+					<xs:element name="VelocityX" type="xs:int" />
+					<xs:element name="VelocityY" type="xs:int" />
+					<xs:element name="VelocityZ" type="xs:int" />
+					<xs:element name="AccelerationX" type="xs:int" />
+					<xs:element name="AccelerationY" type="xs:int" />
+					<xs:element name="AccelerationZ" type="xs:int" />
+				</xs:sequence>
+			</xs:complexType>
 
 		</xs:schema>
 	</msdl:types>
