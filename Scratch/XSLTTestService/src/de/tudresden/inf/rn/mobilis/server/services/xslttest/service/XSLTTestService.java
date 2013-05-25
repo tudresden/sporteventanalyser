@@ -6,8 +6,14 @@ import org.jivesoftware.smack.packet.IQ;
 import de.tudresden.inf.rn.mobilis.server.agents.MobilisAgent;
 import de.tudresden.inf.rn.mobilis.server.services.MobilisService;
 import de.tudresden.inf.rn.mobilis.server.services.xslttest.service.listener.IQListener;
-import de.tudresden.inf.rn.mobilis.server.services.xslttest.service.proxy.Event;
+import de.tudresden.inf.rn.mobilis.server.services.xslttest.service.proxy.InElement;
+import de.tudresden.inf.rn.mobilis.server.services.xslttest.service.proxy.InElementFull;
+import de.tudresden.inf.rn.mobilis.server.services.xslttest.service.proxy.InElementXS;
+import de.tudresden.inf.rn.mobilis.server.services.xslttest.service.proxy.InElementXSSequence;
+import de.tudresden.inf.rn.mobilis.server.services.xslttest.service.proxy.OutElementXS;
+import de.tudresden.inf.rn.mobilis.server.services.xslttest.service.proxy.XSLTTestProxy;
 import de.tudresden.inf.rn.mobilis.server.services.xslttest.service.proxy.impl.XSLTTestDispatcher;
+import de.tudresden.inf.rn.mobilis.server.services.xslttest.service.proxy.impl.XSLTTestDistributer;
 import de.tudresden.inf.rn.mobilis.xmpp.beans.XMPPBean;
 import de.tudresden.inf.rn.mobilis.xmpp.server.BeanProviderAdapter;
 
@@ -32,7 +38,8 @@ public class XSLTTestService extends MobilisService {
 	protected void registerPacketListener() {
 		// IQ-Listener
 		getAgent().getConnection().addPacketListener(
-				new IQListener(new XSLTTestDispatcher(getAgent().getConnection())),
+				new IQListener(new XSLTTestDispatcher(new XSLTTestProxy(
+						new XSLTTestDistributer(getAgent().getConnection())))),
 				new PacketTypeFilter(IQ.class));
 	}
 
@@ -47,8 +54,13 @@ public class XSLTTestService extends MobilisService {
 	 * Register all XMBBBeans labeled as XMPP extensions
 	 */
 	public void registerXMPPExtensions() {
-		// Event
-		registerXMPPBean(new Event());
+		registerXMPPBean(new InElement());
+		registerXMPPBean(new InElementFull());
+		registerXMPPBean(new InElementXS());
+		registerXMPPBean(new InElementXSSequence());
+		
+		// Fault
+		registerXMPPBean(new OutElementXS());
 	}
 
 	/**

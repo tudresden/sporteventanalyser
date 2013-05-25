@@ -1,3 +1,9 @@
+Besprechung:
+-> Grundlegender Aufbau: Grundelemente (mobilis.js, mobilis.core.js, mobilis.utils.js), ServicePlugin (mobilis.servicename.js), "Teil"-Interface (servicename.js)
+-> "Durchsprech"-Reihenfolge: mobilis.js (keine Änderungen), mobilis.core, mobilis.service => Problem bei errorcallback soll anhand von Test geklärt werden (dazu kurz Test mit Testobjekten vorstellen)
+\> Anmerkungen und Sonstige Anmerkungen ansprechen
+-> Zuletzt noch service.js ansprechen mit Fragen!
+
 mobilis.core:
 -> .HTTPBIND: bind muss nun angegeben werden und wird in service.js definiert!
 -> .SERVICES: Kein "jid" mehr, sondern nurnoch agent!
@@ -5,13 +11,13 @@ mobilis.core:
 -> connect: uFullJid, uPassword, mBareJid, [bind, callback] -> Geringste Information, um Verbindung aufzubauen! (außer natürlich uFullJid^^)
 -> createServiceInstance: Constraints : { serviceNamespace : undefined, serviceName : undefined, servicePassword : undefined }
 -> mobilisServiceDiscovery: Constraints : { serviceNamespace : undefined, serviceVersion : undefined }
+-> Exceptions werden nun geworfen (Keine Rückgabe mehr an errorcallback, da nicht sicher ist, was dieser wie empfängt!)
 
 mobilis.service:
 -> ZIEL: Abschottung des Nutzers vom Kernservice (mobilis.core) und Strophe! Der Nutzer soll nur seinen JS-Code erstellen!
 -> Decorators mit den Handlern werden erstellt (Verarbeiten IQs in Rückgabewerte => Kann nicht direkt von IQ in Typ umgewandelt werden, da Arrays vorkommen können -> Macht das nur unnötig kompliziert und auch nicht erweiterbar!)
+-> Nur bei "in-out" mit resultcallback! (Alternativ kann über den Handler die IQ geholt werden) -> Siehe Fragen!
 -> errorcallback bekommt IQ dennoch zurück :-/ Bislang wird daher der errorcallback gekonnt ignoriert => Hier wären die eigenen Faults angebracht mit den entsprechenden Decorators
--> in-only: Kein resultcallback!
--> in-out: Mit resultcallback (Alternativ kann über den Handler die IQ geholt werden) -> Siehe Fragen!
 
 Anmerkungen:
 -> MSDL-Wiki: Sind nicht output/input "parameterS" => Nur ein Parameter im Interface, der auch ein Element sein muss! (Kein xs!)
@@ -22,11 +28,15 @@ Anmerkungen:
 Sonstige Anmerkungen:
 -> Typo in XHunt-Service: DeprtureData
 -> Fehler in XSLT (Service und Client): Faults werden bei I"Service"Incoming bei vorherigem Sibbling angelegt und heißen auch nicht mehr wie der Original-Fault
--> Fehler in XSLT? Es werden auch selbst erstellte Fault-Elemente nicht erstellt?!
+\> Bsp: xHunt-MSDL2Service (Wichtig sind Zeilen 347ff und 444ff aus xhunt.msdl: Kein Error definiert!) -> IMobilisXHuntIncoming: Zeile 23 (onLocationError?!)
+-> Fehler in XSLT? Es werden auch selbst erstellte Fault-Elemente nicht erstellt?
+\> In I"Service"Incoming wird bei Outfault das In-Element genommen (bzw. analog Infault/Out-Element) angenommen? Obwohl ein konkretes Fehlerelement angegeben ist?!
+
+Weitere Anmerkungen:
+-> Chat als xmpp:type ist nicht erlaubt (obwohl es sogar in der Wiki steht)?!
 
 Fragen:
 -> addHandlers(): Auch bei mepInOut den onOutHandler bei addHandler hinzufuegen? Theoretisch sollte man den callback nutzen!
--> nach xmpp:type zusätzlich filtern?
 
 TODO:
 -> Test mit Fällen:
@@ -48,10 +58,6 @@ TODO:
 => InComplexXSSequence -> InElementFull
 => OutComplexXS -> OutComplexFull
 => InComplexXS -> InComplexFull
-=> OutComplexATree -> OutElementFull
-=> InComplexATree -> InElementFull
-=> OutComplexBTree -> OutComplexATree
-=> InComplexBTree -> InComplexATree
 => OutComplexFull -> OutElementFault
 => InComplexFull -> InElementFault
 
@@ -95,6 +101,10 @@ Fehler vor Test (aufgrund von MSDL2Service):
 => InElementElementSequence
 => OutElementComplexTree (kein Fehler, aber da Element/complexType-Tree nicht funktioniert ueberfluessig!)
 => InElementComplexTree -> InOnlyOperationWithFault
+=> OutComplexATree
+=> InComplexATree
+=> OutComplexBTree
+=> InComplexBTree
 
 \> Operations:
 => InOnlyOperationWithoutElement()
@@ -103,10 +113,28 @@ Fehler vor Test (aufgrund von MSDL2Service):
 => OutOnlyOperationXS() : xs:long
 
 Erkannte Fehler:
+=> Vermutlich existiert noch ein Fehler bei leeren Elementen mit Infaults! (Fällt natürlich nicht auf, weil das bei den anderen MSDL-XSLT nicht geht...)
+
+Beseitigte Fehler:
+=> Es kommen bereits XMLElemente bei den Decorators an! => Muessen nicht zusaetzlich von jQuery geparsed werden!
+=> Es reicht ein "children()" in einem Decorator! => Grund: bereits als XML-Element mit root als IQ (nicht der virtuelle XML-Root-node!)
+=> Kommas zwischen Parametern bei Complex-Types fehlen!
+=> Nach xmpp:type zusätzlich filtern!
+=> addOperationHandler in mobilis.service.js: Falsches Objekt! Mobilis.service.NS nicht Mobilis.operation.NS!
+=> Kommas am Ende von Handlern in mobilis.service.js fehlen!
+=> Kommas am Ende der DECORATORS in mobilis.service.js fehlen!=> Elemente mit Complex-Types werden nicht mit dem Elementnamen, sondern mit dem ComplexType-Namen uebertragen! Elementbezeichnungen anpassen!
 => callback bei InOut-Operation fehlt!
 => packetID fehlt bei Handlern und bei OutIn!
+=> Leere Elemente muessen nicht sonderlich geparsed werden (Der gesamte Code kann gespart werden!) => Eher unwichtig, weil das auf keinen Fall schadet
+=> onTimeout bei Operationen zusätzlich hinzufügen (Eine Trennung war sinnvoll, damit ein Nutzer eventuelle Timeouts separat behandeln kann
+\> Als normaler errorcallback müsste der Nutzer sowieso zuerst herausfinden, ob es sich um einen Timeout handelt und führt anschließend eine wesentlich unterschiedliche Fehlerbehandlung durch (i.d.R.)
+=> Elements nicht mehr aus allen xs:element zusammenbauen, sondern nurnoch aus Input und Output! Grund: Nur sowas ist erlaubt und man kann Faults besser kontrollieren!
+=> Infault als Operation zu Elementen hinzufuegen!
+=> OutHandler muessen bei apply noch einige Details zusaetzlich angeben (packetID,...)
+=> onResult mit Decorator!
+=> return true bei den Decorators? Damit der Handler erhalten bleibt!
 
 TODO:
 => Element in Element, wenn beide Elemente in jeweils einer Operation definiert! (Vermutlich mgl, aber wuerde dann Paradigma brechen!)
-
+=> minOccurs: Anzahl Elemente automatisch prüfen!
 
