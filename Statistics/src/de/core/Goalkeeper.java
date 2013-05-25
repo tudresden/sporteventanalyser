@@ -8,16 +8,8 @@ import java.util.Map;
  * @author Alrik Geselle
  * @version 1.0
  */
-public class Goalkeeper extends Entity
+public class Goalkeeper extends Player
 {
-	private String team = " lol";
-
-	// neu
-	private String name;
-	private int age;
-	private PlayingPosition playingPosition;
-	private int preferedFoot;
-
 	private int goals;
 	private int shotsOnOwnGoal;
 	private int heldShots;
@@ -35,16 +27,15 @@ public class Goalkeeper extends Entity
 	private float runDistance;
 	private boolean onBall;
 
-	public Goalkeeper(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, String team)
+	public Goalkeeper(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, int acc, int vel, String team)
 	{
-		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ);
-		this.team = team;
-		playingPosition = PlayingPosition.GK;
+		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ, acc, vel, team);
+		this.playingPosition = PlayingPosition.GK;
 	}
 
 	public Goalkeeper(int id, String team, String name, int age, int preferedFoot, int leftFootID, int rightFootID, int leftArmID, int rightArmID)
 	{
-		this(id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, team);
+		this(id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, team);
 		this.name = name;
 		this.age = age;
 		this.playingPosition = PlayingPosition.GK;
@@ -66,23 +57,8 @@ public class Goalkeeper extends Entity
 		this.runDistance = 0;
 	}
 
-	public int getId()
-	{
-		return id;
-	}
-
-	public String getTeam()
-	{
-		return team;
-	}
-
-	public void setTeam(String team)
-	{
-		this.team = team;
-	}
-
 	public String toString()
 	{
-		return "Player " + this.getId() + " " + this.getTimeStamp() + " (" + this.positionX + ", " + this.positionY + ", " + this.positionZ + ") (" + this.velocityX + ", " + this.velocityY + ", " + this.velocityZ + ") (" + this.accelerationX + ", " + this.accelerationY + ", " + this.accelerationZ + ")";
+		return "Goalkeeper " + this.getId() + " " + this.getTimeStamp() + " (" + this.positionX + ", " + this.positionY + ", " + this.positionZ + ") (" + this.velocityX + ", " + this.velocityY + ", " + this.velocityZ + ") (" + this.accelerationX + ", " + this.accelerationY + ", " + this.accelerationZ + ")";
 	}
 }

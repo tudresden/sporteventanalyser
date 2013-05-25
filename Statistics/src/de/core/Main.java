@@ -21,7 +21,13 @@ public class Main
 {
 	private ExecutorService executor = Executors.newFixedThreadPool(4);
 	private EventDecoder eventDecoder;
+	private EsperTest esperTest = new EsperTest();
 	public static Main main;
+	private int ballPosX = 0;
+	private int ballPosY = 0;
+
+	public int currentBallPossessionId = 0;
+	public final static float ballPossessionThreshold = 1000f; // 1000mm = 1m
 
 	/**
 	 * @param args
@@ -29,8 +35,9 @@ public class Main
 	public static void main(String[] args)
 	{
 		main = new Main();
-		// main.test();
-		main.test2();
+
+		// main.test2();
+		main.test();
 	}
 
 	public void test2()
@@ -51,8 +58,6 @@ public class Main
 
 			for (int i = 0; i < lines; i++)
 			{
-				// System.out.println(reader.readRawNextLine());
-
 				data = reader.readNextCsvLine();
 
 				if (data == null)
@@ -62,37 +67,29 @@ public class Main
 
 				if (data.length == 5 && Utils.isNumeric(data[0]))
 				{
-					int eventNumber = Integer.parseInt(data[0]);
-
-					if (eventNumber != 6014 && eventNumber != 6015)
-					{
-						continue;
-					}
-
-					System.out.print(eventNumber);
-					// System.out.print(data[1]);
-
-					name = data[1].replace("\"", "").split("\\s* \\s*");
-
-					// Vorname
-					System.out.print(name[0]);
-					// Nachname
-					System.out.print(name[1]);
-
-					System.out.print(data[2]);
-
 					try
 					{
+						int eventNumber = Integer.parseInt(data[0]);
+
+						if (eventNumber != 6014 && eventNumber != 6015)
+						{
+							continue;
+						}
+
+						name = data[1].replace("\"", "").split("\\s* \\s*");
 						date = dateFormat.parse("1970-01-01 " + data[2]);
-						System.out.print(date.getTime());
+
+						if (name.length > 2)
+						{
+							// esperTest.getCepRT().sendEvent(new EventBallPossession(name[0] + " " + name[1], (10629342490369879L +
+							// date.getTime()), name[2]));
+							esperTest.getCepRT().sendEvent(new EventBallPossession("shit", 102, "homo"));
+						}
 					}
 					catch (ParseException e)
 					{
-						// e.printStackTrace();
+						System.out.println(e.getMessage());
 					}
-
-					System.out.println(data[3]);
-
 				}
 			}
 		}
@@ -101,11 +98,13 @@ public class Main
 			e.printStackTrace();
 		}
 
+		System.out.println("============================================");
+		esperTest.ballPossession(1);
+
 	}
 
 	public void test()
 	{
-		EsperTest esperTest = new EsperTest();
 
 		eventDecoder = new EventDecoder(esperTest.getCepRT());
 
@@ -122,8 +121,15 @@ public class Main
 		System.out.println("============================================");
 
 		// esperTest.getAllFromSensorId(47, 1); // the past 30 seconds
-		esperTest.getAllFromSensorIdPerMillisecond(47, 10); // every 10ms
+		// int[] playerIds = { 47, 49, 19, 53, 23, 57, 59, 63, 65, 67, 69, 71, 73, 75 };
+		int[] playerIds = { 47, 16, 49, 88, 19, 52, 53, 54, 23, 24, 57, 58, 59, 28, 63, 64, 65, 66, 67, 68, 69, 38, 71, 40, 73, 74, 75, 44 };
+		for (int player : playerIds)
+		{
+			esperTest.getAllFromSensorId(player, 100);
+		}
+		esperTest.getAllFromSensorId(4, 100); // Ball every 100ms
 		// esperTest.getTimedFromSensorId(47, 10); //
+
 	}
 
 	public EventDecoder getEventDecoder()
@@ -139,6 +145,26 @@ public class Main
 		}
 
 		return null;
+	}
+
+	public int getBallPosX()
+	{
+		return ballPosX;
+	}
+
+	public void setBallPosX(int posX)
+	{
+		this.ballPosX = posX;
+	}
+
+	public int getBallPosY()
+	{
+		return ballPosY;
+	}
+
+	public void setBallPosY(int posY)
+	{
+		this.ballPosY = posY;
 	}
 
 	class CallableDecode implements Callable<Void>
