@@ -4,14 +4,13 @@
 	xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:msdl="http://mobilis.inf.tu-dresden.de/msdl/"
 	xmlns:xmpp="http://mobilis.inf.tu-dresden.de/xmpp/">
 
-	<!-- TODO: Ein paar mehr Params -->
-	<!-- the output folder where the scripts will be created -->
-	<xsl:param name="outputFolder" />
+	<!-- outputFolder where to create scripts in -->
+	<xsl:param name="outputFolder" select="''" />
 
 	<!-- TODO: Das hier umsetzen! -->
 	<!-- determines whether a minimized version of the core scripts should be 
 		generated -->
-	<xsl:param name="minimized" />
+	<xsl:param name="minimized" select="false()" />
 
 	<!-- prints indent like they are in code -->
 	<xsl:output method="text" version="1.0" encoding="UTF-8"
@@ -64,9 +63,10 @@
 		<xsl:value-of select="$newline" />
 
 		<!-- generate mobilis service script -->
-		<xsl:apply-templates select="/" mode="generateMobilisService" />
+		<xsl:apply-templates select="/"
+			mode="generateMobilisService" />
 		<xsl:value-of select="$newline" />
-		
+
 		<!-- generate service script -->
 		<xsl:apply-templates select="/" mode="generateService" />
 
@@ -76,13 +76,13 @@
 		<xsl:variable name="fileName"
 			select="concat($outputFolder, concat(lower-case($serviceName), '.js'))" />
 		<xsl:value-of select="$fileName" />
-	
+
 		<!-- creates a file with the filename -->
 		<xsl:result-document href="{$fileName}">
 			<xsl:text>var </xsl:text>
 			<xsl:value-of select="lower-case($serviceName)" />
 			<xsl:text> = {</xsl:text>
-			
+
 			<!-- HTTPBIND -->
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$newline" />
@@ -90,49 +90,55 @@
 			<xsl:text>HTTPBIND : "</xsl:text>
 			<xsl:value-of select="$httpBind" />
 			<xsl:text>",</xsl:text>
-			
+
 			<xsl:value-of select="$newline" />
-			
+
 			<!-- generate constructor-wrappers(complexTypes) -->
-			<xsl:apply-templates select="/msdl:description/msdl:types/xs:schema/xs:complexType" mode="generateComplexConstructorWrapper" />
+			<xsl:apply-templates
+				select="/msdl:description/msdl:types/xs:schema/xs:complexType" mode="generateComplexConstructorWrapper" />
 			<!-- generate constructor-wrappers(elements) -->
-			<xsl:apply-templates select="/msdl:description/msdl:types/xs:schema/xs:element" mode="generateElementConstructorWrapper" />
-			
+			<xsl:apply-templates
+				select="/msdl:description/msdl:types/xs:schema/xs:element" mode="generateElementConstructorWrapper" />
+
 			<xsl:value-of select="$newline" />
-			
+
 			<!-- generate handlers -->
-			<xsl:apply-templates select="/msdl:description/msdl:interface/msdl:operation/msdl:output" mode="generateHandlers" />
-			
+			<xsl:apply-templates
+				select="/msdl:description/msdl:interface/msdl:operation/msdl:output"
+				mode="generateHandlers" />
+
 			<!-- create addHandlers method -->
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
 			<xsl:text>addHandlers : function() {</xsl:text>
-			
-			<xsl:for-each select="/msdl:description/msdl:interface/msdl:operation/msdl:output">
+
+			<xsl:for-each
+				select="/msdl:description/msdl:interface/msdl:operation/msdl:output">
 				<xsl:variable name="interfaceOperationName" select="../@name" />
-				
-				<!-- TODO: Auch bei mepInOut? Hier sollte man theoretisch den callback nutzen! -->
-				
-				<xsl:value-of select="$newline" />
-				<xsl:value-of select="$indent" />
-				<xsl:value-of select="$indent" />
-				<xsl:text>Mobilis.</xsl:text>
-				<xsl:value-of select="lower-case($serviceName)" />
-				<xsl:text>.add</xsl:text>
-				<xsl:value-of select="$interfaceOperationName" />
-				<xsl:text>Handler(</xsl:text>
-				<xsl:value-of select="lower-case($serviceName)" />
-				<xsl:text>.on</xsl:text>
-				<xsl:value-of select="$interfaceOperationName" />
-				<xsl:text>);</xsl:text>
+				<xsl:variable name="mepPattern" select="../@pattern" />
+
+				<xsl:if test="not($mepPattern = $mepInOut)">
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>Mobilis.</xsl:text>
+					<xsl:value-of select="lower-case($serviceName)" />
+					<xsl:text>.add</xsl:text>
+					<xsl:value-of select="$interfaceOperationName" />
+					<xsl:text>Handler(</xsl:text>
+					<xsl:value-of select="lower-case($serviceName)" />
+					<xsl:text>.on</xsl:text>
+					<xsl:value-of select="$interfaceOperationName" />
+					<xsl:text>);</xsl:text>
+				</xsl:if>
 			</xsl:for-each>
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
 			<xsl:text>},</xsl:text>
-			
+
 			<xsl:value-of select="$newline" />
-			
+
 			<!-- create connect method -->
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
@@ -165,27 +171,27 @@
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
 			<xsl:text>}</xsl:text>
-			
+
 			<xsl:value-of select="$newline" />
 			<xsl:text>}</xsl:text>
-			
+
 		</xsl:result-document>
 	</xsl:template>
 
 	<!-- generate handlers -->
-	<xsl:template match="/msdl:description/msdl:interface/msdl:operation/msdl:output" mode="generateHandlers">
+	<xsl:template
+		match="/msdl:description/msdl:interface/msdl:operation/msdl:output"
+		mode="generateHandlers">
 		<xsl:variable name="interfaceOperationName" select="../@name" />
 		<xsl:variable name="output" select="substring-after(./@element,':')" />
-		
+
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
 		<xsl:text>on</xsl:text>
 		<xsl:value-of select="$interfaceOperationName" />
 		<xsl:text> : function(</xsl:text>
 		<xsl:value-of select="$output" />
-		
-		<!-- TODO: outfault kann hier natuerlich auch interessant sein! Zusaetzlich hier einbinden! -->
-		
+
 		<xsl:text>) {</xsl:text>
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
@@ -196,19 +202,21 @@
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
 		<xsl:text>},</xsl:text>
-		
+
 	</xsl:template>
 
 	<!-- generate constructor-wrappers(complexTypes) -->
-	<xsl:template match="/msdl:description/msdl:types/xs:schema/xs:complexType" mode="generateComplexConstructorWrapper">
+	<xsl:template match="/msdl:description/msdl:types/xs:schema/xs:complexType"
+		mode="generateComplexConstructorWrapper">
 		<xsl:variable name="complexTypeName" select="@name" />
-		
+
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
 		<xsl:text>create</xsl:text>
 		<xsl:value-of select="$complexTypeName" />
 		<xsl:text> : function(</xsl:text>
-		<xsl:for-each select="/msdl:description/msdl:types/xs:schema/xs:complexType[@name=$complexTypeName]/xs:sequence/xs:element">
+		<xsl:for-each
+			select="/msdl:description/msdl:types/xs:schema/xs:complexType[@name=$complexTypeName]/xs:sequence/xs:element">
 			<xsl:value-of select="@name" />
 			<xsl:if test="following-sibling::xs:element">
 				<xsl:text>, </xsl:text>
@@ -223,7 +231,8 @@
 		<xsl:text>.ELEMENTS.</xsl:text>
 		<xsl:value-of select="$complexTypeName" />
 		<xsl:text>(</xsl:text>
-		<xsl:for-each select="/msdl:description/msdl:types/xs:schema/xs:complexType[@name=$complexTypeName]/xs:sequence/xs:element">
+		<xsl:for-each
+			select="/msdl:description/msdl:types/xs:schema/xs:complexType[@name=$complexTypeName]/xs:sequence/xs:element">
 			<xsl:value-of select="@name" />
 			<xsl:if test="following-sibling::xs:element">
 				<xsl:text>, </xsl:text>
@@ -233,19 +242,21 @@
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
 		<xsl:text>},</xsl:text>
-		
+
 	</xsl:template>
-	
+
 	<!-- generate constructor-wrappers(elements) -->
-	<xsl:template match="/msdl:description/msdl:types/xs:schema/xs:element" mode="generateElementConstructorWrapper">
+	<xsl:template match="/msdl:description/msdl:types/xs:schema/xs:element"
+		mode="generateElementConstructorWrapper">
 		<xsl:variable name="elementName" select="@name" />
-		
+
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
 		<xsl:text>create</xsl:text>
 		<xsl:value-of select="$elementName" />
 		<xsl:text> : function(</xsl:text>
-		<xsl:for-each select="/msdl:description/msdl:types/xs:schema/xs:element[@name=$elementName]/xs:complexType/xs:sequence/xs:element">
+		<xsl:for-each
+			select="/msdl:description/msdl:types/xs:schema/xs:element[@name=$elementName]/xs:complexType/xs:sequence/xs:element">
 			<xsl:value-of select="@name" />
 			<xsl:if test="following-sibling::xs:element">
 				<xsl:text>, </xsl:text>
@@ -260,7 +271,8 @@
 		<xsl:text>.ELEMENTS.</xsl:text>
 		<xsl:value-of select="$elementName" />
 		<xsl:text>(</xsl:text>
-		<xsl:for-each select="/msdl:description/msdl:types/xs:schema/xs:element[@name=$elementName]/xs:complexType/xs:sequence/xs:element">
+		<xsl:for-each
+			select="/msdl:description/msdl:types/xs:schema/xs:element[@name=$elementName]/xs:complexType/xs:sequence/xs:element">
 			<xsl:value-of select="@name" />
 			<xsl:if test="following-sibling::xs:element">
 				<xsl:text>, </xsl:text>
@@ -270,7 +282,7 @@
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
 		<xsl:text>},</xsl:text>
-		
+
 	</xsl:template>
 
 	<!-- generate mobilis service script -->
@@ -292,7 +304,7 @@
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
-			
+
 			<!-- NS -->
 			<xsl:text>NS : {</xsl:text>
 			<xsl:value-of select="$newline" />
@@ -301,7 +313,8 @@
 			<xsl:value-of select="$indent" />
 			<xsl:text>SERVICE : "</xsl:text>
 			<xsl:value-of select="$serviceNS" />
-			<xsl:apply-templates select="/msdl:description/msdl:binding/msdl:operation" mode="generateServiceNamespaces" />
+			<xsl:apply-templates select="/msdl:description/msdl:binding/msdl:operation"
+				mode="generateServiceNamespaces" />
 			<xsl:text>"</xsl:text>
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
@@ -311,34 +324,44 @@
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
-			
+
 			<!-- ELEMENTS/ComplexTypes -->
 			<xsl:text>ELEMENTS : {</xsl:text>
-			<xsl:apply-templates select="/msdl:description/msdl:types/xs:schema/xs:complexType" mode="generateComplexConstructors" />
-			<xsl:apply-templates select="/msdl:description/msdl:types/xs:schema/xs:element" mode="generateElementConstructors" />
+			<xsl:apply-templates
+				select="/msdl:description/msdl:types/xs:schema/xs:complexType" mode="generateComplexConstructors" />
+			<xsl:apply-templates
+				select="/msdl:description/msdl:interface/msdl:operation" mode="generateElementConstructors" />
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:text>},</xsl:text>
-			
+
 			<!-- DECORATORS -->
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:text>DECORATORS : {</xsl:text>
-			<xsl:apply-templates select="/msdl:description/msdl:interface/msdl:operation/msdl:output" mode="generateDecorators" />
+			<xsl:apply-templates
+				select="/msdl:description/msdl:interface/msdl:operation/msdl:output"
+				mode="generateDecorators" />
+			<xsl:apply-templates
+				select="/msdl:description/msdl:interface/msdl:operation" mode="generateOutfaultDecorators" />
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:text>},</xsl:text>
-			
+
 			<!-- In-Operations (mepInOnly, mepInOut, mepOutIn) -->
-			<xsl:apply-templates select="/msdl:description/msdl:binding/msdl:operation/msdl:input" mode="generateInOperations" />
-			
+			<xsl:apply-templates
+				select="/msdl:description/msdl:binding/msdl:operation/msdl:input"
+				mode="generateInOperations" />
+
 			<!-- Out-Operations (mepOutOnly, mepOutIn, mepInOut) -->
-			<xsl:apply-templates select="/msdl:description/msdl:binding/msdl:operation/msdl:output" mode="generateOutOperations" />
-			
+			<xsl:apply-templates
+				select="/msdl:description/msdl:binding/msdl:operation/msdl:output"
+				mode="generateOutOperations" />
+
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
 			<xsl:text>}</xsl:text>
@@ -357,8 +380,11 @@
 	</xsl:template>
 
 	<!-- generate out-operations -->
-	<xsl:template match="/msdl:description/msdl:binding/msdl:operation/msdl:output" mode="generateOutOperations">
+	<xsl:template
+		match="/msdl:description/msdl:binding/msdl:operation/msdl:output"
+		mode="generateOutOperations">
 		<xsl:variable name="interfaceOperationName" select="substring-after(../@ref,':')" />
+		<xsl:variable name="xmppType" select="./@xmpp:type" />
 
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$newline" />
@@ -375,28 +401,33 @@
 		<xsl:value-of select="lower-case($serviceName)" />
 		<xsl:text>.DECORATORS.</xsl:text>
 		<xsl:value-of select="$interfaceOperationName" />
-		<xsl:text>Handler(handler), Mobilis.</xsl:text>
-		<xsl:value-of select="$interfaceOperationName" />
+		<xsl:text>Handler(handler, true), Mobilis.</xsl:text>
+		<xsl:value-of select="lower-case($serviceName)" />
 		<xsl:text>.NS.</xsl:text>
 		<xsl:value-of select="upper-case($interfaceOperationName)" />
-		<xsl:text>);</xsl:text>
+		<xsl:text>, "</xsl:text>
+		<xsl:value-of select="$xmppType" />
+		<xsl:text>");</xsl:text>
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
 		<xsl:text>}</xsl:text>
-		<xsl:if test="following-sibling::msdl:input">
+		<xsl:if test="../following-sibling::msdl:operation/msdl:output">
 			<xsl:text>,</xsl:text>
 		</xsl:if>
 
 	</xsl:template>
 
 	<!-- generate in-operations -->
-	<xsl:template match="/msdl:description/msdl:binding/msdl:operation/msdl:input" mode="generateInOperations">
+	<xsl:template
+		match="/msdl:description/msdl:binding/msdl:operation/msdl:input" mode="generateInOperations">
 		<xsl:variable name="interfaceOperationName" select="substring-after(../@ref,':')" />
-		<xsl:variable name="messageElement" select="substring-after(/msdl:description/msdl:interface/msdl:operation[@name=$interfaceOperationName]/msdl:input/@element,':')" />
+		<xsl:variable name="messageElement"
+			select="substring-after(/msdl:description/msdl:interface/msdl:operation[@name=$interfaceOperationName]/msdl:input/@element,':')" />
 		<xsl:variable name="xmppType" select="./@xmpp:type" />
-		<xsl:variable name="mepPattern" select="/msdl:description/msdl:interface/msdl:operation[@name=$interfaceOperationName]/@pattern" />
-		
+		<xsl:variable name="mepPattern"
+			select="/msdl:description/msdl:interface/msdl:operation[@name=$interfaceOperationName]/@pattern" />
+
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
@@ -404,20 +435,27 @@
 		<xsl:value-of select="$interfaceOperationName" />
 		<xsl:text> : function(</xsl:text>
 		<xsl:value-of select="$messageElement" />
-		
+
 		<xsl:choose>
-			<xsl:when test="mepPattern = $mepInOut">
+			<xsl:when test="$mepPattern = $mepInOut">
 				<!-- add callback -->
-				<xsl:text>, callback</xsl:text>
+				<xsl:text>, onResult</xsl:text>
 			</xsl:when>
-			<xsl:when test="mepPattern = $mepOutIn">
+			<xsl:when test="$mepPattern = $mepOutIn">
 				<!-- add packetID -->
 				<xsl:text>, packetID</xsl:text>
 			</xsl:when>
 		</xsl:choose>
-		
-		<!-- TODO: errorcallback (dafuer muss vermutlich der Mobilis.core nochmal angepasst werden!) -->
-		
+
+		<!-- append onError whenever any error should be handled -->
+		<xsl:if test="../msdl:outfault">
+			<xsl:text>, onError</xsl:text>
+		</xsl:if>
+
+		<!-- append onTimeout whenever any callback should be received -->
+		<xsl:if test="$mepPattern = $mepInOut">
+			<xsl:text>, onTimeout</xsl:text>
+		</xsl:if>
 		<xsl:text>) {</xsl:text>
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
@@ -426,8 +464,8 @@
 		<xsl:text>var _iq = Mobilis.utils.createMobilisServiceIq(Mobilis.</xsl:text>
 		<xsl:value-of select="lower-case($serviceName)" />
 		<xsl:text>.NS.SERVICE, {</xsl:text>
-		
-		<xsl:if test="mepPattern = $mepOutIn">
+
+		<xsl:if test="$mepPattern = $mepOutIn">
 			<!-- Set ID -->
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
@@ -436,7 +474,7 @@
 			<xsl:value-of select="$indent" />
 			<xsl:text>id : packetID,</xsl:text>
 		</xsl:if>
-		
+
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
@@ -483,54 +521,182 @@
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
 		<xsl:text>Mobilis.core.sendIQ(_iq, </xsl:text>
-		
+
+		<!-- add onResult-callback -->
 		<xsl:choose>
-			<xsl:when test="mepPattern = $mepInOut">
-				<!-- add callback -->
-				<xsl:text>callback</xsl:text>
+			<xsl:when test="$mepPattern = $mepInOut">
+				<xsl:text>Mobilis.</xsl:text>
+				<xsl:value-of select="lower-case($serviceName)" />
+				<xsl:text>.DECORATORS.</xsl:text>
+				<xsl:value-of select="$interfaceOperationName" />
+				<xsl:text>Handler(onResult, false)</xsl:text>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:text>null</xsl:text>
 			</xsl:otherwise>
 		</xsl:choose>
-		
-		<!-- TODO: Error/Fault-Callback (Outfault) -->
-		<xsl:text>, errorcallback ? errorcallback : null);</xsl:text>
+
+		<xsl:text>, </xsl:text>
+
+		<!-- append onError whenever any error should be handled -->
+		<xsl:choose>
+			<xsl:when test="../msdl:outfault">
+				<xsl:text>Mobilis.</xsl:text>
+				<xsl:value-of select="lower-case($serviceName)" />
+				<xsl:text>.DECORATORS.</xsl:text>
+				<xsl:value-of select="$interfaceOperationName" />
+				<xsl:text>FaultHandler(onError)</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text>null</xsl:text>
+			</xsl:otherwise>
+		</xsl:choose>
+
+		<!-- append onTimeout whenever any callback should be received -->
+		<xsl:if test="$mepPattern = $mepInOut">
+			<xsl:text>, onTimeout</xsl:text>
+		</xsl:if>
+		<xsl:text>);</xsl:text>
 
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
-		<xsl:text>},</xsl:text>
-		<!-- TODO: Komma nach Bedingung setzen: Existiert noch weitere Operation bzw. ein msdl:output/addHandler? -->
+		<xsl:text>}</xsl:text>
+		<xsl:if
+			test="following-sibling::msdl:input or ../following-sibling::msdl:operation/msdl:output or ../preceding-sibling::msdl:operation/msdl:output">
+			<xsl:text>,</xsl:text>
+		</xsl:if>
+
 	</xsl:template>
-	
-	<!-- generate decorators -->
-	<xsl:template match="/msdl:description/msdl:interface/msdl:operation/msdl:output" mode="generateDecorators">
+
+	<!-- generate decorators (outfault) -->
+	<xsl:template match="/msdl:description/msdl:interface/msdl:operation"
+		mode="generateOutfaultDecorators">
+		<xsl:if test="msdl:outfault">
+			<xsl:variable name="interfaceOperationName" select="@name" />
+			<xsl:variable name="input"
+				select="substring-after(msdl:input/@element,':')" />
+
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$interfaceOperationName" />
+			<xsl:text>FaultHandler : function(_callback) {</xsl:text>
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>return function(_iq) {</xsl:text>
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>var $iq = $(_iq).children();</xsl:text>
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>var $error = $iq.children("error");</xsl:text>
+
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>_callback.apply(this, [new Mobilis.</xsl:text>
+			<xsl:value-of select="lower-case($serviceName)" />
+			<xsl:text>.ELEMENTS.</xsl:text>
+			<xsl:value-of select="$input" />
+			<xsl:text>($iq), {</xsl:text>
+
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>type : $error.attr("type"),</xsl:text>
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>condition : $error.children().prop("tagName"),</xsl:text>
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>message : $error.find("text").text()</xsl:text>
+
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>}]);</xsl:text>
+
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>}</xsl:text>
+
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>}</xsl:text>
+
+			<xsl:if test="following-sibling::msdl:operation/msdl:outfault">
+				<xsl:text>,</xsl:text>
+			</xsl:if>
+		</xsl:if>
+
+	</xsl:template>
+
+	<!-- generate decorators (output) -->
+	<xsl:template
+		match="/msdl:description/msdl:interface/msdl:operation/msdl:output"
+		mode="generateDecorators">
 		<xsl:variable name="interfaceOperationName" select="../@name" />
 		<xsl:variable name="output" select="substring-after(./@element,':')" />
-		<!-- TODO: Outfault! -->
-		<xsl:variable name="outfault" select="substring-after(../msdl:outfault/@element,':')" />
 
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$interfaceOperationName" />
-		<xsl:text>Handler : function(_callback) {</xsl:text>
+		<xsl:text>Handler : function(_callback, _return) {</xsl:text>
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
 		<xsl:text>return function(_iq) {</xsl:text>
-		
+
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
-		<xsl:text>var $iq = $($.parseXML(_iq)).children();</xsl:text>
+		<xsl:text>var $iq = $(_iq);</xsl:text>
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
@@ -542,15 +708,37 @@
 		<xsl:value-of select="lower-case($serviceName)" />
 		<xsl:text>.ELEMENTS.</xsl:text>
 		<xsl:value-of select="$output" />
-		<xsl:text>($iq.children())</xsl:text>
-		
+		<xsl:text>($iq.children()</xsl:text>
+
+		<!-- append additional arguments on infault -->
+		<xsl:if
+			test="following-sibling::msdl:infault or preceding-sibling::msdl:infault">
+			<xsl:text>, $iq.attr("id"), "</xsl:text>
+			<xsl:value-of select="$interfaceOperationName" />
+			<xsl:text>", Mobilis.</xsl:text>
+			<xsl:value-of select="lower-case($serviceName)" />
+			<xsl:text>.NS.</xsl:text>
+			<xsl:value-of select="upper-case($interfaceOperationName)" />
+		</xsl:if>
+
+		<xsl:text>)</xsl:text>
+
 		<!-- append packetID if mepOutIn -->
 		<xsl:if test="../@pattern = $mepOutIn">
 			<xsl:text>, $iq.attr("id")</xsl:text>
 		</xsl:if>
-		
+
 		<xsl:text>]);</xsl:text>
-		
+
+		<xsl:value-of select="$newline" />
+		<xsl:value-of select="$newline" />
+		<xsl:value-of select="$indent" />
+		<xsl:value-of select="$indent" />
+		<xsl:value-of select="$indent" />
+		<xsl:value-of select="$indent" />
+		<xsl:value-of select="$indent" />
+		<xsl:text>return _return;</xsl:text>
+
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
@@ -562,15 +750,18 @@
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
 		<xsl:text>}</xsl:text>
-		<xsl:if test="following-sibling::msdl:output">
+
+		<xsl:if
+			test="../following-sibling::msdl:operation/msdl:output or ../following-sibling::msdl:operation/msdl:outfault or ../msdl:outfault or ../preceding-sibling::msdl:operation/msdl:outfault">
 			<xsl:text>,</xsl:text>
 		</xsl:if>
-		
+
 	</xsl:template>
 
-	<!-- generate constructors for elements -->
-	<xsl:template match="/msdl:description/msdl:types/xs:schema/xs:element" mode="generateElementConstructors">
-		<xsl:variable name="elementName" select="@name" />
+	<!-- generate constructor for a specific element -->
+	<xsl:template name="generateElementConstructor">
+		<xsl:param name="elementName" />
+		<xsl:param name="operationName" />
 
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
@@ -580,63 +771,57 @@
 		<xsl:text> : function </xsl:text>
 		<xsl:value-of select="$elementName" />
 		<xsl:text>(</xsl:text>
-		<xsl:for-each select="/msdl:description/msdl:types/xs:schema/xs:element[@name=$elementName]/xs:complexType/xs:sequence/xs:element">
+		<xsl:for-each
+			select="/msdl:description/msdl:types/xs:schema/xs:element[@name=$elementName]/xs:complexType/xs:sequence/xs:element">
 			<xsl:value-of select="@name" />
 			<xsl:if test="following-sibling::xs:element">
 				<xsl:text>, </xsl:text>
 			</xsl:if>
 		</xsl:for-each>
 		<xsl:text>) {</xsl:text>
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>if (arguments[0] instanceof jQuery) {</xsl:text>
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>var _</xsl:text>
-		<xsl:value-of select="$elementName" />
-		<xsl:text> = this;</xsl:text>
-		
-		<!-- create array for all elements with unbounded maxOccurs -->
-		<xsl:for-each select="/msdl:description/msdl:types/xs:schema/xs:element[@name=$elementName]/xs:complexType/xs:sequence/xs:element[@maxOccurs='unbounded']">
+
+		<xsl:if
+			test="count(/msdl:description/msdl:types/xs:schema/xs:element[@name=$elementName]/xs:complexType/xs:sequence/xs:element) > 0">
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>if (arguments[0] instanceof jQuery) {</xsl:text>
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
-			<xsl:text>_</xsl:text>
+			<xsl:text>var _</xsl:text>
 			<xsl:value-of select="$elementName" />
-			<xsl:text>.</xsl:text>
-			<xsl:value-of select="@name" />
-			<xsl:text> = [];</xsl:text>
-		</xsl:for-each>
-		
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>arguments[0].children().each(function() {</xsl:text>
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>switch($(this).prop("tagName")) {</xsl:text>
-		
-		<!-- append elements -->
-		<xsl:for-each select="/msdl:description/msdl:types/xs:schema/xs:element[@name=$elementName]/xs:complexType/xs:sequence/xs:element">
+			<xsl:text> = this;</xsl:text>
+
+			<!-- create array for all elements with unbounded maxOccurs -->
+			<xsl:for-each
+				select="/msdl:description/msdl:types/xs:schema/xs:element[@name=$elementName]/xs:complexType/xs:sequence/xs:element[@maxOccurs='unbounded']">
+				<xsl:value-of select="$newline" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:text>_</xsl:text>
+				<xsl:value-of select="$elementName" />
+				<xsl:text>.</xsl:text>
+				<xsl:value-of select="@name" />
+				<xsl:text> = [];</xsl:text>
+			</xsl:for-each>
+
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>arguments[0].children().each(function() {</xsl:text>
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
@@ -644,96 +829,344 @@
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
+			<xsl:text>switch($(this).prop("tagName")) {</xsl:text>
+
+			<!-- append elements -->
+			<xsl:for-each
+				select="/msdl:description/msdl:types/xs:schema/xs:element[@name=$elementName]/xs:complexType/xs:sequence/xs:element">
+				<xsl:value-of select="$newline" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:text>case "</xsl:text>
+				<xsl:choose>
+					<xsl:when test="starts-with(./@type,'tns:')">
+						<xsl:value-of select="substring-after(@type,':')" />
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="@name" />
+					</xsl:otherwise>
+				</xsl:choose>
+				<xsl:text>": _</xsl:text>
+				<xsl:value-of select="$elementName" />
+				<xsl:text>.</xsl:text>
+				<xsl:value-of select="@name" />
+
+				<xsl:choose>
+					<xsl:when test="compare(./@maxOccurs, 'unbounded') = 0">
+						<xsl:text>.push(</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:text> = </xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+				<xsl:choose>
+					<xsl:when test="starts-with(./@type,'tns:')">
+						<xsl:text>new Mobilis.</xsl:text>
+						<xsl:value-of select="lower-case($serviceName)" />
+						<xsl:text>.ELEMENTS.</xsl:text>
+						<xsl:value-of select="substring-after(@type,':')" />
+						<xsl:text>($(this))</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:text>$(this).text()</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+				<xsl:if test="compare(./@maxOccurs, 'unbounded') = 0">
+					<xsl:text>)</xsl:text>
+				</xsl:if>
+				<xsl:text>; break;</xsl:text>
+			</xsl:for-each>
+			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
-			<xsl:text>case "</xsl:text>
-			<xsl:value-of select="@name" />
-			<xsl:text>": _</xsl:text>
-			<xsl:value-of select="$elementName" />
-			<xsl:text>.</xsl:text>
-			<xsl:value-of select="@name" />
-			
-			<xsl:choose>
-				<xsl:when test="compare(./@maxOccurs, 'unbounded') = 0" >
-					<xsl:text>.push(</xsl:text>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:text> = </xsl:text>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:choose>
-				<xsl:when test="starts-with(./@type,'tns:')" >
-					<xsl:text>new Mobilis.</xsl:text>
-					<xsl:value-of select="lower-case($serviceName)" />
-					<xsl:text>.ELEMENTS.</xsl:text>
-					<xsl:value-of select="@name" />
-					<xsl:text>($(this))</xsl:text>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:text>$(this).text()</xsl:text>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:if test="compare(./@maxOccurs, 'unbounded') = 0" >
-				<xsl:text>)</xsl:text>
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>}</xsl:text>
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>});</xsl:text>
+
+			<xsl:if test="$operationName">
+				<xsl:if
+					test="/msdl:description/msdl:binding/msdl:operation[@ref = concat('tns:',$operationName)]/msdl:infault">
+					<!-- once append arguments -->
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>var _pi = arguments[1], _on = arguments[2], _xmlns = arguments[3];</xsl:text>
+				</xsl:if>
+				<xsl:for-each
+					select="/msdl:description/msdl:binding/msdl:operation[@ref = concat('tns:',$operationName)]/msdl:infault">
+					<xsl:variable name="faultName" select="substring-after(./@ref,':')" />
+					<xsl:variable name="faultType"
+						select="/msdl:description/msdl:binding/msdl:fault[@ref = concat('tns:',$faultName)]/@xmpp:errortype" />
+					<xsl:variable name="faultCondition"
+						select="/msdl:description/msdl:binding/msdl:fault[@ref = concat('tns:',$faultName)]/@xmpp:errorcondition" />
+					<xsl:variable name="faultMessage"
+						select="/msdl:description/msdl:binding/msdl:fault[@ref = concat('tns:',$faultName)]/@xmpp:errortext" />
+
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>this.send</xsl:text>
+					<xsl:value-of select="$faultName" />
+					<xsl:text> = function(_message) {</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>var _iq = Mobilis.utils.createMobilisServiceIq(Mobilis.xslttest.NS.SERVICE, {</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>id : _pi,</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>type : "error"</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>});</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>_iq.c(_on, {</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>xmlns : _xmlns</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>});</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>Mobilis.utils.appendElement(_iq, _</xsl:text>
+					<xsl:value-of select="$elementName" />
+					<xsl:text>);</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>_iq.node = _iq.node.childNodes[0];</xsl:text>
+
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>_iq.c("error", {</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>type : "</xsl:text>
+					<xsl:value-of select="$faultType" />
+					<xsl:text>"</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>}).c("</xsl:text>
+					<xsl:value-of select="$faultCondition" />
+					<xsl:text>", {</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>xmlns : Mobilis.core.NS.NAMESPACE_ERROR_STANZA</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>}).up().c("text", {</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>xmlns : Mobilis.core.NS.NAMESPACE_ERROR_STANZA</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>}).t("</xsl:text>
+					<xsl:value-of select="$faultMessage" />
+					<xsl:text>" + (_message ? ": " + _message : ""));</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>Mobilis.core.sendIQ(_iq);</xsl:text>
+					<xsl:value-of select="$newline" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:value-of select="$indent" />
+					<xsl:text>}</xsl:text>
+
+				</xsl:for-each>
 			</xsl:if>
-			<xsl:text>; break;</xsl:text>
-		</xsl:for-each>
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>}</xsl:text>
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>});</xsl:text>
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>} else {</xsl:text>
-		
-		<!-- append elements -->
-		<xsl:for-each select="/msdl:description/msdl:types/xs:schema/xs:element[@name=$elementName]/xs:complexType/xs:sequence/xs:element">
+
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
+			<xsl:text>} else {</xsl:text>
+
+			<!-- append elements -->
+			<xsl:for-each
+				select="/msdl:description/msdl:types/xs:schema/xs:element[@name=$elementName]/xs:complexType/xs:sequence/xs:element">
+				<xsl:value-of select="$newline" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:text>this.</xsl:text>
+				<xsl:value-of select="@name" />
+				<xsl:text> = </xsl:text>
+				<xsl:value-of select="@name" />
+				<xsl:text>;</xsl:text>
+			</xsl:for-each>
+
+			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
-			<xsl:text>this.</xsl:text>
-			<xsl:value-of select="@name" />
-			<xsl:text> = </xsl:text>
-			<xsl:value-of select="@name" />
-			<xsl:text>;</xsl:text>
-		</xsl:for-each>
-		
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>}</xsl:text>
-		
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>}</xsl:text>
-		<xsl:if test="following-sibling::xs:element">
-			<xsl:text>,</xsl:text>
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>}</xsl:text>
 		</xsl:if>
-		
+
+		<xsl:value-of select="$newline" />
+		<xsl:value-of select="$indent" />
+		<xsl:value-of select="$indent" />
+		<xsl:value-of select="$indent" />
+		<xsl:text>}</xsl:text>
+
+	</xsl:template>
+
+	<!-- generate constructors for elements -->
+	<xsl:template match="/msdl:description/msdl:interface/msdl:operation"
+		mode="generateElementConstructors">
+		<!-- generate output element -->
+		<xsl:if test="msdl:output">
+			<xsl:call-template name="generateElementConstructor">
+				<xsl:with-param name="elementName"
+					select="substring-after(msdl:output/@element,':')" />
+				<xsl:with-param name="operationName" select="@name" />
+			</xsl:call-template>
+
+			<xsl:if
+				test="msdl:input or following-sibling::msdl:operation/msdl:output or following-sibling::msdl:operation/msdl:input">
+				<xsl:text>,</xsl:text>
+			</xsl:if>
+		</xsl:if>
+
+		<!-- generate input element -->
+		<xsl:if test="msdl:input">
+			<xsl:call-template name="generateElementConstructor">
+				<xsl:with-param name="elementName"
+					select="substring-after(msdl:input/@element,':')" />
+				<xsl:with-param name="operationName" select="false()" />
+			</xsl:call-template>
+
+			<xsl:if
+				test="following-sibling::msdl:operation/msdl:output or following-sibling::msdl:operation/msdl:input">
+				<xsl:text>,</xsl:text>
+			</xsl:if>
+		</xsl:if>
+
 	</xsl:template>
 
 	<!-- generate constructors for complex types -->
-	<xsl:template match="/msdl:description/msdl:types/xs:schema/xs:complexType" mode="generateComplexConstructors">
+	<xsl:template match="/msdl:description/msdl:types/xs:schema/xs:complexType"
+		mode="generateComplexConstructors">
 		<xsl:variable name="complexTypeName" select="@name" />
 
 		<xsl:value-of select="$newline" />
@@ -744,64 +1177,59 @@
 		<xsl:text> : function </xsl:text>
 		<xsl:value-of select="$complexTypeName" />
 		<xsl:text>(</xsl:text>
-		<xsl:for-each select="/msdl:description/msdl:types/xs:schema/xs:complexType[@name=$complexTypeName]/xs:sequence/xs:element">
+		<xsl:for-each
+			select="/msdl:description/msdl:types/xs:schema/xs:complexType[@name=$complexTypeName]/xs:sequence/xs:element">
 			<xsl:value-of select="@name" />
-			<xsl:if test="following-sibling::xs:complexType">
+			<xsl:if test="following-sibling::xs:element">
 				<xsl:text>, </xsl:text>
 			</xsl:if>
 		</xsl:for-each>
 		<xsl:text>) {</xsl:text>
-		
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>if (arguments[0] instanceof jQuery) {</xsl:text>
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>var _</xsl:text>
-		<xsl:value-of select="$complexTypeName" />
-		<xsl:text> = this;</xsl:text>
-		
-		<!-- create array for all elements with unbounded maxOccurs -->
-		<xsl:for-each select="/msdl:description/msdl:types/xs:schema/xs:complexType[@name=$complexTypeName]/xs:sequence/xs:element[@maxOccurs='unbounded']">
+
+		<!-- redundant check (since the original MSDL2JavaService create errors 
+			upon complexTypes which do not have any elements) -->
+		<xsl:if
+			test="count(/msdl:description/msdl:types/xs:schema/xs:complexType[@name=$complexTypeName]/xs:sequence/xs:element) > 0">
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>if (arguments[0] instanceof jQuery) {</xsl:text>
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
-			<xsl:text>_</xsl:text>
+			<xsl:text>var _</xsl:text>
 			<xsl:value-of select="$complexTypeName" />
-			<xsl:text>.</xsl:text>
-			<xsl:value-of select="@name" />
-			<xsl:text> = [];</xsl:text>
-		</xsl:for-each>
-		
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>arguments[0].children().each(function() {</xsl:text>
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>switch($(this).prop("tagName")) {</xsl:text>
-		
-		<!-- append elements -->
-		<xsl:for-each select="/msdl:description/msdl:types/xs:schema/xs:complexType[@name=$complexTypeName]/xs:sequence/xs:element">
+			<xsl:text> = this;</xsl:text>
+
+			<!-- create array for all elements with unbounded maxOccurs -->
+			<xsl:for-each
+				select="/msdl:description/msdl:types/xs:schema/xs:complexType[@name=$complexTypeName]/xs:sequence/xs:element[@maxOccurs='unbounded']">
+				<xsl:value-of select="$newline" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:text>_</xsl:text>
+				<xsl:value-of select="$complexTypeName" />
+				<xsl:text>.</xsl:text>
+				<xsl:value-of select="@name" />
+				<xsl:text> = [];</xsl:text>
+			</xsl:for-each>
+
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>arguments[0].children().each(function() {</xsl:text>
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
@@ -809,83 +1237,104 @@
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
-			<xsl:value-of select="$indent" />
-			<xsl:text>case "</xsl:text>
-			<xsl:value-of select="@name" />
-			<xsl:text>": _</xsl:text>
-			<xsl:value-of select="$complexTypeName" />
-			<xsl:text>.</xsl:text>
-			<xsl:value-of select="@name" />
-			
-			<xsl:choose>
-				<xsl:when test="compare(./@maxOccurs, 'unbounded') = 0" >
-					<xsl:text>.push(</xsl:text>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:text> = </xsl:text>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:choose>
-				<xsl:when test="starts-with(./@type,'tns:')" >
-					<xsl:text>new Mobilis.</xsl:text>
-					<xsl:value-of select="lower-case($serviceName)" />
-					<xsl:text>.ELEMENTS.</xsl:text>
-					<xsl:value-of select="@name" />
-					<xsl:text>($(this))</xsl:text>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:text>$(this).text()</xsl:text>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:if test="compare(./@maxOccurs, 'unbounded') = 0" >
-				<xsl:text>)</xsl:text>
-			</xsl:if>
-			<xsl:text>; break;</xsl:text>
-		</xsl:for-each>
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>}</xsl:text>
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>});</xsl:text>
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>} else {</xsl:text>
-		
-		<!-- append elements -->
-		<xsl:for-each select="/msdl:description/msdl:types/xs:schema/xs:complexType[@name=$complexTypeName]/xs:sequence/xs:element">
+			<xsl:text>switch($(this).prop("tagName")) {</xsl:text>
+
+			<!-- append elements -->
+			<xsl:for-each
+				select="/msdl:description/msdl:types/xs:schema/xs:complexType[@name=$complexTypeName]/xs:sequence/xs:element">
+				<xsl:value-of select="$newline" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:text>case "</xsl:text>
+				<xsl:choose>
+					<xsl:when test="starts-with(./@type,'tns:')">
+						<xsl:value-of select="substring-after(@type,':')" />
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="@name" />
+					</xsl:otherwise>
+				</xsl:choose>
+				<xsl:text>": _</xsl:text>
+				<xsl:value-of select="$complexTypeName" />
+				<xsl:text>.</xsl:text>
+				<xsl:value-of select="@name" />
+
+				<xsl:choose>
+					<xsl:when test="compare(./@maxOccurs, 'unbounded') = 0">
+						<xsl:text>.push(</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:text> = </xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+				<xsl:choose>
+					<xsl:when test="starts-with(./@type,'tns:')">
+						<xsl:text>new Mobilis.</xsl:text>
+						<xsl:value-of select="lower-case($serviceName)" />
+						<xsl:text>.ELEMENTS.</xsl:text>
+						<xsl:value-of select="substring-after(@type,':')" />
+						<xsl:text>($(this))</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:text>$(this).text()</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+				<xsl:if test="compare(./@maxOccurs, 'unbounded') = 0">
+					<xsl:text>)</xsl:text>
+				</xsl:if>
+				<xsl:text>; break;</xsl:text>
+			</xsl:for-each>
 			<xsl:value-of select="$newline" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
 			<xsl:value-of select="$indent" />
-			<xsl:text>this.</xsl:text>
-			<xsl:value-of select="@name" />
-			<xsl:text> = </xsl:text>
-			<xsl:value-of select="@name" />
-			<xsl:text>;</xsl:text>
-		</xsl:for-each>
-		
-		<xsl:value-of select="$newline" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:value-of select="$indent" />
-		<xsl:text>}</xsl:text>
-		
+			<xsl:value-of select="$indent" />
+			<xsl:text>}</xsl:text>
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>});</xsl:text>
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>} else {</xsl:text>
+
+			<!-- append elements -->
+			<xsl:for-each
+				select="/msdl:description/msdl:types/xs:schema/xs:complexType[@name=$complexTypeName]/xs:sequence/xs:element">
+				<xsl:value-of select="$newline" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:value-of select="$indent" />
+				<xsl:text>this.</xsl:text>
+				<xsl:value-of select="@name" />
+				<xsl:text> = </xsl:text>
+				<xsl:value-of select="@name" />
+				<xsl:text>;</xsl:text>
+			</xsl:for-each>
+
+			<xsl:value-of select="$newline" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:value-of select="$indent" />
+			<xsl:text>}</xsl:text>
+		</xsl:if>
+
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
 		<xsl:value-of select="$indent" />
@@ -894,10 +1343,11 @@
 	</xsl:template>
 
 	<!-- generate namespaces of service -->
-	<xsl:template match="/msdl:description/msdl:binding/msdl:operation" mode="generateServiceNamespaces">
+	<xsl:template match="/msdl:description/msdl:binding/msdl:operation"
+		mode="generateServiceNamespaces">
 		<xsl:variable name="namespace" select="./@xmpp:ident" />
 		<xsl:variable name="interfaceOperationName" select="substring-after(./@ref,':')" />
-		
+
 		<xsl:text>",</xsl:text>
 		<xsl:value-of select="$newline" />
 		<xsl:value-of select="$indent" />
@@ -908,7 +1358,7 @@
 		<xsl:value-of select="$namespace" />
 
 	</xsl:template>
-	
+
 	<!-- generate mobilis script -->
 	<xsl:template match="/" mode="generateMobilis">
 		<xsl:variable name="fileName"
@@ -1027,7 +1477,8 @@ $(window).unload(function() {
 		NS : {
 			COORDINATOR : "http://mobilis.inf.tu-dresden.de#services/CoordinatorService",
 			ADMIN : "http://mobilis.inf.tu-dresden.de#services/AdminService",
-			DEPLOYMENT : "http://mobilis.inf.tu-dresden.de#services/DeploymentService"
+			DEPLOYMENT : "http://mobilis.inf.tu-dresden.de#services/DeploymentService",
+			NAMESPACE_ERROR_STANZA : "urn:ietf:params:xml:ns:xmpp-stanzas"
 		},
 
 		/** Object: Services
@@ -1038,26 +1489,19 @@ $(window).unload(function() {
 				version : "1.0",
 				mode : "single",
 				instances : "1",
-				agent : "Coordinator"
+				jid : null
 			}
-		},
-
-		/** Object: Server
-		 *  Object containing the bare jid of the mobilis server
-		 */
-		SERVER : {
-			mBareJid : null
 		},
 
 		/** Object: EXCEPTIONS
 		 *  Object containing some Exceptions which may be thrown
 		 */
 		EXCEPTIONS : {
-			NotConnectedException : function() {
+			NotConnectedException : function NotConnectedException() {
 				this.name = "NotConnectedException";
 				this.message = "Mobilis is not connected to the XMPP-Server";
 			},
-			ServiceNotFoundException : function(service) {
+			ServiceNotFoundException : function ServiceNotFoundException(service) {
 				this.name = "NotFoundException";
 				this.message = "Service could not been found: " + service;
 			}
@@ -1068,13 +1512,14 @@ $(window).unload(function() {
 		 *
 		 *  Parameters:
 		 *    (String) uFullJid - Full JID of the user (e.g. user@mobilis/jsclient)
-		 *    (String) uPassword - password for the jid
-		 *    (String) mBareJid - Bare JID of the user (e.g. server@mobilis)
+		 *    (String) uPassword - Password for this jid
+		 *    (String) mBareJid - Bare JID of the server (e.g. server@mobilis)
 		 *    (Function) onSuccess - Callback function when successfully connected
 		 *    (Function) onError - Callback function when an error occured
 		 */
 		connect : function(uFullJid, uPassword, mBareJid, bind, onSuccess, onError) {
-			Mobilis.core.SERVER.mBareJid = mBareJid;
+			// Set full jid of coordinator service
+			Mobilis.core.SERVICES[Mobilis.core.NS.COORDINATOR].jid = mBareJid + "/Coordinator";
 			onError = onError || this.trace;
 
 			var conn = new Strophe.Connection(bind);
@@ -1099,7 +1544,7 @@ $(window).unload(function() {
 								version : $(this).attr("version"),
 								mode : $(this).attr("mode"),
 								instances : $(this).attr("instances"),
-								agent : $(this).attr("jid").split(Mobilis.core.SERVER.mBareJid + "/")[1]
+								jid : $(this).attr("jid")
 							};
 						});
 						Mobilis.utils.trace("Initial Service Discovery successful");
@@ -1151,35 +1596,41 @@ $(window).unload(function() {
 		 *
 		 *  Parameters:
 		 *    (XMLElement) elem - Stanza to send
-		 *    (Function) resultcallback - Callback for incoming response IQ stanzas of type RESULT
-		 *    (Function) errorcallback - Callback for incoming response IQ stanzas of type ERROR, or timeout (Stanza will be null on timeout)
+		 *    (Function) onResult - Callback function for a successful request
+		 *    (Function) onError - Callback for incoming response IQ stanzas of type ERROR
+		 *    (Function) onTimeout - Callback which will be invoked when onResult timed out
 		 *
 		 *  Throws:
 		 *    Throws a NotConnectedException if no connection has been established yet
 		 */
-		sendIQ : function(elem, resultcallback, errorcallback) {
+		sendIQ : function(elem, onResult, onError, onTimeout) {
 			if (!Mobilis.connection)
 				throw new Mobilis.core.EXCEPTIONS.NotConnectedException();
 
 			var callbackExpected = true;
-			if (!resultcallback) {
+			var errorReceived = false;
+			if (!onResult) {
 				callbackExpected = false;
-				resultcallback = function(iq) {
+				onResult = function(iq) {
 					Mobilis.utils.trace("Callback received!", iq);
 				}
 			}
 			Mobilis.connection.sendIQ(elem, function(iq) {
 				callbackExpected = false;
-				resultcallback(iq);
+				onResult(iq);
 			}, function(iq) {
-				if (callbackExpected &amp;&amp; errorcallback) {
-					// Timeout or ERROR
-					errorcallback(iq);
-				} else if (iq) {
-					Mobilis.utils.trace("Error received", iq);
-				} else if (callbackExpected) {
-					Mobilis.utils.trace("Callback timed out!");
+				if (iq) {
+					if (onError)
+						onError(iq);
+					else
+						Mobilis.utils.trace("Error received", iq);
+				} else if (callbackExpected &amp;&amp; !errorReceived) {
+					if (onTimeout)
+						onTimeout();
+					else
+						Mobilis.utils.trace("Callback timed out!");
 				}
+				errorReceived = true;
 			}, 3000);
 		},
 
@@ -1188,10 +1639,10 @@ $(window).unload(function() {
 		 *
 		 *  Parameters:
 		 *    (Object) constraints - { serviceNamespace, serviceName, servicePassword }
-		 *    (Function) resultcallback - Callback for incoming response IQ stanzas of type RESULT
-		 *    (Function) errorcallback - Callback for incoming response IQ stanzas of type ERROR, or timeout (Stanza will be null on timeout)
+		 *    (Function) onResult - Callback for incoming response IQ stanzas of type RESULT
+		 *    (Function) onError - Callback for incoming response IQ stanzas of type ERROR, or timeout (Stanza will be null on timeout)
 		 */
-		createServiceInstance : function(constraints, resultcallback, errorcallback) {
+		createServiceInstance : function(constraints, onResult, onError) {
 			var customiq = Mobilis.utils.createMobilisServiceIq(Mobilis.core.NS.COORDINATOR, {
 				type : "set"
 			}).c("createNewServiceInstance", {
@@ -1203,7 +1654,7 @@ $(window).unload(function() {
 				});
 			}
 
-			Mobilis.core.sendIQ(customiq, resultcallback, errorcallback);
+			Mobilis.core.sendIQ(customiq, onResult, onError);
 		},
 
 		/** Function: mobilisServiceDiscovery
@@ -1211,10 +1662,10 @@ $(window).unload(function() {
 		 *
 		 *  Parameters:
 		 *    (Object) constraints - {serviceNamespace, serviceVersion}
-		 *    (Function) resultcallback - Callback for incoming response IQ stanzas of type RESULT
-		 *    (Function) errorcallback - Callback for incoming response IQ stanzas of type ERROR, or timeout (Stanza will be null on timeout)
+		 *    (Function) onResult - Callback for incoming response IQ stanzas of type RESULT
+		 *    (Function) onError - Callback for incoming response IQ stanzas of type ERROR, or timeout (Stanza will be null on timeout)
 		 */
-		mobilisServiceDiscovery : function(constraints, resultcallback, errorcallback) {
+		mobilisServiceDiscovery : function(constraints, onResult, onError) {
 			var discoiq = Mobilis.utils.createMobilisServiceIq(Mobilis.core.NS.COORDINATOR, {
 				type : "get"
 			}).c("serviceDiscovery", {
@@ -1226,7 +1677,7 @@ $(window).unload(function() {
 				});
 			}
 
-			Mobilis.core.sendIQ(discoiq, resultcallback, errorcallback);
+			Mobilis.core.sendIQ(discoiq, onResult, onError);
 		},
 
 		/** Function: addHandler
@@ -1237,42 +1688,34 @@ $(window).unload(function() {
 		 *  Parameters:
 		 *    (Function) handler - Handler callback function
 		 *    (String) namespace - Stanza's namespace to match
+		 *    (String) type - Type of IQ (get, set,...)
 		 *
 		 *  Throws:
 		 *    Throws a NotConnectedException if no connection has been established yet
 		 */
-		addHandler : function(handler, namespace) {
+		addHandler : function(handler, namespace, type) {
 			if (!Mobilis.connection)
 				throw new Mobilis.core.EXCEPTIONS.NotConnectedException();
 
-			Mobilis.connection.addHandler(handler, namespace);
+			Mobilis.connection.addHandler(handler, namespace, "iq", type);
 		},
 
-		/** Function: getAgentByNamespace
-		 *  Get the name of an agent by its namespace
+		/** Function: getFullJidFromNamespace
+		 *  Returns the full jid of a service
 		 *
 		 *  Parameters:
-		 *    (String) namespace - Namespace of the service's agent
+		 *    (String) namespace - Namespace of the service
 		 *
 		 * 	Throws:
 		 *    Throws a ServiceNotFoundException if the service is not found
 		 */
-		getAgentByNamespace : function(namespace) {
+		getFullJidFromNamespace : function(namespace) {
 			if (!Mobilis.core.SERVICES[namespace])
 				throw new Mobilis.core.EXCEPTIONS.ServiceNotFoundException(namespace);
 
-			return Mobilis.core.SERVICES[namespace].agent;
-		},
-
-		/** Function: getFullJidFromNamespace
-		 *  Get the full jid of a service
-		 *
-		 *  Parameters:
-		 *    (String) namespace - Namespace of the service
-		 */
-		getFullJidFromNamespace : function(namespace) {
-			return Mobilis.core.SERVER.mBareJid + "/" + Mobilis.core.getAgentByNamespace(namespace);
+			return Mobilis.core.SERVICES[namespace].jid;
 		}
+
 	};
 
 	Mobilis.extend("core", core);
@@ -1288,7 +1731,7 @@ $(window).unload(function() {
 
 		<!-- creates a file with the filename -->
 		<xsl:result-document href="{$fileName}">
-			<xsl:text>(function($) {</xsl:text>
+			<xsl:text>(function() {</xsl:text>
 
 	var utils = {
 
@@ -1333,11 +1776,19 @@ $(window).unload(function() {
 			if (element) {
 				builder.c(element.constructor.name);
 				$.each(element, function(k, v) {
-					if ( typeof v === "object") {
-						Mobilis.utils.appendElement(builder, v);
-					} else {
-						builder.c(k).t(String(v)).up();
-					}
+					if ( typeof v !== "function")
+						if ( typeof v === "object")
+							if ($.isArray(v))
+								$.each(v, function(i, val) {
+									if ( typeof val === "object")
+										Mobilis.utils.appendElement(builder, val);
+									else
+										builder.c(k).t(String(val)).up();
+								});
+							else
+								Mobilis.utils.appendElement(builder, v);
+						else
+							builder.c(k).t(String(v)).up();
 				});
 				builder.up();
 			}

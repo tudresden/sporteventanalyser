@@ -4,13 +4,15 @@
 	xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:msdl="http://mobilis.inf.tu-dresden.de/msdl/"
 	xmlns:xmpp="http://mobilis.inf.tu-dresden.de/xmpp/">
 
+	<xsl:param name="packageNS" />
+
 	<!-- prints indent like they are in code -->
 	<xsl:output method="text" version="1.0" encoding="UTF-8"
 		indent="yes" />
 
 	<!-- set package namespace if required. default = '' -->
 	<xsl:variable name="packageNamespace"
-		select="'de.tudresden.inf.rn.mobilis.sea.client.proxy'" />
+		select="$packageNS" />
 
 	<!-- path of the service name -->
 	<xsl:variable name="serviceName" select="/msdl:description/msdl:service/@name" />
