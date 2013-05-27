@@ -55,7 +55,7 @@ public class EsperTest
 	public void getAllEventsFromSensorId2(int id)
 	{
 		EPStatement cepStatement = cepAdm.createEPL("SELECT * FROM " + "Event() WHERE id=" + id + " AND timeStamp > " + Main.GAMESTARTTIMESTAMP);
-		cepStatement.addListener(new CEPListener2());
+		cepStatement.addListener(new CEPListener());
 	}
 
 	public void getAllFromSensorId(int id, int timeFrame)
