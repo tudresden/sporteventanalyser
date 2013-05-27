@@ -1,6 +1,5 @@
 package de.core;
 
-import java.util.Date;
 import java.util.Random;
 
 import com.espertech.esper.client.Configuration;
@@ -14,19 +13,20 @@ import com.espertech.esper.client.UpdateListener;
 
 public class exampleMain
 {
-	static int count = 0;
+	static int count = 1;
 
 	public static class Tick
 	{
 		String symbol;
 		Double price;
-		Date timeStamp;
+		long timeStamp;
 
 		public Tick(String s, double p, long t)
 		{
 			symbol = s;
 			price = p;
-			timeStamp = new Date(t);
+			// timeStamp = new Date(t);
+			timeStamp = t;
 		}
 
 		public double getPrice()
@@ -39,7 +39,7 @@ public class exampleMain
 			return symbol;
 		}
 
-		public Date getTimeStamp()
+		public long getTimeStamp()
 		{
 			return timeStamp;
 		}
@@ -47,7 +47,7 @@ public class exampleMain
 		@Override
 		public String toString()
 		{
-			return "Price: " + price.toString() + " time: " + timeStamp.toString();
+			return "Price: " + price.toString() + " time: " + timeStamp;
 		}
 	}
 
@@ -60,7 +60,7 @@ public class exampleMain
 		long timeStamp = System.currentTimeMillis();
 		String symbol = "AAPL";
 		Tick tick = new Tick(symbol, count, timeStamp);
-		System.out.println("Sending tick:" + tick);
+		// System.out.println("Sending tick:" + tick);
 		cepRT.sendEvent(tick);
 		count++;
 	}
@@ -84,12 +84,17 @@ public class exampleMain
 		EPRuntime cepRT = cep.getEPRuntime();
 
 		EPAdministrator cepAdm = cep.getEPAdministrator();
-		EPStatement cepStatement = cepAdm.createEPL("select * from " + "StockTick(symbol='AAPL').win:length(4)");
+		// EPStatement cepStatement = cepAdm.createEPL("select * from " +
+		// "StockTick(symbol='AAPL').win:ext_timed(StockTick.timeStamp,1msec)");
+		// EPStatement cepStatement = cepAdm.createEPL("select * from " + "StockTick(symbol='AAPL')");
+		// EPStatement cepStatement = cepAdm.createEPL("select * from StockTick(symbol='AAPL').win:length(4) having count(*) > 2");
+
+		EPStatement cepStatement = cepAdm.createEPL("select * from StockTick(symbol='AAPL').win:length(4).std:lastevent()");
 
 		cepStatement.addListener(new CEPListener());
 
 		// We generate a few ticks...
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 10000; i++)
 		{
 			GenerateRandomTick(cepRT);
 		}

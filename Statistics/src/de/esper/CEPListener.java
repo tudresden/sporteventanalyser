@@ -60,6 +60,7 @@ public class CEPListener implements UpdateListener
 
 					System.out.println("Team: " + nearestPlayer.getTeam());
 					System.out.println("Name des Spielers am Ball: " + nearestPlayer.getName());
+					System.out.println("Laufstrecke: " + nearestPlayer.getTotalDistance() / 1000);
 
 					// System.out.println("Spieler: (ID: " + nearestPlayer.leftFootID + ", " + nearestPlayer.rightFootID +
 					// ") --- Zeitstempel: " + nearestPlayer.getTimeStamp());

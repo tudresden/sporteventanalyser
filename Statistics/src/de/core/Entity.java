@@ -146,6 +146,13 @@ public abstract class Entity
 		return (float) (dX * dX + dY * dY + dZ * dZ);
 	}
 
+	private float distanceBetweenSquared(int posX, int posY)
+	{
+		double dX = positionX - posX;
+		double dY = positionY - posY;
+		return (float) (dX * dX + dY * dY);
+	}
+
 	public float distanceBetween(int posX, int posY, int posZ)
 	{
 		return (float) Math.sqrt(distanceBetweenSquared(posX, posY, posZ));
@@ -153,7 +160,7 @@ public abstract class Entity
 
 	public float distanceBetween(int posX, int posY)
 	{
-		return (float) Math.hypot((double) (positionX - posX), (double) (positionY - posY));
+		return (float) Math.sqrt(distanceBetweenSquared(posX, posY));
 	}
 
 	@Override

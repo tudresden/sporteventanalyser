@@ -119,7 +119,7 @@ public class Player extends Entity
 		}
 		else
 		{
-			this.totalDistance += distanceBetween(x, y, z);
+			this.totalDistance = distanceBetween(x, y);
 		}
 	}
 
