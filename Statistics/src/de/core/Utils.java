@@ -1,6 +1,5 @@
 package de.core;
 
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +33,11 @@ public class Utils
 		}
 	}
 
+	private static float getNearestSensor(Event[] sensors, Ball ball)
+	{
+		return Math.min(ball.distanceBetween(sensors[0].getPositionX(), sensors[0].getPositionY()), ball.distanceBetween(sensors[1].getPositionX(), sensors[1].getPositionY()));
+	}
+
 	public static Player getNearestPlayer(EventDecoder eventDecoder, Ball ball)
 	{
 		float nearestPlayerDistance = Float.MAX_VALUE;
@@ -41,13 +45,22 @@ public class Utils
 		Player nearestPlayer = null;
 		Player player = null;
 
-		for (Map.Entry<Integer, Entity> entry : eventDecoder.getEntityList().entrySet())
-		{
-			if (entry.getValue() instanceof Player)
-			{
-				player = (Player) entry.getValue();
+		// for (Map.Entry<Integer, Entity> entry : eventDecoder.getEntityList().entrySet())
+		// if (entry.getValue() instanceof Player)
+		// {
+		// player = (Player) entry.getValue();
 
-				distance = ball.distanceBetween(player.positionX, player.positionY);
+		int[] playerIds = { 47, 49, 19, 53, 23, 57, 59, 63, 65, 67, 69, 71, 73, 75 };
+		for (int id : playerIds)
+		{
+			Entity entry = eventDecoder.getEntityList().get(id);
+
+			if (entry instanceof Player)
+			{
+				player = (Player) entry;
+
+				distance = getNearestSensor(player.getSensors(), ball);
+				// distance = ball.distanceBetween(player.getPositionX(), player.getPositionY());
 
 				if (distance < Main.BALLPOSSESSIONTHRESHOLD && distance < nearestPlayerDistance)
 				{
@@ -59,7 +72,6 @@ public class Utils
 				}
 			}
 		}
-
 		return nearestPlayer;
 	}
 
@@ -67,7 +79,7 @@ public class Utils
 	{
 		// System.out.println(nearestPlayer.getAcceleration() / 1000000f);
 
-		if (nearestPlayer.getAcceleration() / 1000000f >= 15f)
+		if (ball.getAcceleration() >= 25000000 && nearestPlayer.acceleration >= 24000000)
 		{
 			// System.out.println(nearestPlayer.getAcceleration() / 1000000);
 			return true;
@@ -83,7 +95,7 @@ public class Utils
 		// }
 		// return false;
 		// }
-		return true;
+		return false;
 	}
 
 	private static final int BIG_ENOUGH_INT = 16 * 1024;

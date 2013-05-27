@@ -101,6 +101,51 @@ public abstract class Entity
 		return velocity;
 	}
 
+	public int getPositionX()
+	{
+		return positionX;
+	}
+
+	public int getPositionY()
+	{
+		return positionY;
+	}
+
+	public int getPositionZ()
+	{
+		return positionZ;
+	}
+
+	public int getVelocityX()
+	{
+		return velocityX;
+	}
+
+	public int getVelocityY()
+	{
+		return velocityY;
+	}
+
+	public int getVelocityZ()
+	{
+		return velocityZ;
+	}
+
+	public int getAccelerationX()
+	{
+		return accelerationX;
+	}
+
+	public int getAccelerationY()
+	{
+		return accelerationY;
+	}
+
+	public int getAccelerationZ()
+	{
+		return accelerationZ;
+	}
+
 	public void setTotalDistance(long totalDistance)
 	{
 		this.totalDistance = totalDistance;

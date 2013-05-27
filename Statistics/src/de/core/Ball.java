@@ -7,6 +7,8 @@ package de.core;
  */
 public class Ball extends Entity
 {
+	private boolean possibleContact = false;
+
 	public Ball(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, int acc, int vel)
 	{
 		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ, acc, vel);
@@ -34,6 +36,16 @@ public class Ball extends Entity
 		}
 	}
 
+	private void setAffected(boolean bool)
+	{
+		possibleContact = true;
+	}
+
+	public boolean isAffected()
+	{
+		return possibleContact;
+	}
+
 	@Override
 	public void update(Event event)
 	{
@@ -51,6 +63,17 @@ public class Ball extends Entity
 		this.accelerationX = event.getAccelerationX();
 		this.accelerationY = event.getAccelerationY();
 		this.accelerationZ = event.getAccelerationZ();
+
+		// if (event.getAcceleration() > 55000000)
+		// {
+		// setAffected(true);
+		// Main.main.shit = true;
+		// }
+		// else
+		// {
+		// setAffected(false);
+		// Main.main.shit = false;
+		// }
 
 		this.acceleration = event.getAcceleration();
 		this.velocity = event.getVelocity();

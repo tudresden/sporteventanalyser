@@ -34,6 +34,9 @@ public class Player extends Entity
 	protected Event leftFootEvent;
 	protected Event rightFootEvent;
 
+	private boolean left = false;
+	private boolean right = false;
+
 	protected Map<Integer, Event> Ids;
 
 	private HeatMapGrid heatmap;
@@ -119,15 +122,42 @@ public class Player extends Entity
 		}
 		else
 		{
-			this.totalDistance = distanceBetween(x, y);
+			this.totalDistance += distanceBetween(x, y);
 		}
+	}
+
+	public Event[] getSensors()
+	{
+		return new Event[] { Ids.get(leftFootID), Ids.get(rightFootID) };
 	}
 
 	private void updatePosition()
 	{
-		int newPosX = (Ids.get(leftFootID).getPositionX() + Ids.get(rightFootID).getPositionX()) / 2;
-		int newPosY = (Ids.get(leftFootID).getPositionY() + Ids.get(rightFootID).getPositionY()) / 2;
-		int newPosZ = (Ids.get(leftFootID).getPositionZ() + Ids.get(rightFootID).getPositionZ()) / 2;
+		int newPosX = 0, newPosY = 0, newPosZ = 0;
+
+		if (!left && !right)
+		{
+			return;
+		}
+
+		if (left && right)
+		{
+			newPosX = (Ids.get(leftFootID).getPositionX() + Ids.get(rightFootID).getPositionX()) / 2;
+			newPosY = (Ids.get(leftFootID).getPositionY() + Ids.get(rightFootID).getPositionY()) / 2;
+			newPosZ = (Ids.get(leftFootID).getPositionZ() + Ids.get(rightFootID).getPositionZ()) / 2;
+		}
+		else if (left && !right)
+		{
+			newPosX = Ids.get(leftFootID).getPositionX();
+			newPosY = Ids.get(leftFootID).getPositionY();
+			newPosZ = Ids.get(leftFootID).getPositionZ();
+		}
+		else if (!left && right)
+		{
+			newPosX = Ids.get(rightFootID).getPositionX();
+			newPosY = Ids.get(rightFootID).getPositionY();
+			newPosZ = Ids.get(rightFootID).getPositionZ();
+		}
 
 		// update total distance
 		updateTotalDistance(newPosX, newPosY, newPosZ);
@@ -147,10 +177,10 @@ public class Player extends Entity
 
 	private void updateAcceleration()
 	{
-		this.accelerationX = (Ids.get(leftFootID).getAccelerationX() + Ids.get(rightFootID).getAccelerationX()) / 2;
-		this.accelerationY = (Ids.get(leftFootID).getAccelerationY() + Ids.get(rightFootID).getAccelerationY()) / 2;
-		this.accelerationZ = (Ids.get(leftFootID).getAccelerationZ() + Ids.get(rightFootID).getAccelerationZ()) / 2;
-		this.acceleration = (Ids.get(leftFootID).getAcceleration() + Ids.get(rightFootID).getAcceleration()) / 2;
+		this.accelerationX = StrictMath.max(Ids.get(leftFootID).getAccelerationX(), Ids.get(rightFootID).getAccelerationX());
+		this.accelerationY = StrictMath.max(Ids.get(leftFootID).getAccelerationY(), Ids.get(rightFootID).getAccelerationY());
+		this.accelerationZ = StrictMath.max(Ids.get(leftFootID).getAccelerationZ(), Ids.get(rightFootID).getAccelerationZ());
+		this.acceleration = StrictMath.max(Ids.get(leftFootID).getAcceleration(), Ids.get(rightFootID).getAcceleration());
 	}
 
 	@Override
@@ -160,13 +190,21 @@ public class Player extends Entity
 		if (Ids.containsKey(event.getId()))
 		{
 			Ids.put(event.getId(), event);
+
+			if (event.getId() == leftFootID)
+			{
+				left = true;
+			}
+			else if (event.getId() == rightFootID)
+			{
+				right = true;
+			}
+
+			updatePosition();
+			updateVelocity();
+			updateAcceleration();
+
+			this.timeStamp = event.getTimeStamp();
 		}
-
-		updatePosition();
-		updateVelocity();
-		updateAcceleration();
-
-		this.timeStamp = event.getTimeStamp();
 	}
-
 }
