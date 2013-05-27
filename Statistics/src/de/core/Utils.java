@@ -49,7 +49,7 @@ public class Utils
 
 				distance = ball.distanceBetween(player.positionX, player.positionY);
 
-				if (distance < Main.ballPossessionThreshold && distance < nearestPlayerDistance)
+				if (distance < Main.BALLPOSSESSIONTHRESHOLD && distance < nearestPlayerDistance)
 				{
 					nearestPlayerDistance = distance;
 					nearestPlayer = player;
@@ -105,7 +105,7 @@ public class Utils
 	public static int convertTimeToOffset(long timeStamp)
 	{
 		// return (int) fastFloor((timeStamp - 10629342490369879L) / timeFormat);
-		return (int) fastFloor((timeStamp - 10753295594424116L) / timeFormat);
+		return (int) fastFloor((timeStamp - Main.GAMESTARTTIMESTAMP) / timeFormat);
 	}
 
 	public static void shotOnGoal(EventDecoder ed, Ball ball)
