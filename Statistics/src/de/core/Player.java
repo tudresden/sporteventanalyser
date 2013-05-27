@@ -139,10 +139,10 @@ public class Player extends Entity
 
 	private void updateVelocity()
 	{
-		this.velocityX = (Ids.get(leftFootID).getVelocityX() + Ids.get(rightFootID).getVelocityX()) / 2;
-		this.velocityY = (Ids.get(leftFootID).getVelocityY() + Ids.get(rightFootID).getVelocityY()) / 2;
-		this.velocityZ = (Ids.get(leftFootID).getVelocityZ() + Ids.get(rightFootID).getVelocityZ()) / 2;
-		this.velocity = (Ids.get(leftFootID).getVelocity() + Ids.get(rightFootID).getVelocity()) / 2;
+		this.velocityX = StrictMath.max(Ids.get(leftFootID).getVelocityX(), Ids.get(rightFootID).getVelocityX());
+		this.velocityY = StrictMath.max(Ids.get(leftFootID).getVelocityY(), Ids.get(rightFootID).getVelocityY());
+		this.velocityZ = StrictMath.max(Ids.get(leftFootID).getVelocityZ(), Ids.get(rightFootID).getVelocityZ());
+		this.velocity = StrictMath.max(Ids.get(leftFootID).getVelocity(), Ids.get(rightFootID).getVelocity());
 	}
 
 	private void updateAcceleration()

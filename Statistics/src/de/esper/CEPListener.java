@@ -29,6 +29,19 @@ public class CEPListener implements UpdateListener
 			Player player = (Player) entity;
 			player.update(event);
 
+			double dist = (double) player.getVelocity() / 1000000;
+
+			if (dist > 10.0f)
+			{
+				System.out.println("--------------");
+				System.out.println("Laufstrecke: " + dist);
+				System.out.println("Name des Spielers am Ball: " + player.getName());
+				int duration = Utils.convertTimeToOffset(player.getTimeStamp());
+				String time = String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(duration), TimeUnit.SECONDS.toSeconds(duration) % 60);
+				System.out.println("Spielzeit: " + time);
+				System.out.println("Team: " + player.getTeam());
+			}
+
 			// player.updateHeatmap();
 
 			// System.out.println(player);
@@ -49,23 +62,25 @@ public class CEPListener implements UpdateListener
 			{
 				int duration = Utils.convertTimeToOffset(ball.getTimeStamp());
 
-				if (duration >= 0 && Main.main.currentBallPossessionId != nearestPlayer.id && Utils.getBallHit(Main.main.getEventDecoder(), nearestPlayer, ball))
-				{
-					Main.main.currentBallPossessionId = nearestPlayer.id;
-
-					System.out.println("--------------");
-					// print game time
-					String time = String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(duration), TimeUnit.SECONDS.toSeconds(duration) % 60);
-					System.out.println("Spielzeit: " + time);
-
-					System.out.println("Team: " + nearestPlayer.getTeam());
-					System.out.println("Name des Spielers am Ball: " + nearestPlayer.getName());
-					System.out.println("Laufstrecke: " + nearestPlayer.getTotalDistance() / 1000);
-
-					// System.out.println("Spieler: (ID: " + nearestPlayer.leftFootID + ", " + nearestPlayer.rightFootID +
-					// ") --- Zeitstempel: " + nearestPlayer.getTimeStamp());
-					// System.out.println("Ball:    (ID: 0" + ball.id + ") --- Zeitstempel: " + ball.getTimeStamp());
-				}
+				// if (duration >= 0 && Main.main.currentBallPossessionId != nearestPlayer.id &&
+				// Utils.getBallHit(Main.main.getEventDecoder(), nearestPlayer, ball))
+				// {
+				// Main.main.currentBallPossessionId = nearestPlayer.id;
+				//
+				// System.out.println("--------------");
+				// // print game time
+				// String time = String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(duration), TimeUnit.SECONDS.toSeconds(duration)
+				// % 60);
+				// System.out.println("Spielzeit: " + time);
+				//
+				// System.out.println("Team: " + nearestPlayer.getTeam());
+				// System.out.println("Name des Spielers am Ball: " + nearestPlayer.getName());
+				// System.out.println("Laufstrecke: " + nearestPlayer.getTotalDistance() / 1000);
+				//
+				// // System.out.println("Spieler: (ID: " + nearestPlayer.leftFootID + ", " + nearestPlayer.rightFootID +
+				// // ") --- Zeitstempel: " + nearestPlayer.getTimeStamp());
+				// // System.out.println("Ball:    (ID: 0" + ball.id + ") --- Zeitstempel: " + ball.getTimeStamp());
+				// }
 			}
 			else
 			{

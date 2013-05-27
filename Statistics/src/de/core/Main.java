@@ -130,7 +130,7 @@ public class Main
 			esperTest.getAllEventsFromSensorId(player); // every event
 		}
 		// esperTest.getAllFromSensorId(4, 100); // Ball every 100ms
-		esperTest.getAllEventsFromSensorId(4); // every event
+		// esperTest.getAllEventsFromSensorId(4); // every event
 		// esperTest.getTimedFromSensorId(47, 10); //
 
 	}
