@@ -29,6 +29,9 @@ public class Main
 	public int currentBallPossessionId = 0;
 	public final static float BALLPOSSESSIONTHRESHOLD = 1000f; // 1000mm = 1m
 	public final static long GAMESTARTTIMESTAMP = 10753295594424116L;
+	public final static int BALLCONTACTTHRESHOLD = 0;
+
+	public boolean shit = false;
 
 	/**
 	 * @param args
@@ -126,10 +129,10 @@ public class Main
 		int[] playerIds = { 47, 16, 49, 88, 19, 52, 53, 54, 23, 24, 57, 58, 59, 28, 63, 64, 65, 66, 67, 68, 69, 38, 71, 40, 73, 74, 75, 44 };
 		for (int player : playerIds)
 		{
-			// esperTest.getAllFromSensorId(player, 100);
-			esperTest.getAllEventsFromSensorId(player); // every event
+			esperTest.getAllFromSensorId(player, 100);
+			// esperTest.getAllEventsFromSensorId(player); // every event
 		}
-		// esperTest.getAllFromSensorId(4, 100); // Ball every 100ms
+		esperTest.getAllFromSensorId(4, 100); // Ball every 100ms
 		// esperTest.getAllEventsFromSensorId(4); // every event
 		// esperTest.getTimedFromSensorId(47, 10); //
 
