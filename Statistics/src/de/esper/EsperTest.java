@@ -11,6 +11,7 @@ import com.espertech.esper.client.EPStatement;
 import de.core.Entity;
 import de.core.Event;
 import de.core.EventBallPossession;
+import de.core.Main;
 import de.core.Player;
 
 public class EsperTest
@@ -43,6 +44,18 @@ public class EsperTest
 		// EPStatement cepStatement = cepAdm.createEPL("select * from " + "StockTick(symbol='AAPL').win:length(2) " +
 		// "having avg(price) > 6.0");
 
+	}
+
+	public void getAllEventsFromSensorId(int id)
+	{
+		EPStatement cepStatement = cepAdm.createEPL("SELECT * FROM " + "Event() WHERE id=" + id + " AND timeStamp > " + Main.GAMESTARTTIMESTAMP);
+		cepStatement.addListener(new CEPListener());
+	}
+
+	public void getAllEventsFromSensorId2(int id)
+	{
+		EPStatement cepStatement = cepAdm.createEPL("SELECT * FROM " + "Event() WHERE id=" + id + " AND timeStamp > " + Main.GAMESTARTTIMESTAMP);
+		cepStatement.addListener(new CEPListener());
 	}
 
 	public void getAllFromSensorId(int id, int timeFrame)
