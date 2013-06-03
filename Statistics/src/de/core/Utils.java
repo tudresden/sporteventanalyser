@@ -95,11 +95,19 @@ public class Utils
 			Main.main.timeAllBall = 0;
 		}
 		
+		int a = ball.positionX;
+		int b = ball.positionY;
+		float output = angleChange(a,b,Main.main.ballPosX,Main.main.ballPosY);
+		int output1 = (int) ((output*180)/Math.PI);
+		Main.main.ballPosX = a;
+		Main.main.ballPosY = b;
+		
 		
 		if (Main.main.currentBallAcc == 1 && ball.getAvgAcceleration() >= 80000000)// && ((nearestPlayer.getSensors()[0].getAcceleration() >= 24000000)||(nearestPlayer.getSensors()[1].getAcceleration() >= 24000000)))
 		{
 			// System.out.println(nearestPlayer.getAcceleration() / 1000000);
 			Main.main.currentBallAcc = 0;
+			System.out.println(output1);
 			return true;
 		}
 
@@ -170,6 +178,16 @@ public class Utils
 		return (-50 <= x) && (x <= 52489) && (-33960 <= y) && (y <= 33965);
 	}
 
+	
+	public static float angleChange(int posX, int posY, int oldX, int oldY) 
+	{ 
+		float dotProduct = posX*oldX+posY*oldY; 
+		double lengthVec1 = Math.sqrt((posX*posX)+(posY*posY)); 
+		double lengthVec2 = Math.sqrt((oldX*oldX)+(oldY*oldY)); 
+		float angle = (float)Math.acos(dotProduct/(lengthVec1*lengthVec2)); 
+		
+		return angle; 
+	}
 	/*
 	 * public static void ballContacts(EventDecoder ed, Ball ball) { // System.out.println(ed.getEntityList().size()); Map<Integer, Integer>
 	 * allBallContacts = new TreeMap<Integer, Integer>(); for (Map.Entry<Integer, Entity> e: ed.getEntityList().entrySet()){ if(e.getValue()
