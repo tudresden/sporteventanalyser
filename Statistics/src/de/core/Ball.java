@@ -1,5 +1,10 @@
 package de.core;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * 
  * @author Alrik Geselle
@@ -8,15 +13,19 @@ package de.core;
 public class Ball extends Entity
 {
 	private boolean possibleContact = false;
+	protected LinkedList<Event> Ids;
+	private long avgAcceleration;
 
 	public Ball(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, int acc, int vel)
 	{
 		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ, acc, vel);
+		Ids = new LinkedList<Event>();
 	}
 
 	public Ball(int id)
 	{
 		this(id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+		Ids.add(new Event(id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
 	}
 
 	public String toString()
@@ -35,6 +44,26 @@ public class Ball extends Entity
 			this.totalDistance += distanceBetween(x, y, z);
 		}
 	}
+	
+	private void updateList(Event jon){
+		Ids.addFirst(jon);
+		if(Ids.size()>5){
+		Ids.removeLast();
+		}
+	}
+	
+	public long getAvgAcceleration(){
+		avgAcceleration = calculateAvgAcceleration();
+		return avgAcceleration;
+	}
+	
+	public long calculateAvgAcceleration(){
+		long sum = 0;
+		for(Event joni :Ids){
+			sum+=joni.getAcceleration();
+		}
+		return sum/Ids.size();
+	}
 
 	private void setAffected(boolean bool)
 	{
@@ -45,6 +74,11 @@ public class Ball extends Entity
 	{
 		return possibleContact;
 	}
+	/*
+	public Event[] getSensors()
+	{
+		return new Event[] { Ids.get(id) };
+	}*/
 
 	@Override
 	public void update(Event event)
@@ -79,5 +113,6 @@ public class Ball extends Entity
 		this.velocity = event.getVelocity();
 
 		this.timeStamp = event.getTimeStamp();
+		updateList(event);
 	}
 }

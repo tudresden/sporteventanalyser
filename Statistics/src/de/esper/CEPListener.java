@@ -65,11 +65,12 @@ public class CEPListener implements UpdateListener
 					
 				Player nearestPlayer = Utils.getNearestPlayer(Main.main.getEventDecoder(), ball);
 				
+				//Ball Possesion for the same player
 				long zeit = nearestPlayer.timeStamp-Main.main.timePlayer;
-				Main.main.timeAll += zeit;
-				if(Main.main.timeAll >= Math.pow(10, 12)){
+				Main.main.timeAllPlayer += zeit;
+				if(Main.main.timeAllPlayer >= Math.pow(10, 12)){
 					Main.main.currentBallPossessionId = 0;
-					Main.main.timeAll = 0;
+					Main.main.timeAllPlayer = 0;
 				}
 				
 				
