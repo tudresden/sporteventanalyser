@@ -23,8 +23,8 @@ public class Main
 	private EventDecoder eventDecoder;
 	private EsperTest esperTest = new EsperTest();
 	public static Main main;
-	private int ballPosX = 0;
-	private int ballPosY = 0;
+	public int ballPosX = 0;
+	public int ballPosY = 0;
 	public long timePlayer;
 	public long timeAllPlayer = 0;
 	public long timeBall;
