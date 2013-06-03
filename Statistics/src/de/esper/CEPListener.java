@@ -75,6 +75,17 @@ public class CEPListener implements UpdateListener
 				
 				
 				
+				if (!Utils.positionWithinField(event.getPositionX(), event.getPositionY())) {
+					if (Main.main.out==0) {
+						System.out.println("############------------------------!!!---auﬂerhalb des Spielfeldes---!!!--------------------------------############");
+						Main.main.out = 1;
+					}
+				}
+				
+				else Main.main.out=0;
+	
+				
+				
 				// Utils.shotOnGoal(Main.main.getEventDecoder(), ball);
 				
 
@@ -92,6 +103,7 @@ public class CEPListener implements UpdateListener
 						System.out.println("Team: " + nearestPlayer.getTeam());
 						System.out.println("Name des Spielers am Ball: " + nearestPlayer.getName());
 						System.out.println("Laufstrecke: " + nearestPlayer.getTotalDistance() / 1000);
+						
 
 						// if (Main.main.shit)
 						// {
