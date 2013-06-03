@@ -62,10 +62,20 @@ public class CEPListener implements UpdateListener
 				Ball ball = (Ball) entity;
 
 				ball.update(event);
-
+					
 				Player nearestPlayer = Utils.getNearestPlayer(Main.main.getEventDecoder(), ball);
-
+				
+				long zeit = nearestPlayer.timeStamp-Main.main.timePlayer;
+				Main.main.timeAll += zeit;
+				if(Main.main.timeAll >= Math.pow(10, 12)){
+					Main.main.currentBallPossessionId = 0;
+					Main.main.timeAll = 0;
+				}
+				
+				
+				
 				// Utils.shotOnGoal(Main.main.getEventDecoder(), ball);
+				
 
 				if (nearestPlayer != null)
 				{
@@ -99,6 +109,7 @@ public class CEPListener implements UpdateListener
 
 					// Main.main.currentBallPossessionId = 0;
 				}
+				Main.main.timePlayer = nearestPlayer.timeStamp;
 
 			}
 			else if (entity instanceof Goalkeeper)

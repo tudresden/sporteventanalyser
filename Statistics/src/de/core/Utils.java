@@ -79,7 +79,7 @@ public class Utils
 	{
 		// System.out.println(nearestPlayer.getAcceleration() / 1000000f);
 
-		if (ball.getAcceleration() >= 25000000 && nearestPlayer.acceleration >= 24000000)
+		if (ball.getAcceleration() >= 100000000)// && nearestPlayer.acceleration >= 24000000)
 		{
 			// System.out.println(nearestPlayer.getAcceleration() / 1000000);
 			return true;
