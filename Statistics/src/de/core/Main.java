@@ -37,6 +37,7 @@ public class Main
 	public final static int BALLCONTACTTHRESHOLD = 0;
 
 	public boolean shit = false;
+	public int out = 0;
 
 	/**
 	 * @param args

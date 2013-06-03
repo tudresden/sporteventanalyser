@@ -165,6 +165,10 @@ public class Utils
 		Main.main.setBallPosX(newX);
 		Main.main.setBallPosY(newY);
 	}
+	
+	public static boolean positionWithinField(int x, int y) {
+		return (-50 <= x) && (x <= 52489) && (-33960 <= y) && (y <= 33965);
+	}
 
 	/*
 	 * public static void ballContacts(EventDecoder ed, Ball ball) { // System.out.println(ed.getEntityList().size()); Map<Integer, Integer>
