@@ -1,5 +1,7 @@
 package de.tudresden.inf.rn.mobilis.sea.client.connection;
 
+import java.util.concurrent.LinkedBlockingQueue;
+
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -11,8 +13,12 @@ import de.tudresden.inf.rn.mobilis.sea.client.connection.listener.IQListener;
 import de.tudresden.inf.rn.mobilis.sea.client.proxy.SportEventAnalyserProxy;
 import de.tudresden.inf.rn.mobilis.sea.client.proxy.impl.SEADispatcher;
 import de.tudresden.inf.rn.mobilis.sea.client.proxy.impl.SEADistributer;
+import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.Raw;
+import de.tudresden.inf.rn.mobilis.sea.jingle.core.SportEventAnalyserJingle;
 
 public class MobilisConnectionManager extends SEADistributer {
+
+	private SportEventAnalyserJingle seaJingle;
 
 	public MobilisConnectionManager() {
 		// Default: false
@@ -48,8 +54,8 @@ public class MobilisConnectionManager extends SEADistributer {
 		if (connection != null && connection.isConnected()) {
 			try {
 				this.registerXMPPExtensions();
-				connection.addPacketListener(new IQListener(
-						new SEADispatcher(new SportEventAnalyserProxy(this))),
+				connection.addPacketListener(new IQListener(new SEADispatcher(
+						new SportEventAnalyserProxy(this))),
 						new PacketTypeFilter(IQ.class));
 				connection.login(username, password, ressource);
 			} catch (XMPPException e) {
@@ -70,6 +76,24 @@ public class MobilisConnectionManager extends SEADistributer {
 		return false;
 	}
 
+	/**
+	 * Establish a <code>SportEventAnalyserJingle</code>-session with
+	 * corresponding <code>toJID</code>
+	 * 
+	 * @param toJID
+	 *            the JID which is used as host
+	 * @return <code>LinkedBlockingQueue<Raw<?>></code> which may be used to
+	 *         append payload
+	 * @throws XMPPException
+	 */
+	public LinkedBlockingQueue<Raw> establishJingleConnection(String toJID)
+			throws XMPPException {
+		if (seaJingle == null) {
+			seaJingle = new SportEventAnalyserJingle(connection);
+		}
+		return seaJingle.establishConnection(toJID);
+	}
+
 	@Override
 	public void disconnect() {
 		if (connection != null && connection.isConnected()) {
@@ -80,7 +104,7 @@ public class MobilisConnectionManager extends SEADistributer {
 
 	@Override
 	protected void registerXMPPExtensions() {
-		//TODO: register incoming beans
+		// TODO: register incoming beans
 	}
 
 }
