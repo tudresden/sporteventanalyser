@@ -26,9 +26,12 @@ public class Main
 	private int ballPosX = 0;
 	private int ballPosY = 0;
 	public long timePlayer;
-	public long timeAll = 0;
+	public long timeAllPlayer = 0;
+	public long timeBall;
+	public long timeAllBall = 0;
 
-	public int currentBallPossessionId = 0;
+	public int currentBallPossessionId = 0; //player
+	public int currentBallAcc = 1;			//ball
 	public final static float BALLPOSSESSIONTHRESHOLD = 1000f; // 1000mm = 1m
 	public final static long GAMESTARTTIMESTAMP = 10753295594424116L;
 	public final static int BALLCONTACTTHRESHOLD = 0;

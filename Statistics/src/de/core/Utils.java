@@ -78,10 +78,28 @@ public class Utils
 	public static boolean getBallHit(EventDecoder eventDecoder, Player nearestPlayer, Ball ball)
 	{
 		// System.out.println(nearestPlayer.getAcceleration() / 1000000f);
-
-		if (ball.getAcceleration() >= 100000000)// && nearestPlayer.acceleration >= 24000000)
+//		long zeit = nearestPlayer.timeStamp-Main.main.timePlayer;
+//		Main.main.timeAll += zeit;
+//		if(Main.main.timeAll >= Math.pow(10, 12)){
+//			Main.main.currentBallPossessionId = 0;
+//			Main.main.timeAll = 0;
+				
+		if(Main.main.currentBallAcc == 0)
+		{
+			long zeit = ball.timeStamp-Main.main.timeBall;
+			Main.main.timeAllBall += zeit;
+		}
+		
+		if(Main.main.timeAllBall > ((Math.pow(10, 11))*5)){
+			Main.main.currentBallAcc = 1;
+			Main.main.timeAllBall = 0;
+		}
+		
+		
+		if (Main.main.currentBallAcc == 1 && ball.getAvgAcceleration() >= 80000000)// && ((nearestPlayer.getSensors()[0].getAcceleration() >= 24000000)||(nearestPlayer.getSensors()[1].getAcceleration() >= 24000000)))
 		{
 			// System.out.println(nearestPlayer.getAcceleration() / 1000000);
+			Main.main.currentBallAcc = 0;
 			return true;
 		}
 
@@ -95,6 +113,7 @@ public class Utils
 		// }
 		// return false;
 		// }
+		Main.main.timeBall = ball.timeStamp;
 		return false;
 	}
 
