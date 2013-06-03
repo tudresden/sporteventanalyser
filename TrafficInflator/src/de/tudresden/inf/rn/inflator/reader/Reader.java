@@ -7,260 +7,338 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
-import de.tudresden.inf.rn.mobilis.sea.client.proxy.Event;
-import de.tudresden.inf.rn.mobilis.sea.client.proxy.SportEventAnalyserProxy;
+import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.Raw;
+import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
+import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.InterruptionBegin;
+import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.InterruptionEnd;
 
 public class Reader {
 
-	private static final int MAX_EVENTS_PER_MESSAGE = 500;
-	private static final int MIN_EVENTS_PER_MESSAGE = 100;
+	private static final int MAX_EVENTS_IN_QUEUE = 500;
 	private static final boolean SEND_DATA_IN_PLAY_TIME = true;
-	private static int eventCounter = 0, messageCounter = 0;
+	private static int eventCounter = 0;
 	private static long startPlayTime = 0, startSystemTime = 0;
 	private static long timeOfCycleStart = System.currentTimeMillis();
 
 	/**
 	 * Queue for <code>Event</code>'s (also used as mutex)
 	 */
-	private LinkedList<Event> queue;
-
-	/**
-	 * The <code>RandomAccessFile</code> to read from
-	 */
-	private RandomAccessFile rndAccFile;
-
-	private long bufferLength;
-
-	private SportEventAnalyserProxy proxy;
+	private LinkedList<Raw> queue;
 
 	private FileInputStream f;
 
-	public Reader(File file, long bufferLength, SportEventAnalyserProxy proxy)
-			throws FileNotFoundException {
-		f = new FileInputStream(file);
-		// rndAccFile = new RandomAccessFile(file, "r");
-		// BufferLength should be passed as ms, but data is passed in
-		// picoseconds
-		this.bufferLength = bufferLength * 1000 * 1000 * 1000;
-		queue = new LinkedList<Event>();
+	private RandomAccessFile raf;
 
-		this.proxy = proxy;
+	private LinkedBlockingQueue<Raw> rawQueue;
+
+	private boolean running = false;
+
+	public Reader(File sensorData, File interruptionData,
+			LinkedBlockingQueue<Raw> rawQueue) throws FileNotFoundException {
+		f = new FileInputStream(sensorData);
+		raf = new RandomAccessFile(interruptionData, "r");
+
+		this.queue = new LinkedList<Raw>();
+		this.rawQueue = rawQueue;
 
 		// Process actions in new Threads
-		Thread reader = new Thread() {
+		Thread readerSensor = new Thread() {
 			public void run() {
-				// processFile();
 				processTransformedData();
 			}
 		};
-		reader.setPriority(Thread.MAX_PRIORITY);
+		readerSensor.setPriority(Thread.MAX_PRIORITY);
 		Thread processor = new Thread() {
 			public void run() {
 				processQueue();
 			}
 		};
 		processor.setPriority(Thread.MAX_PRIORITY);
-		reader.start();
+		new Thread() {
+			public void run() {
+				processInterruptionData();
+			}
+		}.start();
+		readerSensor.start();
 		processor.start();
 	}
 
-	private Event processEntry(String[] eventData) {
-		// Assign data directly
-		return new Event(Integer.valueOf(eventData[0]),
-				Long.valueOf(eventData[1]), Integer.valueOf(eventData[2]),
-				Integer.valueOf(eventData[3]), Integer.valueOf(eventData[4]),
-				Integer.valueOf(eventData[5]), Integer.valueOf(eventData[6]),
-				Integer.valueOf(eventData[7]), Integer.valueOf(eventData[8]),
-				Integer.valueOf(eventData[9]), Integer.valueOf(eventData[10]),
-				Integer.valueOf(eventData[11]), Integer.valueOf(eventData[12]));
+	public void start() {
+		running = true;
 	}
 
-	/**
-	 * Tries to process data as fast as the given proxy allows it (However, this
-	 * method does not work with plain text nor uses a FileChannel to fetch
-	 * data)
-	 */
+	public void stop() {
+		running = false;
+	}
+
+	private synchronized void setStartPlayTime(long time) {
+		if (startPlayTime == 0) {
+			startPlayTime = time;
+		}
+	}
+
+	private synchronized void setStartSystemTime() {
+		if (startSystemTime == 0) {
+			startSystemTime = System.currentTimeMillis();
+		}
+	}
+
+	private long convertRealTimeToPicoSeconds(String real) {
+		String[] hms = real.split(":");
+		return Long.valueOf(hms[0]) * 60l * 60l * 1000l * 1000l * 1000l * 1000l
+				+ Long.valueOf(hms[1]) * 60l * 1000l * 1000l * 1000l * 1000l
+				+ Long.valueOf(hms[2].replace(".", "")) * 1000l * 1000l * 1000l;
+	}
+
+	@SuppressWarnings("null")
+	private void processInterruptionData() {
+		String content;
+		String[] iTime;
+		long begin = 0l, end = 0l, tA;
+		InterruptionBegin iB, hE = null;
+		InterruptionEnd iE, hB;
+		try {
+			while (true) {
+				if (running) {
+					while ((content = raf.readLine()) != null) {
+						iTime = content.split(",");
+						if (iTime[0].equals("begin")) {
+							setStartPlayTime(begin = Long.valueOf(iTime[1]
+									.replace("end(", "")));
+							end = Long.valueOf(iTime[2].replace(")", ""));
+							if (hE != null) {
+								// Second half "begun" (does not really begin:
+								// Just read second half mark) -> Send
+								// InterruptionBegin
+								if (SEND_DATA_IN_PLAY_TIME) {
+									if ((tA = (((hE.getBegin() - startPlayTime) / 1000l / 1000l / 1000l) - (System
+											.currentTimeMillis() - startSystemTime))) > 0) {
+										Thread.sleep(tA);
+									}
+								}
+								// Send InterruptionBegin
+								synchronized (queue) {
+									// Just add InterruptionBegin as first
+									// element
+									// Don't wait for queue (will not cause OOM)
+									// -> Prior Interruptions!
+									queue.addFirst(hE);
+
+									// Notify other Threads
+									queue.notifyAll();
+								}
+								System.out.println("break");
+
+								// Set InterruptionEnd (Second half starts)
+								hB = new InterruptionEnd(begin);
+
+								if (SEND_DATA_IN_PLAY_TIME) {
+									if ((tA = (((hB.getEnd() - startPlayTime) / 1000l / 1000l / 1000l) - (System
+											.currentTimeMillis() - startSystemTime))) > 0) {
+										Thread.sleep(tA);
+									}
+								}
+								// Send InterruptionEnd
+								synchronized (queue) {
+									// Just add InterruptionEnd as first element
+									// Don't wait for queue (will not cause OOM)
+									// ->
+									// Prior Interruptions!
+									queue.addFirst(hB);
+
+									// Notify other Threads
+									queue.notifyAll();
+								}
+								System.out.println("second");
+							}
+							hE = new InterruptionBegin(end);
+						} else {
+							iB = new InterruptionBegin(
+									convertRealTimeToPicoSeconds(iTime[0])
+											+ begin);
+							iE = new InterruptionEnd(
+									convertRealTimeToPicoSeconds(iTime[1])
+											+ begin);
+
+							synchronized (queue) {
+								// Wait till we may process interruptions
+								while (startSystemTime == 0)
+									queue.wait();
+
+								// Notify
+								queue.notifyAll();
+							}
+							if (SEND_DATA_IN_PLAY_TIME) {
+								if ((tA = (((iB.getBegin() - startPlayTime) / 1000l / 1000l / 1000l) - (System
+										.currentTimeMillis() - startSystemTime))) > 0) {
+									Thread.sleep(tA);
+								}
+							}
+							// Send InterruptionBegin
+							synchronized (queue) {
+								// Just add InterruptionBegin as first element
+								// Don't wait for queue (will not cause OOM) ->
+								// Prior Interruptions!
+								queue.addFirst(iB);
+
+								// Notify other Threads
+								queue.notifyAll();
+							}
+
+							if (SEND_DATA_IN_PLAY_TIME) {
+								if ((tA = (((iE.getEnd() - startPlayTime) / 1000l / 1000l / 1000l) - (System
+										.currentTimeMillis() - startSystemTime))) > 0) {
+									Thread.sleep(tA);
+								}
+							}
+
+							// Send InterruptionEnd
+							synchronized (queue) {
+								// Just add InterruptionEnd as first element
+								// Don't wait for queue (will not cause OOM) ->
+								// Prior Interruptions!
+								if (!queue.isEmpty()
+										&& queue.getFirst().equals(iB))
+									queue.add(1, iE);
+								else
+									queue.addFirst(iE);
+
+								// Notify other Threads
+								queue.notifyAll();
+							}
+						}
+					}
+					// Send InterruptionBegin (game ended)
+					if (SEND_DATA_IN_PLAY_TIME) {
+						if ((tA = (((hE.getBegin() - startPlayTime) / 1000l / 1000l / 1000l) - (System
+								.currentTimeMillis() - startSystemTime))) > 0) {
+							Thread.sleep(tA);
+						}
+					}
+					// Send InterruptionBegin
+					synchronized (queue) {
+						// Just add InterruptionBegin as first element
+						// Don't wait for queue (will not cause OOM) ->
+						// Prior Interruptions!
+						queue.addFirst(hE);
+
+						// Notify other Threads
+						queue.notifyAll();
+					}
+
+					// Close down this Thread
+					break;
+				}
+			}
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void processTransformedData() {
 		try {
-			// rndAccFile.seek(0);
-			// while (true) {
-			// try {
-			// proxy.EventNotification("mobilis@sea/SEA",
-			// rndAccFile.readInt(), rndAccFile.readLong(),
-			// rndAccFile.readInt(), rndAccFile.readInt(),
-			// rndAccFile.readInt(), rndAccFile.readInt(),
-			// rndAccFile.readInt(), rndAccFile.readInt(),
-			// rndAccFile.readInt(), rndAccFile.readInt(),
-			// rndAccFile.readInt(), rndAccFile.readInt(),
-			// rndAccFile.readInt());
-			// } catch (EOFException e) {
-			// break;
-			// }
-			// }
-			long lT;
+			long lT, tA;
 
 			FileChannel ch = f.getChannel();
 			ByteBuffer bb = ByteBuffer.allocateDirect(262136);
 			int nRead;
-			while ((nRead = ch.read(bb)) != -1) {
-				bb.position(0);
-				bb.limit(nRead);
-				while (bb.hasRemaining()) {
-					Event ev = new Event(bb.getInt(), lT = bb.getLong(),
-							bb.getInt(), bb.getInt(), bb.getInt(), bb.getInt(),
-							bb.getInt(), bb.getInt(), bb.getInt(), bb.getInt(),
-							bb.getInt(), bb.getInt(), bb.getInt());
+			while (true) {
+				if (running) {
+					while ((nRead = ch.read(bb)) != -1) {
+						bb.position(0);
+						bb.limit(nRead);
+						while (bb.hasRemaining()) {
+							Event ev = new Event(bb.getInt(),
+									lT = bb.getLong(), bb.getInt(),
+									bb.getInt(), bb.getInt(), bb.getInt(),
+									bb.getInt(), bb.getInt(), bb.getInt(),
+									bb.getInt(), bb.getInt(), bb.getInt(),
+									bb.getInt());
 
-					if (startPlayTime == 0) {
-						startPlayTime = ev.getTimestamp();
-						startSystemTime = System.currentTimeMillis();
+							// Events are created before game starts! (filter)
+							if (ev.getTimestamp() >= startPlayTime) {
+								setStartSystemTime();
+
+								if (SEND_DATA_IN_PLAY_TIME) {
+									if ((tA = (((lT - startPlayTime) / 1000l / 1000l / 1000l) - (System
+											.currentTimeMillis() - startSystemTime))) > 0)
+										Thread.sleep(tA);
+								}
+
+								synchronized (queue) {
+									// Wait for continue (Queue should not cause
+									// OutOfMemoryError!)
+									while (queue.size() > MAX_EVENTS_IN_QUEUE)
+										queue.wait();
+
+									// Append Event to queue
+									queue.add(ev); // O(1)-op
+
+									// Notify other Threads
+									queue.notifyAll();
+								}
+							}
+						}
+						bb.clear();
 					}
-
-					if (SEND_DATA_IN_PLAY_TIME) {
-						long timeAhead = (((lT - startPlayTime) / 1000l / 1000l / 1000l) - (System
-								.currentTimeMillis() - startSystemTime));
-						if (timeAhead > 0)
-							Thread.sleep(timeAhead);
-					}
-
-					synchronized (queue) {
-						// Wait for continue (Queue should not cause
-						// OutOfMemoryError!)
-						// (lT - (queue.getFirst().getTimestamp() +
-						// bufferLength) > 0
-
-						while (queue.size() > MAX_EVENTS_PER_MESSAGE)
-							queue.wait();
-
-						// Append Event to queue
-						queue.add(ev); // O(1)-op
-
-						// Notify other Threads and wait
-						queue.notifyAll();
-					}
-					// proxy.EventNotification("mobilis@sea/SEA", bb.getInt(),
-					// bb.getLong(), bb.getInt(), bb.getInt(),
-					// bb.getInt(), bb.getInt(), bb.getInt(), bb.getInt(),
-					// bb.getInt(), bb.getInt(), bb.getInt(), bb.getInt(),
-					// bb.getInt());
 				}
-				bb.clear();
 			}
 		} catch (IOException eIO) {
 			eIO.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (InterruptedException eI) {
+			eI.printStackTrace();
 		}
 
 	}
 
 	private void processQueue() {
-		List<Event> eventsToSend;
+		Raw e;
 		try {
 			while (true) {
-				synchronized (queue) {
-					// Wait till we get first input!
-					while (queue.size() < MIN_EVENTS_PER_MESSAGE)
-						queue.wait();
+				if (running) {
+					synchronized (queue) {
+						// Wait till we get first input!
+						while (queue.isEmpty())
+							queue.wait();
 
-					eventsToSend = new ArrayList<Event>();
+						// Pop Event from list
+						e = queue.pop(); // O(1)-op
 
-					// Pop Events from list
-					while (!queue.isEmpty()
-							&& eventsToSend.size() < MAX_EVENTS_PER_MESSAGE)
-						eventsToSend.add(queue.pop());
-
-					// queue.wait(1000, 0);
-
-					// Done => Notify
-					queue.notifyAll();
-				}
-
-				// send
-				proxy.EventNotification("mobilis@sea/SEA", eventsToSend);
-
-				// following code for console output
-
-				eventCounter += eventsToSend.size();
-				messageCounter++;
-
-				if (System.currentTimeMillis() - timeOfCycleStart > 1000) {
-
-					long timeNeededInThisCycleInMS = System.currentTimeMillis()
-							- timeOfCycleStart;
-					int messagesPerSecond = (int) (messageCounter * 1000l / timeNeededInThisCycleInMS);
-					int eventsPerSecond = (int) (eventCounter * 1000l / timeNeededInThisCycleInMS);
-					long playtimeInMillisecs = (eventsToSend.get(0)
-							.getTimestamp() - startPlayTime) / 1000 / 1000 / 1000;
-					int playtimeInMinutesOnly = (int) (playtimeInMillisecs / 1000 / 60);
-					int playtimeInSecondsOnly = (int) (playtimeInMillisecs / 1000 - (playtimeInMinutesOnly * 60));
-					System.out
-							.println("OUTGOING:  "
-									+ playtimeInMinutesOnly
-									+ "min "
-									+ playtimeInSecondsOnly
-									+ "s"
-									+ " playtime"
-									+ " | "
-									+ messagesPerSecond
-									+ " messages/s"
-									+ " | "
-									+ eventsPerSecond
-									+ " events/s"
-									+ " | "
-									+ ((messagesPerSecond != 0) ? (eventsPerSecond / messagesPerSecond)
-											: "-") + " events/message");
-
-					timeOfCycleStart = System.currentTimeMillis();
-					eventCounter = 0;
-					messageCounter = 0;
-				}
-
-			}
-		} catch (InterruptedException eIE) {
-			// TODO Auto-generated catch block
-			eIE.printStackTrace();
-		}
-	}
-
-	private void processFile() {
-		// Some auxiliary variables
-		String e = null;
-		long lT;
-
-		try {
-			rndAccFile.seek(0);
-			// Loop over file (till no more line does exist)
-			while ((e = rndAccFile.readLine()) != null) {
-				// Read data of entry and set new timestamp
-				Event ev = processEntry(e.split(","));
-				lT = ev.getTimestamp();
-
-				synchronized (queue) {
-					// Wait for continue (Queue should not cause
-					// OutOfMemoryError!)
-					while (!queue.isEmpty()
-							&& lT
-									- (queue.getFirst().getTimestamp() + bufferLength) > 0) {
+						// Done => Notify
 						queue.notifyAll();
-						queue.wait();
 					}
 
-					// Append Event to queue
-					queue.add(ev); // O(1)-op
+					// Send
+					rawQueue.put(e);
 
-					// Notify other Threads and wait
-					queue.notifyAll();
+					// following code for console output
+					eventCounter++;
+
+					if (System.currentTimeMillis() - timeOfCycleStart > 1000) {
+						//TODO: Delete this (Verursacht eh Fehler, sobald zufaelligerweise ein InterruptionBegin/End ist^^
+
+						long timeNeededInThisCycleInMS = System
+								.currentTimeMillis() - timeOfCycleStart;
+						int eventsPerSecond = (int) (eventCounter * 1000l / timeNeededInThisCycleInMS);
+						long playtimeInMillisecs = (((Event) e).getTimestamp() - startPlayTime) / 1000 / 1000 / 1000;
+						int playtimeInMinutesOnly = (int) (playtimeInMillisecs / 1000 / 60);
+						int playtimeInSecondsOnly = (int) (playtimeInMillisecs / 1000 - (playtimeInMinutesOnly * 60));
+						System.out.println("OUTGOING:  "
+								+ playtimeInMinutesOnly + "min "
+								+ playtimeInSecondsOnly + "s" + " playtime"
+								+ " | " + eventsPerSecond + " events/s");
+
+						timeOfCycleStart = System.currentTimeMillis();
+						eventCounter = 0;
+					}
 				}
 			}
-		} catch (IOException | InterruptedException eIO) {
-			// TODO: Some Exception-Handling
-			eIO.printStackTrace();
+		} catch (InterruptedException eI) {
+			eI.printStackTrace();
 		}
 	}
+
 }
