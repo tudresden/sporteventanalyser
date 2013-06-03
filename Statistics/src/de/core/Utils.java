@@ -1,6 +1,5 @@
 package de.core;
 
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +33,11 @@ public class Utils
 		}
 	}
 
+	private static float getNearestSensor(Event[] sensors, Ball ball)
+	{
+		return Math.min(ball.distanceBetween(sensors[0].getPositionX(), sensors[0].getPositionY()), ball.distanceBetween(sensors[1].getPositionX(), sensors[1].getPositionY()));
+	}
+
 	public static Player getNearestPlayer(EventDecoder eventDecoder, Ball ball)
 	{
 		float nearestPlayerDistance = Float.MAX_VALUE;
@@ -41,15 +45,24 @@ public class Utils
 		Player nearestPlayer = null;
 		Player player = null;
 
-		for (Map.Entry<Integer, Entity> entry : eventDecoder.getEntityList().entrySet())
+		// for (Map.Entry<Integer, Entity> entry : eventDecoder.getEntityList().entrySet())
+		// if (entry.getValue() instanceof Player)
+		// {
+		// player = (Player) entry.getValue();
+
+		int[] playerIds = { 47, 49, 19, 53, 23, 57, 59, 63, 65, 67, 69, 71, 73, 75 };
+		for (int id : playerIds)
 		{
-			if (entry.getValue() instanceof Player)
+			Entity entry = eventDecoder.getEntityList().get(id);
+
+			if (entry instanceof Player)
 			{
-				player = (Player) entry.getValue();
+				player = (Player) entry;
 
-				distance = ball.distanceBetween(player.positionX, player.positionY);
+				distance = getNearestSensor(player.getSensors(), ball);
+				// distance = ball.distanceBetween(player.getPositionX(), player.getPositionY());
 
-				if (distance < Main.ballPossessionThreshold && distance < nearestPlayerDistance)
+				if (distance < Main.BALLPOSSESSIONTHRESHOLD && distance < nearestPlayerDistance)
 				{
 					nearestPlayerDistance = distance;
 					nearestPlayer = player;
@@ -59,17 +72,42 @@ public class Utils
 				}
 			}
 		}
-
 		return nearestPlayer;
 	}
 
 	public static boolean getBallHit(EventDecoder eventDecoder, Player nearestPlayer, Ball ball)
 	{
 		// System.out.println(nearestPlayer.getAcceleration() / 1000000f);
-
-		if (nearestPlayer.getAcceleration() / 1000000f >= 15f)
+//		long zeit = nearestPlayer.timeStamp-Main.main.timePlayer;
+//		Main.main.timeAll += zeit;
+//		if(Main.main.timeAll >= Math.pow(10, 12)){
+//			Main.main.currentBallPossessionId = 0;
+//			Main.main.timeAll = 0;
+				
+		if(Main.main.currentBallAcc == 0)
+		{
+			long zeit = ball.timeStamp-Main.main.timeBall;
+			Main.main.timeAllBall += zeit;
+		}
+		
+		if(Main.main.timeAllBall > ((Math.pow(10, 11))*5)){
+			Main.main.currentBallAcc = 1;
+			Main.main.timeAllBall = 0;
+		}
+		
+		int a = ball.positionX;
+		int b = ball.positionY;
+		float output = angleChange(a,b,Main.main.ballPosX,Main.main.ballPosY);
+		int output1 = (int) ((output*180)/Math.PI);
+		Main.main.ballPosX = a;
+		Main.main.ballPosY = b;
+		
+		
+		if (Main.main.currentBallAcc == 1 && ball.getAvgAcceleration() >= 80000000)// && ((nearestPlayer.getSensors()[0].getAcceleration() >= 24000000)||(nearestPlayer.getSensors()[1].getAcceleration() >= 24000000)))
 		{
 			// System.out.println(nearestPlayer.getAcceleration() / 1000000);
+			Main.main.currentBallAcc = 0;
+			System.out.println(output1);
 			return true;
 		}
 
@@ -83,7 +121,8 @@ public class Utils
 		// }
 		// return false;
 		// }
-		return true;
+		Main.main.timeBall = ball.timeStamp;
+		return false;
 	}
 
 	private static final int BIG_ENOUGH_INT = 16 * 1024;
@@ -105,7 +144,7 @@ public class Utils
 	public static int convertTimeToOffset(long timeStamp)
 	{
 		// return (int) fastFloor((timeStamp - 10629342490369879L) / timeFormat);
-		return (int) fastFloor((timeStamp - 10753295594424116L) / timeFormat);
+		return (int) fastFloor((timeStamp - Main.GAMESTARTTIMESTAMP) / timeFormat);
 	}
 
 	public static void shotOnGoal(EventDecoder ed, Ball ball)
@@ -134,7 +173,21 @@ public class Utils
 		Main.main.setBallPosX(newX);
 		Main.main.setBallPosY(newY);
 	}
+	
+	public static boolean positionWithinField(int x, int y) {
+		return (-50 <= x) && (x <= 52489) && (-33960 <= y) && (y <= 33965);
+	}
 
+	
+	public static float angleChange(int posX, int posY, int oldX, int oldY) 
+	{ 
+		float dotProduct = posX*oldX+posY*oldY; 
+		double lengthVec1 = Math.sqrt((posX*posX)+(posY*posY)); 
+		double lengthVec2 = Math.sqrt((oldX*oldX)+(oldY*oldY)); 
+		float angle = (float)Math.acos(dotProduct/(lengthVec1*lengthVec2)); 
+		
+		return angle; 
+	}
 	/*
 	 * public static void ballContacts(EventDecoder ed, Ball ball) { // System.out.println(ed.getEntityList().size()); Map<Integer, Integer>
 	 * allBallContacts = new TreeMap<Integer, Integer>(); for (Map.Entry<Integer, Entity> e: ed.getEntityList().entrySet()){ if(e.getValue()
