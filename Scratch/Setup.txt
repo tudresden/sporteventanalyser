@@ -1,0 +1,46 @@
+1. Download Openfire
+2. Unzip
+3. Start Openfire\bin\openfire.exe
+4. Launch Admin Panel
+5. During Setup: "Use internal db" + "sea"
+6. Change to Benutzer/Gruppen
+7. "Neuen Benutzer anlegen" x2 (User: mobilis, pwd: sea; User: seaclient, pwd: sea)
+8. Server>Servereinstellung>HTTP Binding (vergleichen) -> zusätzlich Openfire\conf\crossdomain.xml!
+9. Mobilis-Repo klonen (entweder unsere fork oder Original)
+10. Eclipse starten
+11. Projekte importieren (Mobilis-Repo): MobilisServer und MobilisXMPP
+12. Projekte importieren (SEA-Repo): GameFileMapper, SportEventAnalyserClient, SportEventAnalyserJingle, SportEventAnalyserService, TrafficInflator
+13. MobilisServer\src\META-INF: Kopie von MobilisSettings.xml.template erstellen (ohne ".template")
+14. Bei <agents> hinzufügen:
+		<agent name="sea" description="SEA"
+			type="de.tudresden.inf.rn.mobilis.server.agents.MobilisAgent" start="auto">
+			<settings>
+				<setting name="host">127.0.0.1</setting>
+				<setting name="port">5222</setting>
+				<setting name="service">sea</setting>
+				<setting name="username">mobilis</setting>
+				<setting name="password">sea</setting>
+				<setting name="resource">SEA</setting>
+				<setting name="conType">xmpp</setting>
+			</settings>
+		</agent>
+15. Bei <services> hinzufügen:
+		<service name="SportEventAnalyserService" description="SEA Service"
+			type="de.tudresden.inf.rn.mobilis.server.services.sea.service.SportEventAnalyserService"
+			agent="sea" start="auto">
+		</service>
+16. Java Build Path von MobilisServer anpassen (Properties>Java Build Path>Projects): SportEventAnalyserService hinzufügen
+17. Eclipse: Window>Preferences>Java>Compiler>Building>Build path problems: "Circular dependencies:" auf Warning setzen
+18. GameFileMapper: Pfade in der main-Methode anpassen: 1.Pfad = entpackte full-game.gz-Datei | 2.Pfad = Ziel (muss nicht existieren)
+19. GameFileMapper ausführen (maximal 2 Minuten)
+20. TrafficInflator: de.tudresden.inf.rn.inflator.main.TrafficInflator (Zeile 25):
+\> Pfade zu Dateien anpassen: (t-full-game = Datei vom Mapper, i-full-game liegt in data von TrafficInflator)
+
+Ausführungsreihenfolge:
+1. Openfire starten
+2. Neue Run Configuration (Java Application) mit:
+Project: MobilisServer
+Main class: de.tudresden.inf.rn.mobilis.server.MobilisServer
+Unter Arguments>Program arguments: -nogui (Wurde bei den gebündelten Events gebraucht, könnte aber auch beim JS-Client gebraucht werden!)
+=> Ausführen!
+3. TrafficInflator ausführen

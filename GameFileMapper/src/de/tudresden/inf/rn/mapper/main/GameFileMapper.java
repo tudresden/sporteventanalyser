@@ -24,13 +24,6 @@ public class GameFileMapper {
 	 */
 	public void restore(String inURI, String outURI) {
 		try {
-			// RandomAccessFile inRAF = new RandomAccessFile(new File(inURI),
-			// "r");
-
-			// RandomAccessFile outRAF = new RandomAccessFile(outFile, "rw");
-			// inRAF.seek(0);
-			// outRAF.seek(0);
-
 			// Bench-stats
 			long n = System.currentTimeMillis();
 			int i = 0;
@@ -94,31 +87,6 @@ public class GameFileMapper {
 			iCh.close();
 			oCh.close();
 
-			// String e = null;
-			// String eD[] = null;
-			// System.out.println("Converting data...");
-			// while ((e = inRAF.readLine()) != null) {
-			// eD = e.split(",");
-			// outRAF.writeInt(Integer.valueOf(eD[0]));
-			// outRAF.writeDouble(Long.valueOf(eD[1]));
-			// outRAF.writeInt(Integer.valueOf(eD[2]));
-			// outRAF.writeInt(Integer.valueOf(eD[3]));
-			// outRAF.writeInt(Integer.valueOf(eD[4]));
-			// outRAF.writeInt(Integer.valueOf(eD[5]));
-			// outRAF.writeInt(Integer.valueOf(eD[6]));
-			// outRAF.writeInt(Integer.valueOf(eD[7]));
-			// outRAF.writeInt(Integer.valueOf(eD[8]));
-			// outRAF.writeInt(Integer.valueOf(eD[9]));
-			// outRAF.writeInt(Integer.valueOf(eD[10]));
-			// outRAF.writeInt(Integer.valueOf(eD[11]));
-			// outRAF.writeInt(Integer.valueOf(eD[12]));
-			// i++;
-			// if (i % 1000000 == 0) {
-			// System.out.println("Entries written: " + i);
-			// }
-			// }
-			// outRAF.close();
-
 			System.out
 					.println("Data converted successfully (Total amount of entries: "
 							+ i
@@ -134,8 +102,8 @@ public class GameFileMapper {
 	 */
 	public static void main(String[] args) {
 		new GameFileMapper().restore(
-				"C:\\Users\\Concept-X\\Desktop\\full-game",
-				"H:\\transformed-game");
+				"H:\\full-game",
+				"H:\\t-full-game");
 	}
 
 }
