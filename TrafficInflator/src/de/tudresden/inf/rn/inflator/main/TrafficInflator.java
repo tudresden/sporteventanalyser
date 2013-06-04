@@ -22,7 +22,7 @@ public class TrafficInflator {
 		try {
 			LinkedBlockingQueue<Raw> queue = manager
 					.establishJingleConnection("mobilis@sea/SEA");
-			new Reader(new File("H:\\t-full-game"), new File("H:\\i-full-game"), queue).start(); // "C:\\Users\\Concept-X\\Desktop\\full-game"
+			new Reader(new File("H:\\t-full-game"), new File("H:\\i-full-game"), queue).start();
 		} catch (FileNotFoundException | XMPPException e) {
 			e.printStackTrace();
 		}
