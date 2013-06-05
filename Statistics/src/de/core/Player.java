@@ -21,8 +21,8 @@ public class Player extends Entity
 	private int goals;
 	private int shotsOnGoal;
 	protected int shots;
-	protected int passes;
-	protected int successfulPasses;
+	private int missedPasses;
+	private int successfulPasses;
 	protected int ballContacts;
 	protected long ballPossessionTime;
 	public int leftFootID;
@@ -61,7 +61,7 @@ public class Player extends Entity
 		this.goals = 0;
 		this.shotsOnGoal = 0;
 		this.shots = 0;
-		this.passes = 0;
+		this.missedPasses = 0;
 		this.successfulPasses = 0;
 		this.ballContacts = 0;
 		this.ballPossessionTime = 0;
@@ -141,6 +141,26 @@ public class Player extends Entity
 		this.ballContacts = ballContacts;
 	}
 
+	public int getSuccessfulPasses()
+	{
+		return successfulPasses;
+	}
+
+	public void setSuccessfulPasses(int successfulPasses)
+	{
+		this.successfulPasses = successfulPasses;
+	}
+
+	public int getMissedPasses()
+	{
+		return missedPasses;
+	}
+
+	public void setMissedPasses(int missedPasses)
+	{
+		this.missedPasses = missedPasses;
+	}
+	
 	private void updatePosition()
 	{
 		int newPosX = 0, newPosY = 0, newPosZ = 0;

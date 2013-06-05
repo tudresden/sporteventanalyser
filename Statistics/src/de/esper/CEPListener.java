@@ -86,25 +86,43 @@ public class CEPListener implements UpdateListener
 					Main.main.out = 0;
 
 				// Utils.shotOnGoal(Main.main.getEventDecoder(), ball);
-
+			
 				if (nearestPlayer != null)
-				{
+				{			
+					//Function for BallContacts
 					if (Main.main.currentBallPossessionId != nearestPlayer.id && Utils.getBallHit(Main.main.getEventDecoder(), nearestPlayer, ball))
 					{
-						Main.main.currentBallPossessionId = nearestPlayer.id;
-
-						System.out.println("--------------");
+						Main.main.currentBallPossessionId = nearestPlayer.id;	
+//						System.out.println("--------------");
 						// print game time
 						String time = String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(gameTime), TimeUnit.SECONDS.toSeconds(gameTime) % 60);
-						System.out.println("Spielzeit: " + time);
-
-						System.out.println("Team: " + nearestPlayer.getTeam());
-						System.out.println("Name des Spielers am Ball: " + nearestPlayer.getName());
-						System.out.println("Laufstrecke: " + nearestPlayer.getTotalDistance() / 1000);
+//						System.out.println("Spielzeit: " + time);
+//
+//						System.out.println("Team: " + nearestPlayer.getTeam());
+//						System.out.println("Name des Spielers am Ball: " + nearestPlayer.getName());
+//						System.out.println("Laufstrecke: " + nearestPlayer.getTotalDistance() / 1000);
 
 						nearestPlayer.setBallContacts(nearestPlayer.getBallContacts() + 1);
-						System.out.println("Ballkontakte: " + nearestPlayer.getBallContacts());
-
+//						System.out.println("Ballkontakte: " + nearestPlayer.getBallContacts());
+						
+						//Function for Passes
+						if (Main.main.currentPlayer != null){
+							if (Utils.pass(Main.main.currentPlayer, nearestPlayer)==1)
+							{
+								Player Heinz = Main.main.currentPlayer;
+								Heinz.setSuccessfulPasses(Heinz.getSuccessfulPasses()+1);
+								System.out.println("Spielzeit: " + time);
+								System.out.println(Heinz.getName()+" - Erfolgreiche Pässe: "+Heinz.getSuccessfulPasses());
+							}
+							if (Utils.pass(Main.main.currentPlayer, nearestPlayer)==2)
+							{
+								Player Heinz = Main.main.currentPlayer;
+								Heinz.setMissedPasses(Heinz.getMissedPasses()+1);
+								System.out.println("Spielzeit: " + time);
+								System.out.println(Heinz.getName()+" - Fehlgeschlagene Pässe: "+Heinz.getMissedPasses());
+							}
+						}
+						Main.main.currentPlayer = nearestPlayer;
 						// if (Main.main.shit)
 						// {
 						// System.out.println("kick! " + ball.getAcceleration());
@@ -113,6 +131,7 @@ public class CEPListener implements UpdateListener
 						// System.out.println("Spieler: (ID: " + nearestPlayer.leftFootID + ", " + nearestPlayer.rightFootID +
 						// ") --- Zeitstempel: " + nearestPlayer.getTimeStamp());
 						// System.out.println("Ball:    (ID: 0" + ball.id + ") --- Zeitstempel: " + ball.getTimeStamp());
+						//Successful Passes
 					}
 
 				}
@@ -123,7 +142,7 @@ public class CEPListener implements UpdateListener
 					// Main.main.currentBallPossessionId = 0;
 				}
 				Main.main.timePlayer = nearestPlayer.timeStamp;
-
+				
 			}
 			else if (entity instanceof Goalkeeper)
 			{

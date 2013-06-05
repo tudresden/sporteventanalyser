@@ -24,4 +24,31 @@ public class GameInformation
 			return -1;
 		}
 	}
+	
+	public int getPlayerPassesSuccessful(int id)
+	{
+		Entity entity = Main.main.getEntityFromId(id);
+		if (entity instanceof Player)
+		{
+			return ((Player) entity).getSuccessfulPasses();
+		}
+		else
+		{
+			return -1;
+		}
+	}
+	
+	public int getPlayerPassesMissed(int id)
+	{
+		Entity entity = Main.main.getEntityFromId(id);
+		if (entity instanceof Player)
+		{
+			return ((Player) entity).getMissedPasses();
+		}
+		else
+		{
+			return -1;
+		}
+	}
 }
+

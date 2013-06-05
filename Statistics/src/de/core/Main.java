@@ -25,6 +25,7 @@ public class Main
 	public long timeBall;
 	public long timeAllBall = 0;
 
+	public Player currentPlayer = null;
 	public int currentActiveBallId = 0; // ball id
 	public int currentBallPossessionId = 0; // player
 	public int currentBallAcc = 1; // ball
