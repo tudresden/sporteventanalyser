@@ -31,63 +31,60 @@ public class CEPListener implements UpdateListener
 			if (entity instanceof Player)
 			{
 				Player player = (Player) entity;
-
 				player.update(event);
-
-				// double dist = (double) player.getVelocity() / 1000000;
-				//
-				// if (dist > 12.0f)
-				// {
-				// System.out.println("--------------");
-				// System.out.println("Laufstrecke: " + dist);
-				// System.out.println("Name des Spielers am Ball: " + player.getName());
-				// int duration = Utils.convertTimeToOffset(player.getTimeStamp());
-				// String time = String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(duration), TimeUnit.SECONDS.toSeconds(duration)
-				// %
-				// 60);
-				// System.out.println("Spielzeit: " + time);
-				// System.out.println("Team: " + player.getTeam());
-				// }
-
-				// player.updateHeatmap();
-
-				// System.out.println(player);
-				// System.out.println(player.getTotalDistance());
-				// System.out.println("-->" + player.getHeatmap().getSum());
-				// if (player.getHeatmap().getSum()==50)
-				// player.getHeatmap().drawGrid();
 			}
 			else if (entity instanceof Ball)
 			{
 				Ball ball = (Ball) entity;
 
+				/*
+				 * Return if ball is no within the game field.
+				 */
+				if (Main.main.currentActiveBallId != 0 && !Utils.positionWithinField(event.getPositionX(), event.getPositionY()))
+				{
+					if (Main.main.currentActiveBallId == ball.getId())
+					{
+						System.out.println("############------------------------!!!---auﬂerhalb des Spielfeldes---!!!--------------------------------############");
+					}
+					return;
+				}
+				else
+				{
+					if (Main.main.currentActiveBallId != ball.getId())
+					{
+						Main.main.currentActiveBallId = ball.getId();
+						System.out.println("============================================");
+						System.out.println("BALLID " + Main.main.currentActiveBallId);
+						System.out.println("============================================");
+					}
+				}
+
 				ball.update(event);
-					
+
 				Player nearestPlayer = Utils.getNearestPlayer(Main.main.getEventDecoder(), ball);
-				
-				//Ball Possesion for the same player
-				long zeit = nearestPlayer.timeStamp-Main.main.timePlayer;
+
+				// Ball Possesion for the same player
+				long zeit = nearestPlayer.timeStamp - Main.main.timePlayer;
 				Main.main.timeAllPlayer += zeit;
-				if(Main.main.timeAllPlayer >= Math.pow(10, 12)){
+				if (Main.main.timeAllPlayer >= Math.pow(10, 12))
+				{
 					Main.main.currentBallPossessionId = 0;
 					Main.main.timeAllPlayer = 0;
 				}
-				
-				
-				
-				if (!Utils.positionWithinField(event.getPositionX(), event.getPositionY())) {
-					if (Main.main.out==0) {
+
+				if (!Utils.positionWithinField(event.getPositionX(), event.getPositionY()))
+				{
+					if (Main.main.out == 0)
+					{
 						System.out.println("############------------------------!!!---auﬂerhalb des Spielfeldes---!!!--------------------------------############");
 						Main.main.out = 1;
 					}
 				}
-				
-				else Main.main.out=0;
-	
-				
-				
+
+				else
+					Main.main.out = 0;
+
 				// Utils.shotOnGoal(Main.main.getEventDecoder(), ball);
-				
 
 				if (nearestPlayer != null)
 				{
@@ -103,7 +100,9 @@ public class CEPListener implements UpdateListener
 						System.out.println("Team: " + nearestPlayer.getTeam());
 						System.out.println("Name des Spielers am Ball: " + nearestPlayer.getName());
 						System.out.println("Laufstrecke: " + nearestPlayer.getTotalDistance() / 1000);
-						
+
+						nearestPlayer.setBallContacts(nearestPlayer.getBallContacts() + 1);
+						System.out.println("Ballkontakte: " + nearestPlayer.getBallContacts());
 
 						// if (Main.main.shit)
 						// {

@@ -66,7 +66,6 @@ public class Utils
 				{
 					nearestPlayerDistance = distance;
 					nearestPlayer = player;
-					player.ballContacts += 1;
 
 					// System.out.println("Distanz zum Ball: " + nearestPlayerDistance / 10f + "cm");
 				}
@@ -78,32 +77,35 @@ public class Utils
 	public static boolean getBallHit(EventDecoder eventDecoder, Player nearestPlayer, Ball ball)
 	{
 		// System.out.println(nearestPlayer.getAcceleration() / 1000000f);
-//		long zeit = nearestPlayer.timeStamp-Main.main.timePlayer;
-//		Main.main.timeAll += zeit;
-//		if(Main.main.timeAll >= Math.pow(10, 12)){
-//			Main.main.currentBallPossessionId = 0;
-//			Main.main.timeAll = 0;
-				
-		if(Main.main.currentBallAcc == 0)
+		// long zeit = nearestPlayer.timeStamp-Main.main.timePlayer;
+		// Main.main.timeAll += zeit;
+		// if(Main.main.timeAll >= Math.pow(10, 12)){
+		// Main.main.currentBallPossessionId = 0;
+		// Main.main.timeAll = 0;
+
+		if (Main.main.currentBallAcc == 0)
 		{
-			long zeit = ball.timeStamp-Main.main.timeBall;
+			long zeit = ball.timeStamp - Main.main.timeBall;
 			Main.main.timeAllBall += zeit;
 		}
-		
-		if(Main.main.timeAllBall > ((Math.pow(10, 11))*5)){
+
+		if (Main.main.timeAllBall > ((Math.pow(10, 11)) * 5))
+		{
 			Main.main.currentBallAcc = 1;
 			Main.main.timeAllBall = 0;
 		}
-		
+
 		int a = ball.positionX;
 		int b = ball.positionY;
-		float output = angleChange(a,b,Main.main.ballPosX,Main.main.ballPosY);
-		int output1 = (int) ((output*180)/Math.PI);
+		float output = angleChange(a, b, Main.main.ballPosX, Main.main.ballPosY);
+		int output1 = (int) ((output * 180) / Math.PI);
 		Main.main.ballPosX = a;
 		Main.main.ballPosY = b;
-		
-		
-		if (Main.main.currentBallAcc == 1 && ball.getAvgAcceleration() >= 80000000)// && ((nearestPlayer.getSensors()[0].getAcceleration() >= 24000000)||(nearestPlayer.getSensors()[1].getAcceleration() >= 24000000)))
+
+		if (Main.main.currentBallAcc == 1 && ball.getAvgAcceleration() >= 80000000)// && ((nearestPlayer.getSensors()[0].getAcceleration()
+																					// >=
+																					// 24000000)||(nearestPlayer.getSensors()[1].getAcceleration()
+																					// >= 24000000)))
 		{
 			// System.out.println(nearestPlayer.getAcceleration() / 1000000);
 			Main.main.currentBallAcc = 0;
@@ -173,44 +175,28 @@ public class Utils
 		Main.main.setBallPosX(newX);
 		Main.main.setBallPosY(newY);
 	}
-	
-	public static boolean positionWithinField(int x, int y) {
-		return (-50 <= x) && (x <= 52489) && (-33960 <= y) && (y <= 33965);
+
+	/**
+	 * Checks if the given position is within the game field.
+	 * 
+	 * @param x
+	 *            position
+	 * @param y
+	 *            position
+	 * @return True if position is within the game field or false if not.
+	 */
+	public static boolean positionWithinField(int x, int y)
+	{
+		return (Main.GAMEFIELDMINX <= x) && (x <= Main.GAMEFIELDMAXX) && (Main.GAMEFIELDMINY <= y) && (y <= Main.GAMEFIELDMAXY);
 	}
 
-	
-	public static float angleChange(int posX, int posY, int oldX, int oldY) 
-	{ 
-		float dotProduct = posX*oldX+posY*oldY; 
-		double lengthVec1 = Math.sqrt((posX*posX)+(posY*posY)); 
-		double lengthVec2 = Math.sqrt((oldX*oldX)+(oldY*oldY)); 
-		float angle = (float)Math.acos(dotProduct/(lengthVec1*lengthVec2)); 
-		
-		return angle; 
+	public static float angleChange(int posX, int posY, int oldX, int oldY)
+	{
+		float dotProduct = posX * oldX + posY * oldY;
+		double lengthVec1 = Math.sqrt((posX * posX) + (posY * posY));
+		double lengthVec2 = Math.sqrt((oldX * oldX) + (oldY * oldY));
+		float angle = (float) Math.acos(dotProduct / (lengthVec1 * lengthVec2));
+
+		return angle;
 	}
-	/*
-	 * public static void ballContacts(EventDecoder ed, Ball ball) { // System.out.println(ed.getEntityList().size()); Map<Integer, Integer>
-	 * allBallContacts = new TreeMap<Integer, Integer>(); for (Map.Entry<Integer, Entity> e: ed.getEntityList().entrySet()){ if(e.getValue()
-	 * instanceof Ball){ //velocity=Geschwindigkeit; acceleration=Beschleunigung //Unterschiede nehmen also p1-p2 = vektor^^ int a =
-	 * e.getValue().positionX; int b = e.getValue().positionY; float output = angleBetween(a,b,Main.main.getPosX(),Main.main.getPosY());
-	 * //Grad = Bogenmaß * 180/Pi int output1 = (int) ((output*180)/Math.PI); if (output1>20){ System.out.println("--------------");
-	 * System.out.println("Aktuelle Zeit: "+Math.ceil((ball.timeStamp-10629342490369879L)/(Math.pow(10, 12))-4));
-	 * System.out.println(ball.timeStamp); System.out.println(output1); System.out.println(e.getValue().positionX);
-	 * System.out.println(e.getValue().positionY); System.out.println(Main.main.getPosX()); System.out.println(Main.main.getPosY()); }
-	 * Main.main.setPosX(e.getValue().positionX); Main.main.setPosY(e.getValue().positionY); int diffX = Main.main.getPosX()-ball.positionX;
-	 * System.out.println("Unterschied X: "+diffX); System.out.println("Gespeichert: "+Main.main.getPosX());
-	 * Main.main.setPosX(e.getValue().positionX); long diffX = Main.main.getTimestamp()-ball.timeStamp;
-	 * System.out.println("Unterschied Zeit: "+diffX); System.out.println("Gespeichert: "+Main.main.getTimestamp());
-	 * Main.main.setTimestamp(ball.timeStamp); // System.out.println("Zeitstempel: "+ball.timeStamp); //
-	 * System.out.println("AccerlerationX: "+e.getValue().accelerationX); //
-	 * System.out.println("AccerlerationY: "+e.getValue().accelerationY); //
-	 * System.out.println("AccerlerationZ: "+e.getValue().accelerationZ); // System.out.println("PositionX: "+e.getValue().positionX); //
-	 * System.out.println("PositionY: "+e.getValue().positionY); // System.out.println("PositionZ: "+e.getValue().positionZ); //
-	 * System.out.println("TopSpeedX: "+e.getValue().topSpeedX); // System.out.println("TopSpeedY: "+e.getValue().topSpeedY); //
-	 * System.out.println("TopSpeedZ: "+e.getValue().topSpeedZ); // System.out.println("VelocityX: "+e.getValue().velocityX); //
-	 * System.out.println("VelocityY: "+e.getValue().velocityY); // System.out.println("VelocityZ: "+e.getValue().velocityZ); } } } public
-	 * static float angleBetween(int posX, int posY, int oldX, int oldY) { float dotProduct = posX*oldX+posY*oldY; double lengthVec1 =
-	 * Math.sqrt((posX*posX)+(posY*posY)); double lengthVec2 = Math.sqrt((oldX*oldX)+(oldY*oldY)); float angle =
-	 * (float)Math.acos(dotProduct/(lengthVec1*lengthVec2)); return angle; }
-	 */
 }
