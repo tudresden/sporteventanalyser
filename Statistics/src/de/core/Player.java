@@ -131,6 +131,16 @@ public class Player extends Entity
 		return new Event[] { Ids.get(leftFootID), Ids.get(rightFootID) };
 	}
 
+	public int getBallContacts()
+	{
+		return ballContacts;
+	}
+
+	public void setBallContacts(int ballContacts)
+	{
+		this.ballContacts = ballContacts;
+	}
+
 	private void updatePosition()
 	{
 		int newPosX = 0, newPosY = 0, newPosZ = 0;

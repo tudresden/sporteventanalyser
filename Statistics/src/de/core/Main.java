@@ -1,10 +1,5 @@
 package de.core;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,14 +25,20 @@ public class Main
 	public long timeBall;
 	public long timeAllBall = 0;
 
-	public int currentBallPossessionId = 0; //player
-	public int currentBallAcc = 1;			//ball
+	public int currentActiveBallId = 0; // ball id
+	public int currentBallPossessionId = 0; // player
+	public int currentBallAcc = 1; // ball
 	public final static float BALLPOSSESSIONTHRESHOLD = 1000f; // 1000mm = 1m
 	public final static long GAMESTARTTIMESTAMP = 10753295594424116L;
 	public final static int BALLCONTACTTHRESHOLD = 0;
 
 	public boolean shit = false;
 	public int out = 0;
+
+	public static final int GAMEFIELDMINX = -50;
+	public static final int GAMEFIELDMAXX = 52489;
+	public static final int GAMEFIELDMINY = -33960;
+	public static final int GAMEFIELDMAXY = 33965;
 
 	/**
 	 * @param args
@@ -55,23 +56,25 @@ public class Main
 
 		eventDecoder = new EventDecoder(esperTest.getCepRT());
 
-		// start decoding the file async
-		Callable<Void> c = new CallableDecode(eventDecoder, 100000000, "full-game.gz");
-		executor.submit(c);
-
-		System.out.println("============================================");
-
-		// int[] playerIds = { 47, 49, 19, 53, 23, 57, 59, 63, 65, 67, 69, 71, 73, 75 };
 		int[] playerIds = { 47, 16, 49, 88, 19, 52, 53, 54, 23, 24, 57, 58, 59, 28, 63, 64, 65, 66, 67, 68, 69, 38, 71, 40, 73, 74, 75, 44 };
 		for (int player : playerIds)
 		{
 			esperTest.getAllFromSensorId(player, 100);
 			// esperTest.getAllEventsFromSensorId(player); // every event
 		}
-		esperTest.getAllFromSensorId(4, 100); // Ball every 100ms
-		// esperTest.getAllEventsFromSensorId(4); // every event
-		// esperTest.getTimedFromSensorId(47, 10); //
 
+		int[] ballIds = { 4, 8, 10 };
+		for (int ball : ballIds)
+		{
+			esperTest.getAllFromSensorId(ball, 100);
+			// esperTest.getAllEventsFromSensorId(ball); // every event
+		}
+
+		// start decoding the file async
+		Callable<Void> c = new CallableDecode(eventDecoder, 100000000, "full-game.gz");
+		executor.submit(c);
+
+		System.out.println("============================================");
 	}
 
 	public EventDecoder getEventDecoder()
