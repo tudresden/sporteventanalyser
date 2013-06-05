@@ -199,4 +199,23 @@ public class Utils
 
 		return angle;
 	}
+	
+	/**
+	 * Checks if a pass is successful or not or if there is no pass
+	 * 
+	 * @param a
+	 *            player
+	 * @param b
+	 *            player
+	 * @return 0 no pass, 1 pass, 2 pass failed
+	 */
+	
+	public static int pass(Player a, Player b)
+	{
+		if(a.getTeam().equals(b.getTeam())&&a.id!=b.id) 
+			return 1;
+		if(!a.getTeam().equals(b.getTeam())&&a.id!=b.id) 
+			return 2;
+		return 0;
+	}
 }
