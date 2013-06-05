@@ -159,8 +159,8 @@ public class Utils
 		int vecY = newY - oldY;
 
 		// siehe Blatt
-		double xZumTor1 = (33941 / vecY) - oldY;
-		double xZumTor2 = (-33968 / vecY) - oldY;
+		double xZumTor1 = (33941 - oldY) / vecY;
+		double xZumTor2 = (-33968 - oldY) / vecY;
 		double xAmTor1 = oldX + (xZumTor1 * vecX);
 		double xAmTor2 = oldX + (xZumTor2 * vecX);
 
@@ -212,9 +212,9 @@ public class Utils
 	
 	public static int pass(Player a, Player b)
 	{
-		if(a.getTeam().equals(b.getTeam())&&a.id!=b.id) 
+		if((a.getTeam().equals(b.getTeam())) && (a.id!=b.id)) 
 			return 1;
-		if(!a.getTeam().equals(b.getTeam())&&a.id!=b.id) 
+		if(!a.getTeam().equals(b.getTeam())) 
 			return 2;
 		return 0;
 	}
