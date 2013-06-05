@@ -1,102 +1,98 @@
 package de.core;
 
-import java.util.Random;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import com.espertech.esper.client.Configuration;
-import com.espertech.esper.client.EPAdministrator;
-import com.espertech.esper.client.EPRuntime;
-import com.espertech.esper.client.EPServiceProvider;
-import com.espertech.esper.client.EPServiceProviderManager;
-import com.espertech.esper.client.EPStatement;
-import com.espertech.esper.client.EventBean;
-import com.espertech.esper.client.UpdateListener;
+import de.esper.EsperTest;
 
+/**
+ * Auslesen vonner Megadatei für ein Programm, welches es eigentlich schon vom Fraunhofer gibt
+ * 
+ * @author Alrik Geselle
+ * @version 1.0
+ */
 public class exampleMain
 {
-	static int count = 1;
+	private ExecutorService executor = Executors.newFixedThreadPool(4);
+	private EventDecoder eventDecoder;
+	private EsperTest esperTest = new EsperTest();
+	public static exampleMain main;
+	public int ballPosX = 0;	//for Angle-Calc
+	public int ballPosY = 0;
+	public long timePlayer;
+	public long timeAllPlayer = 0;
+	public long timeBall;
+	public long timeAllBall = 0;
 
-	public static class Tick
-	{
-		String symbol;
-		Double price;
-		long timeStamp;
+	public int currentBallPossessionId = 0; //player
+	public int currentBallAcc = 1;			//ball
+	public final static float BALLPOSSESSIONTHRESHOLD = 1000f; // 1000mm = 1m
+	public final static long GAMESTARTTIMESTAMP = 10753295594424116L;
+	public final static int BALLCONTACTTHRESHOLD = 0;
 
-		public Tick(String s, double p, long t)
-		{
-			symbol = s;
-			price = p;
-			// timeStamp = new Date(t);
-			timeStamp = t;
-		}
+	public boolean shit = false;
+	public int out = 0;
 
-		public double getPrice()
-		{
-			return price;
-		}
-
-		public String getSymbol()
-		{
-			return symbol;
-		}
-
-		public long getTimeStamp()
-		{
-			return timeStamp;
-		}
-
-		@Override
-		public String toString()
-		{
-			return "Price: " + price.toString() + " time: " + timeStamp;
-		}
-	}
-
-	private static Random generator = new Random();
-
-	public static void GenerateRandomTick(EPRuntime cepRT)
-	{
-
-		double price = (double) generator.nextInt(10);
-		long timeStamp = System.currentTimeMillis();
-		String symbol = "AAPL";
-		Tick tick = new Tick(symbol, count, timeStamp);
-		// System.out.println("Sending tick:" + tick);
-		cepRT.sendEvent(tick);
-		count++;
-	}
-
-	public static class CEPListener implements UpdateListener
-	{
-
-		public void update(EventBean[] newData, EventBean[] oldData)
-		{
-			System.out.println("Event received: " + newData[0].getUnderlying());
-		}
-	}
-
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args)
 	{
+		main = new exampleMain();
+		main.test();
 
-		// The Configuration is meant only as an initialization-time object.
-		Configuration cepConfig = new Configuration();
-		cepConfig.addEventType("StockTick", Tick.class.getName());
-		EPServiceProvider cep = EPServiceProviderManager.getProvider("myCEPEngine", cepConfig);
-		EPRuntime cepRT = cep.getEPRuntime();
+	}
 
-		EPAdministrator cepAdm = cep.getEPAdministrator();
-		// EPStatement cepStatement = cepAdm.createEPL("select * from " +
-		// "StockTick(symbol='AAPL').win:ext_timed(StockTick.timeStamp,1msec)");
-		// EPStatement cepStatement = cepAdm.createEPL("select * from " + "StockTick(symbol='AAPL')");
-		// EPStatement cepStatement = cepAdm.createEPL("select * from StockTick(symbol='AAPL').win:length(4) having count(*) > 2");
+	public void test()
+	{
+		SomeThread thread = new SomeThread();
+		thread.setDaemon(true);
+		executor.execute(thread);
+		
+		
+		eventDecoder = new EventDecoder(esperTest.getCepRT());
 
-		EPStatement cepStatement = cepAdm.createEPL("select * from StockTick(symbol='AAPL').win:length(4).std:lastevent()");
+		System.out.println("============================================");
 
-		cepStatement.addListener(new CEPListener());
-
-		// We generate a few ticks...
-		for (int i = 0; i < 10000; i++)
+		// int[] playerIds = { 47, 49, 19, 53, 23, 57, 59, 63, 65, 67, 69, 71, 73, 75 };
+		int[] playerIds = { 47, 16, 49, 88, 19, 52, 53, 54, 23, 24, 57, 58, 59, 28, 63, 64, 65, 66, 67, 68, 69, 38, 71, 40, 73, 74, 75, 44 };
+		for (int player : playerIds)
 		{
-			GenerateRandomTick(cepRT);
+			esperTest.getAllFromSensorId(player, 100);
 		}
+		esperTest.getAllFromSensorId(4, 100);
+	}
+
+	public EventDecoder getEventDecoder()
+	{
+		return eventDecoder;
+	}
+
+	public Entity getEntityFromId(int id)
+	{
+		if (getEventDecoder().getEntityList().containsKey(id))
+		{
+			return getEventDecoder().getEntityList().get(id);
+		}
+
+		return null;
+	}
+
+	public class SomeThread extends Thread {
+
+	    @Override
+	    public void run() {
+	        try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+	    }
 	}
 }
