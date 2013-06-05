@@ -42,10 +42,11 @@ public class CEPListener implements UpdateListener
 				 */
 				if (Main.main.currentActiveBallId != 0 && !Utils.positionWithinField(event.getPositionX(), event.getPositionY()))
 				{
-					if (Main.main.currentActiveBallId == ball.getId())
-					{
-						System.out.println("############------------------------!!!---auﬂerhalb des Spielfeldes---!!!--------------------------------############");
-					}
+					// if (Main.main.currentActiveBallId == ball.getId())
+					// {
+					// System.out.println("############------------------------!!!---auﬂerhalb des Spielfeldes---!!!--------------------------------############");
+					// }
+					// Main.main.currentActiveBallId = 0;
 					return;
 				}
 				else
