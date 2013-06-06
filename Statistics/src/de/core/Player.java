@@ -21,15 +21,14 @@ public class Player extends Entity
 	private int goals;
 	private int shotsOnGoal;
 	protected int shots;
-	protected int passes;
-	protected int successfulPasses;
+	private int missedPasses;
+	private int successfulPasses;
 	protected int ballContacts;
 	protected long ballPossessionTime;
 	public int leftFootID;
 	public int rightFootID;
 	private Map<Integer, Integer> passesFrom;
 	private Map<Integer, Integer> passesTo;
-	private float runDistance;
 	protected boolean onBall;
 	protected Event leftFootEvent;
 	protected Event rightFootEvent;
@@ -61,13 +60,12 @@ public class Player extends Entity
 		this.goals = 0;
 		this.shotsOnGoal = 0;
 		this.shots = 0;
-		this.passes = 0;
+		this.missedPasses = 0;
 		this.successfulPasses = 0;
 		this.ballContacts = 0;
 		this.ballPossessionTime = 0;
 		this.passesFrom = new HashMap<Integer, Integer>();
 		this.passesTo = new HashMap<Integer, Integer>();
-		this.runDistance = 0;
 		this.heatmap = new HeatMapGrid(20, 67925, 52477);
 
 		Ids.put(leftFootID, new Event(leftFootID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
@@ -129,6 +127,36 @@ public class Player extends Entity
 	public Event[] getSensors()
 	{
 		return new Event[] { Ids.get(leftFootID), Ids.get(rightFootID) };
+	}
+
+	public int getBallContacts()
+	{
+		return ballContacts;
+	}
+
+	public void setBallContacts(int ballContacts)
+	{
+		this.ballContacts = ballContacts;
+	}
+
+	public int getSuccessfulPasses()
+	{
+		return successfulPasses;
+	}
+
+	public void setSuccessfulPasses(int successfulPasses)
+	{
+		this.successfulPasses = successfulPasses;
+	}
+
+	public int getMissedPasses()
+	{
+		return missedPasses;
+	}
+
+	public void setMissedPasses(int missedPasses)
+	{
+		this.missedPasses = missedPasses;
 	}
 
 	private void updatePosition()

@@ -17,94 +17,98 @@ public class CEPListener implements UpdateListener
 {
 	public void update(EventBean[] newData, EventBean[] oldData)
 	{
-		// System.out.println("Event received: " + newData[0].getUnderlying());
 		Event event = ((Event) newData[0].getUnderlying());
 		Entity entity = Main.main.getEntityFromId(event.getId());
-		// Entity newEntity = new Entity(event.getId(), event.getTimeStamp(), event.getPositionX(), event.getPositionY(),
-		// event.getPositionZ(), event.getVelocityX(), event.getVelocityY(), event.getVelocityZ(), event.getAccelerationX(),
-		// event.getAccelerationY(), event.getAccelerationZ(), event.getAcceleration(), event.getVelocity());
-
-		int gameTime = Utils.convertTimeToOffset(event.getTimeStamp());
+		final int gameTime = Utils.convertTimeToOffset(event.getTimeStamp());
 
 		if (gameTime >= 0)
 		{
 			if (entity instanceof Player)
 			{
 				Player player = (Player) entity;
-
 				player.update(event);
-
-				// double dist = (double) player.getVelocity() / 1000000;
-				//
-				// if (dist > 12.0f)
-				// {
-				// System.out.println("--------------");
-				// System.out.println("Laufstrecke: " + dist);
-				// System.out.println("Name des Spielers am Ball: " + player.getName());
-				// int duration = Utils.convertTimeToOffset(player.getTimeStamp());
-				// String time = String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(duration), TimeUnit.SECONDS.toSeconds(duration)
-				// %
-				// 60);
-				// System.out.println("Spielzeit: " + time);
-				// System.out.println("Team: " + player.getTeam());
-				// }
-
-				// player.updateHeatmap();
-
-				// System.out.println(player);
-				// System.out.println(player.getTotalDistance());
-				// System.out.println("-->" + player.getHeatmap().getSum());
-				// if (player.getHeatmap().getSum()==50)
-				// player.getHeatmap().drawGrid();
 			}
 			else if (entity instanceof Ball)
 			{
 				Ball ball = (Ball) entity;
 
+				/*
+				 * Return if ball is no within the game field.
+				 */
+				if (!Utils.positionWithinField(event.getPositionX(), event.getPositionY()))
+				{
+					if (Main.main.currentActiveBallId != 0 && Main.main.currentActiveBallId == ball.getId())
+					{
+						System.out.println("============================================");
+						System.out.println("Ball ID " + ball.getId() + " im auﬂerhalb des Spielfeldes!");
+						System.out.println("============================================");
+						Main.main.currentActiveBallId = 0;
+					}
+
+					return;
+				}
+				else
+				{
+					if (Main.main.currentActiveBallId != ball.getId())
+					{
+						Main.main.currentActiveBallId = ball.getId();
+						System.out.println("============================================");
+						System.out.println("Aktuelle Ball ID im Spiel: " + Main.main.currentActiveBallId);
+						System.out.println("============================================");
+					}
+				}
+
 				ball.update(event);
-					
+
 				Player nearestPlayer = Utils.getNearestPlayer(Main.main.getEventDecoder(), ball);
-				
-				//Ball Possesion for the same player
-				long zeit = nearestPlayer.timeStamp-Main.main.timePlayer;
+
+				// Ball Possesion for the same player
+				long zeit = nearestPlayer.timeStamp - Main.main.timePlayer;
 				Main.main.timeAllPlayer += zeit;
-				if(Main.main.timeAllPlayer >= Math.pow(10, 12)){
+				if (Main.main.timeAllPlayer >= Math.pow(10, 12))
+				{
 					Main.main.currentBallPossessionId = 0;
 					Main.main.timeAllPlayer = 0;
 				}
-				
-				
-				
-				if (!Utils.positionWithinField(event.getPositionX(), event.getPositionY())) {
-					if (Main.main.out==0) {
-						System.out.println("############------------------------!!!---auﬂerhalb des Spielfeldes---!!!--------------------------------############");
-						Main.main.out = 1;
-					}
-				}
-				
-				else Main.main.out=0;
-	
-				
-				
+
 				// Utils.shotOnGoal(Main.main.getEventDecoder(), ball);
-				
 
 				if (nearestPlayer != null)
 				{
+					// Function for BallContacts
 					if (Main.main.currentBallPossessionId != nearestPlayer.id && Utils.getBallHit(Main.main.getEventDecoder(), nearestPlayer, ball))
 					{
 						Main.main.currentBallPossessionId = nearestPlayer.id;
-
 						System.out.println("--------------");
 						// print game time
 						String time = String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(gameTime), TimeUnit.SECONDS.toSeconds(gameTime) % 60);
 						System.out.println("Spielzeit: " + time);
-
 						System.out.println("Team: " + nearestPlayer.getTeam());
 						System.out.println("Name des Spielers am Ball: " + nearestPlayer.getName());
 						System.out.println("Laufstrecke: " + nearestPlayer.getTotalDistance() / 1000);
-						
 
+						nearestPlayer.setBallContacts(nearestPlayer.getBallContacts() + 1);
+						System.out.println("Ballkontakte: " + nearestPlayer.getBallContacts());
+
+						// Function for Passes
+						Player lastPlayer = Main.main.currentPlayer;
+
+						if (lastPlayer != null)
+						{
+							if (Utils.pass(Main.main.currentPlayer, nearestPlayer) == 1)
+							{
+								lastPlayer.setSuccessfulPasses(lastPlayer.getSuccessfulPasses() + 1);
+								System.out.println("Spielzeit: " + time);
+								System.out.println(lastPlayer.getName() + " - Erfolgreiche P‰sse: " + lastPlayer.getSuccessfulPasses());
+							}
+							if (Utils.pass(Main.main.currentPlayer, nearestPlayer) == 2)
+							{
+								lastPlayer.setMissedPasses(lastPlayer.getMissedPasses() + 1);
+								System.out.println("Spielzeit: " + time);
+								System.out.println(lastPlayer.getName() + " - Fehlgeschlagene P‰sse: " + lastPlayer.getMissedPasses());
+							}
+						}
+						Main.main.currentPlayer = nearestPlayer;
 						// if (Main.main.shit)
 						// {
 						// System.out.println("kick! " + ball.getAcceleration());
@@ -113,17 +117,11 @@ public class CEPListener implements UpdateListener
 						// System.out.println("Spieler: (ID: " + nearestPlayer.leftFootID + ", " + nearestPlayer.rightFootID +
 						// ") --- Zeitstempel: " + nearestPlayer.getTimeStamp());
 						// System.out.println("Ball:    (ID: 0" + ball.id + ") --- Zeitstempel: " + ball.getTimeStamp());
+						// Successful Passes
 					}
 
 				}
-				else
-				{
-					// no one has the ball
-
-					// Main.main.currentBallPossessionId = 0;
-				}
 				Main.main.timePlayer = nearestPlayer.timeStamp;
-
 			}
 			else if (entity instanceof Goalkeeper)
 			{
