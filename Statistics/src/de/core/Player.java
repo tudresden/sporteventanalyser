@@ -29,7 +29,6 @@ public class Player extends Entity
 	public int rightFootID;
 	private Map<Integer, Integer> passesFrom;
 	private Map<Integer, Integer> passesTo;
-	private float runDistance;
 	protected boolean onBall;
 	protected Event leftFootEvent;
 	protected Event rightFootEvent;
@@ -67,7 +66,6 @@ public class Player extends Entity
 		this.ballPossessionTime = 0;
 		this.passesFrom = new HashMap<Integer, Integer>();
 		this.passesTo = new HashMap<Integer, Integer>();
-		this.runDistance = 0;
 		this.heatmap = new HeatMapGrid(20, 67925, 52477);
 
 		Ids.put(leftFootID, new Event(leftFootID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
@@ -160,7 +158,7 @@ public class Player extends Entity
 	{
 		this.missedPasses = missedPasses;
 	}
-	
+
 	private void updatePosition()
 	{
 		int newPosX = 0, newPosY = 0, newPosZ = 0;

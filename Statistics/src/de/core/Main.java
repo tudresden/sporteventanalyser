@@ -33,9 +33,6 @@ public class Main
 	public final static long GAMESTARTTIMESTAMP = 10753295594424116L;
 	public final static int BALLCONTACTTHRESHOLD = 0;
 
-	public boolean shit = false;
-	public int out = 0;
-
 	public static final int GAMEFIELDMINX = -50;
 	public static final int GAMEFIELDMAXX = 52489;
 	public static final int GAMEFIELDMINY = -33960;
