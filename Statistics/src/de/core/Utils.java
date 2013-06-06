@@ -97,8 +97,8 @@ public class Utils
 
 		int a = ball.positionX;
 		int b = ball.positionY;
-		float output = angleChange(a, b, Main.main.ballPosX, Main.main.ballPosY);
-		int output1 = (int) ((output * 180) / Math.PI);
+		float output = (float) Math.toDegrees(angleChange(a, b, Main.main.ballPosX, Main.main.ballPosY));
+
 		Main.main.ballPosX = a;
 		Main.main.ballPosY = b;
 
@@ -109,7 +109,6 @@ public class Utils
 		{
 			// System.out.println(nearestPlayer.getAcceleration() / 1000000);
 			Main.main.currentBallAcc = 0;
-			System.out.println(output1);
 			return true;
 		}
 
@@ -145,7 +144,6 @@ public class Utils
 
 	public static int convertTimeToOffset(long timeStamp)
 	{
-		// return (int) fastFloor((timeStamp - 10629342490369879L) / timeFormat);
 		return (int) fastFloor((timeStamp - Main.GAMESTARTTIMESTAMP) / timeFormat);
 	}
 
@@ -199,7 +197,7 @@ public class Utils
 
 		return angle;
 	}
-	
+
 	/**
 	 * Checks if a pass is successful or not or if there is no pass
 	 * 
@@ -209,13 +207,17 @@ public class Utils
 	 *            player
 	 * @return 0 no pass, 1 pass, 2 pass failed
 	 */
-	
 	public static int pass(Player a, Player b)
 	{
-		if((a.getTeam().equals(b.getTeam())) && (a.id!=b.id)) 
+		if (a.getTeam().equals(b.getTeam()) && a.id != b.id)
+		{
 			return 1;
-		if(!a.getTeam().equals(b.getTeam())) 
+		}
+
+		if (!a.getTeam().equals(b.getTeam()))
+		{
 			return 2;
+		}
 		return 0;
 	}
 }
