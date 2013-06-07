@@ -1,0 +1,107 @@
+@import "palette";
+@import "layout";
+
+// Makros
+
+.bordered(@radius: 5pt) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  -ms-border-radius: @radius;
+  -o-border-radius: @radius;
+  border-radius: @radius;
+  border: @green 1pt solid;
+}
+
+.infobox {
+  .bordered;
+  background: rgba(0,0,0,.5);
+  margin: 2pt;
+}
+
+.colored_table {
+  tr:nth-child(2n+1) {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  tr:nth-child(2n) {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  tr:first-child {
+    background: rgba(255, 255, 255, 0.15);
+    font-weight: bold;
+  }
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+// Styles
+
+html {
+  background-image: url(../img/background.jpg);
+  background-attachment: fixed;
+  font-family: DejaVu Sans, Helvetica;
+}
+
+header {
+  font-size: 33%;
+}
+
+video {
+  display: none;
+  width: 100%;
+  height: 128pt;
+  border: 1pt solid #000;
+}
+
+#goals, #field {
+  .infobox;
+}
+
+#perspectives_menu {
+  width: 100%;
+  padding: 0;
+  margin-bottom: 0;
+  text-align: center;
+  button {
+    width: 20%;
+    .bordered;
+    border: @blue 1pt solid;
+    background: @base03;
+  }
+  button:hover {
+    width: 20%;
+    .bordered;
+    border: @blue 1pt solid;
+    background: @base02;
+  }
+  button:focus {
+    width: 20%;
+    .bordered;
+    border: @blue 1pt solid;
+    background: @base01;
+  }
+}
+
+#content {
+  display: table-row;
+  #right, #left {
+    width: 33%;
+    display: table-cell;
+    input[type="checkbox"] {
+    }
+    .team {
+      .infobox;
+      .colored_table;
+      overflow: auto;
+    }
+    #playerstatsa, #playerstatsb {
+      height: 200pt;
+      .infobox;
+    }
+  }
+
+  #center {
+    #field {
+      display: table-cell;
+    }
+  }
+}
