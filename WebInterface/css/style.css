@@ -1,0 +1,230 @@
+/* light is default mode, so pair with general html definition */
+.light {
+  background-color: #fdf6e3;
+  color: #657b83;
+}
+.light * {
+  color: #657b83;
+}
+.light h1,
+.light h2,
+.light h3,
+.light h4,
+.light h5,
+.light h6 {
+  color: #586e75;
+  border-color: #657b83;
+}
+.light a,
+.light a:active,
+.light a:visited {
+  color: #586e75;
+}
+html,
+.dark {
+  background-color: #002b36;
+  color: #839496;
+}
+html *,
+.dark * {
+  color: #839496;
+}
+html h1,
+.dark h1,
+html h2,
+.dark h2,
+html h3,
+.dark h3,
+html h4,
+.dark h4,
+html h5,
+.dark h5,
+html h6,
+.dark h6 {
+  color: #93a1a1;
+  border-color: #839496;
+}
+html a,
+.dark a,
+html a:active,
+.dark a:active,
+html a:visited,
+.dark a:visited {
+  color: #93a1a1;
+}
+html * {
+  color-profile: sRGB;
+  rendering-intent: auto;
+}
+li {
+  list-style: none;
+}
+article {
+  display: table;
+}
+#content {
+  display: table-row;
+}
+#team_a,
+#team_b {
+  height: 240pt;
+  width: 100%;
+}
+#team_a input,
+#team_b input {
+  border: none;
+}
+#goals {
+  text-align: center;
+}
+#left {
+  width: 33%;
+  display: table-cell;
+}
+#right {
+  width: 33%;
+  display: table-cell;
+}
+#field {
+  display: table-cell;
+}
+.infobox {
+  -webkit-border-radius: 5pt;
+  -moz-border-radius: 5pt;
+  -ms-border-radius: 5pt;
+  -o-border-radius: 5pt;
+  border-radius: 5pt;
+  border: #859900 1pt solid;
+  background: rgba(0, 0, 0, 0.5);
+  margin: 2pt;
+}
+.colored_table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.colored_table tr:nth-child(2n+1) {
+  background: rgba(255, 255, 255, 0.1);
+}
+.colored_table tr:nth-child(2n) {
+  background: rgba(255, 255, 255, 0.05);
+}
+.colored_table tr:first-child {
+  background: rgba(255, 255, 255, 0.15);
+  font-weight: bold;
+}
+html {
+  background-image: url(../img/background.jpg);
+  background-attachment: fixed;
+  font-family: DejaVu Sans, Helvetica;
+}
+header {
+  font-size: 33%;
+}
+video {
+  display: none;
+  width: 100%;
+  height: 128pt;
+  border: 1pt solid #000;
+}
+#goals,
+#field {
+  -webkit-border-radius: 5pt;
+  -moz-border-radius: 5pt;
+  -ms-border-radius: 5pt;
+  -o-border-radius: 5pt;
+  border-radius: 5pt;
+  border: #859900 1pt solid;
+  background: rgba(0, 0, 0, 0.5);
+  margin: 2pt;
+}
+#perspectives_menu {
+  width: 100%;
+  padding: 0;
+  margin-bottom: 0;
+  text-align: center;
+}
+#perspectives_menu button {
+  width: 20%;
+  -webkit-border-radius: 5pt;
+  -moz-border-radius: 5pt;
+  -ms-border-radius: 5pt;
+  -o-border-radius: 5pt;
+  border-radius: 5pt;
+  border: #859900 1pt solid;
+  border: #268bd2 1pt solid;
+  background: #002b36;
+}
+#perspectives_menu button:hover {
+  width: 20%;
+  -webkit-border-radius: 5pt;
+  -moz-border-radius: 5pt;
+  -ms-border-radius: 5pt;
+  -o-border-radius: 5pt;
+  border-radius: 5pt;
+  border: #859900 1pt solid;
+  border: #268bd2 1pt solid;
+  background: #073642;
+}
+#perspectives_menu button:focus {
+  width: 20%;
+  -webkit-border-radius: 5pt;
+  -moz-border-radius: 5pt;
+  -ms-border-radius: 5pt;
+  -o-border-radius: 5pt;
+  border-radius: 5pt;
+  border: #859900 1pt solid;
+  border: #268bd2 1pt solid;
+  background: #586e75;
+}
+#content {
+  display: table-row;
+}
+#content #right,
+#content #left {
+  width: 33%;
+  display: table-cell;
+}
+#content #right .team,
+#content #left .team {
+  -webkit-border-radius: 5pt;
+  -moz-border-radius: 5pt;
+  -ms-border-radius: 5pt;
+  -o-border-radius: 5pt;
+  border-radius: 5pt;
+  border: #859900 1pt solid;
+  background: rgba(0, 0, 0, 0.5);
+  margin: 2pt;
+  border-collapse: collapse;
+  border-spacing: 0;
+  overflow: auto;
+}
+#content #right .team tr:nth-child(2n+1),
+#content #left .team tr:nth-child(2n+1) {
+  background: rgba(255, 255, 255, 0.1);
+}
+#content #right .team tr:nth-child(2n),
+#content #left .team tr:nth-child(2n) {
+  background: rgba(255, 255, 255, 0.05);
+}
+#content #right .team tr:first-child,
+#content #left .team tr:first-child {
+  background: rgba(255, 255, 255, 0.15);
+  font-weight: bold;
+}
+#content #right #playerstatsa,
+#content #left #playerstatsa,
+#content #right #playerstatsb,
+#content #left #playerstatsb {
+  height: 200pt;
+  -webkit-border-radius: 5pt;
+  -moz-border-radius: 5pt;
+  -ms-border-radius: 5pt;
+  -o-border-radius: 5pt;
+  border-radius: 5pt;
+  border: #859900 1pt solid;
+  background: rgba(0, 0, 0, 0.5);
+  margin: 2pt;
+}
+#content #center #field {
+  display: table-cell;
+}
