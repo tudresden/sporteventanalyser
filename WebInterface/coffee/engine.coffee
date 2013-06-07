@@ -39,11 +39,13 @@ class Engine
         @camera.position.set 0, 60, 0
         @camera.rotation.set -Math.PI / 2, 0, 0
       when "KEEPERA"
-        @camera.position.set -60, 4, 0
+        @camera.position.set -60, 10, 0
         @camera.rotation.set 0, -Math.PI / 2, 0
+        @camera.lookAt new THREE.Vector3 0, 0, 0
       when "KEEPERB"
-        @camera.position.set 60, 4, 0
+        @camera.position.set 60, 10, 0
         @camera.rotation.set 0, Math.PI / 2, 0 
+        @camera.lookAt new THREE.Vector3 0, 0, 0
       else
         @camera.position.x =       5 * Math.cos (time / 1200)
         @camera.position.y = 33 +  5 * Math.sin (time / 600)
