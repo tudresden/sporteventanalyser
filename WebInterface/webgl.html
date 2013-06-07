@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <link media="all" rel="stylesheet" href="css/layout.css" type="text/css"/>
-  <link media="all" rel="stylesheet" href="css/colors.css" type="text/css"/>
+  <link media="all" rel="stylesheet" href="css/style.css" type="text/css"/>
   <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
   <script src="js/three.min.js"></script>
   <script src="js/field.js"></script>
@@ -18,31 +17,59 @@
   <article>
     <div id="content">
       <div id="left">
-        <div id="team_a">
+        <div class="team">
           <table id="team_a">
             <tr>
-              <th><input type="checkbox" name="selectteama"/></th>
-              <th>team a</th>
-              <th>Stats</th>
+              <td><input type="checkbox" name="selectteama"/><label><span>team a</span></label></td>
+              <td>Stats</td>
             </tr>
             <tr>
-              <td><input type="checkbox" name="SelectAPlayer"/></td>
-              <td>Dummy</td>
+              <td><input type="checkbox" name="selectplayera1"/><label><span>Dummy</span></label></td>
               <td>4%</td>
             </tr>
             <tr>
-              <td><input type="checkbox" name="SelectAPlayer"/></td>
-              <td>Pacman</td>
+              <td><input type="checkbox" name="selectplayera2"/><label><span>Pacman</span></label></td>
               <td>50%</td>
             </tr>
             <tr>
-              <td><input type="checkbox" name="SelectAPlayer"/></td>
-              <td>Sonic</td>
+              <td><input type="checkbox" name="selectplayera3"/><label><span>Sonic</label></td>
               <td>55%</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="selectplayera1"/><label><span>Dummy</span></label></td>
+              <td>4%</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="selectplayera2"/><label><span>Pacman</span></label></td>
+              <td>50%</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="selectplayera3"/><label><span>Sonic</label></td>
+              <td>55%</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="selectplayera1"/><label><span>Dummy</span></label></td>
+              <td>4%</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="selectplayera2"/><label><span>Pacman</span></label></td>
+              <td>50%</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="selectplayera3"/><label><span>Sonic</label></td>
+              <td>55%</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="selectplayera1"/><label><span>Dummy</span></label></td>
+              <td>4%</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="selectplayera2"/><label><span>Pacman</span></label></td>
+              <td>50%</td>
             </tr>
           </table>
         </div>
-      <div id="PlayerStatsLeft">
+      <div id="playerstatsa">
         Bla
       </div>
     </div>
@@ -58,31 +85,65 @@
         <ul id="perspectives_menu">
           <li><button id="BIRD">^</button</li>
           <li><button id="TAUMEL">~</button</li>
-          <li><button id="PLAYER">v</button</li>
+          <li><button id="KEEPERA">&lt;</button</li>
+          <li><button id="KEEPERB">&gt;</button</li>
         </ul>
       </div>
     </div>
     <div id="right">
-      <div id="team_a">
-        <table id="team_B">
+      <div class="team">
+        <table id="team_b">
           <tr>
-            <th><input type="checkbox" name="SelectTeamB"/></th>
-            <th>Team B</th>
-            <th>Stats</th>
+            <td><input type="checkbox" name="selectteamb"/><label><span>Team B</span></label></td>
+            <td>Stats</td>
           </tr>
           <tr>
-            <td><input type="checkbox" name="SelectBPlayer"/></td>
-            <td>Super Mario</td>
+            <td><input type="checkbox" name="selectplayerb1"/><label><span>Super Mario</span></label></td>
             <td>2%</td>
           </tr>
           <tr>
-            <td><input type="checkbox" name="SelectBPlayer"/></td>
-            <td>Zelda</td>
+            <td><input type="checkbox" name="selectplayerb2"/><label><span>Zelda</span></td>
             <td>6%</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" name="selectplayerb1"/><label><span>Super Mario</span></label></td>
+            <td>2%</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" name="selectplayerb2"/><label><span>Zelda</span></td>
+            <td>6%</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" name="selectplayerb1"/><label><span>Super Mario</span></label></td>
+            <td>2%</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" name="selectplayerb2"/><label><span>Zelda</span></td>
+            <td>6%</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" name="selectplayerb1"/><label><span>Super Mario</span></label></td>
+            <td>2%</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" name="selectplayerb2"/><label><span>Zelda</span></td>
+            <td>6%</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" name="selectplayerb1"/><label><span>Super Mario</span></label></td>
+            <td>2%</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" name="selectplayerb2"/><label><span>Zelda</span></td>
+            <td>6%</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" name="selectplayerb1"/><label><span>Super Mario</span></label></td>
+            <td>2%</td>
           </tr>
         </table>
       </div>
-      <div id="PlayerStatsRight">
+      <div id="playerstatsb">
         Bla
       </div>
     </div>

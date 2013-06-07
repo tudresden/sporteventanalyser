@@ -19,7 +19,7 @@ class Field extends Drawable
     @height = 90
     geometry = new THREE.PlaneGeometry(@width, @height)
     mat_cfg = 
-      map:  new THREE.ImageUtils.loadTexture "img/Soccer_field_-_empty1.png"
+      map:  new THREE.ImageUtils.loadTexture "img/Fussballfeld.svg"
       side: THREE.DoubleSide
     material = new THREE.MeshLambertMaterial(mat_cfg)
     @field = new THREE.Mesh geometry, material
@@ -70,7 +70,7 @@ class Ball extends Drawable
 
 class Player extends Drawable
   constructor: (@tricot_image) ->
-    geometry = new THREE.PlaneGeometry(2, 2)
+    geometry = new THREE.PlaneGeometry(4, 4)
     mat_cfg =
       map:       new THREE.ImageUtils.loadTexture @tricot_image
       alphaTest: 0.5
@@ -80,6 +80,7 @@ class Player extends Drawable
     geometry = new THREE.PlaneGeometry 2, 2
     mat_cfg =
       map:         new THREE.ImageUtils.loadTexture "img/shadow.png"
+      alpha:       0.5
       transparent: true
     material = new THREE.MeshBasicMaterial mat_cfg
     @shadow = new THREE.Mesh geometry, material
@@ -91,17 +92,15 @@ class Player extends Drawable
     @target_pos =
       x: 0,
       y: 0  # middle of the field
-    console.log @shadow
+    @anim_factor = 10
 
   update: (time, data) ->
     @target_pos = data.pos
     @last_update = time
 
   animate: (time) ->
-    factor = 10
-    @shirt.position.x = (factor * @shirt.position.x + @target_pos.x )/(factor + 1)
-    @shirt.position.z = (factor * @shirt.position.z + @target_pos.y )/(factor + 1)
-    console.log(@shirt.position)
+    @shirt.position.x = (@anim_factor * @shirt.position.x + @target_pos.x )/(@anim_factor + 1)
+    @shirt.position.z = (@anim_factor * @shirt.position.z + @target_pos.y )/(@anim_factor + 1)
 
     @shadow.position.x = @shirt.position.x
     @shadow.position.z = @shirt.position.z
