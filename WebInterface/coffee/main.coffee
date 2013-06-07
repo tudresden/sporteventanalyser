@@ -5,13 +5,10 @@ ball = new Ball()
 players = []
 for i in [1..11]
   do (i) ->
-    players.push new Player "img/ball.png"
+    players.push new Player "img/trikot_gelb_" + i + ".svg"
 for i in [1..11]
   do (i) ->
-    players.push new Player "img/ball.png"
-
-
-console.log field.toString()
+    players.push new Player "img/trikot_rot_" + i + ".svg"
 
 engine.add field
 engine.add ball
@@ -23,7 +20,8 @@ $ ->
   $("#field").append engine.get_canvas()
   for button in $("#perspectives_menu li button")
     do (button) ->
-      button.onclick = engine.set_cam_mode(button.id)
+      button.onclick = () -> engine.set_cam_mode(button.id)
+      console.log button
   
   run = ->
     requestAnimationFrame run
@@ -37,6 +35,8 @@ $ ->
     # setting new player positions
     for plr in players
       do (plr) ->
+        if Math.random() > 0.5
+          return
         data =
           pos:
             x: Math.random() * field.width - field.width/2
