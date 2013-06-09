@@ -1,6 +1,15 @@
 package predictions;
 
 public class GoalPredictor {
+	
+	public GoalPredictor() {
+		init();
+	}
+
+	private void init() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	public void onEvent(String event) {
 		// goal / ball loss / ball out of bounds

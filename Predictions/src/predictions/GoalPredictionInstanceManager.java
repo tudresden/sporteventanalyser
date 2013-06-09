@@ -6,6 +6,7 @@ import java.util.List;
 
 import moa.core.InstancesHeader;
 import weka.core.Attribute;
+import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -53,6 +54,25 @@ public class GoalPredictionInstanceManager {
 		this.instanceHeader
 				.setClassIndex(this.instanceHeader.numAttributes() - 1);
 
+		createEmptyInstance();
+
+	}
+
+	private void createEmptyInstance() {
+		currentInstance = new DenseInstance(getHeader().numAttributes());
+
+		for (int playerIndex = 0; playerIndex < playerNames.size(); playerIndex++)
+			currentInstance.setValue(playerIndex, 0);
+
+		currentInstance.setDataset(getHeader());
+		// currentInstance.setClassValue(EVENT_GOAL);
+	}
+
+	public Instance getTrainingInstance(String result) {
+		Instance instanceForLearner = (Instance) currentInstance.copy();
+		instanceForLearner.setClassValue(result);
+		createEmptyInstance();
+		return instanceForLearner;
 	}
 
 	public InstancesHeader getHeader() {
@@ -61,6 +81,12 @@ public class GoalPredictionInstanceManager {
 
 	public Instance getInstanceForPrediction() {
 		return currentInstance;
+	}
+
+	public void updateInstance(String playerName) {
+		int playerIndex = playerNames.indexOf(playerName);
+		currentInstance.setValue(playerIndex,
+				currentInstance.value(playerIndex));
 	}
 
 }
