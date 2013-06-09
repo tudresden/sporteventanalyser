@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import moa.core.InstancesHeader;
 import weka.core.Attribute;
+import weka.core.Instance;
+import weka.core.Instances;
 
 public class GoalPredictionInstanceManager {
 	public static final String EVENT_GOAL = "goal";
@@ -20,6 +23,9 @@ public class GoalPredictionInstanceManager {
 			"Leon Krapf", "Kevin Baer", "Luca Ziegler", "Ben Mueller",
 			"Vale Reitstetter", "Christopher Lee", "Leon Heinze",
 			"Leo Langhans");
+
+	private InstancesHeader instanceHeader;
+	private Instance currentInstance;
 
 	public GoalPredictionInstanceManager() {
 		init();
@@ -41,6 +47,20 @@ public class GoalPredictionInstanceManager {
 		classLabels.add(EVENT_BALL_OUT_OF_BOUNDS);
 		attributes.add(new Attribute("class", classLabels));
 
+		// create header for learner
+		this.instanceHeader = new InstancesHeader(new Instances(this.getClass()
+				.getName(), attributes, 0));
+		this.instanceHeader
+				.setClassIndex(this.instanceHeader.numAttributes() - 1);
+
+	}
+
+	public InstancesHeader getHeader() {
+		return this.instanceHeader;
+	}
+
+	public Instance getInstanceForPrediction() {
+		return currentInstance;
 	}
 
 }
