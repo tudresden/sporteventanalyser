@@ -62,5 +62,17 @@ public class GoalPredictor {
 		} else
 			System.out.println("[PREDICTION] Votes: - n/a -");
 
+		printAccuracy();
+	}
+
+	public void printAccuracy() {
+		if (numberSamples > 0) {
+			double accuracy = 100.0 * (double) numberSamplesCorrect
+					/ (double) numberSamples;
+			System.out.println("[PREDICTION] " + numberSamples + " instances, "
+					+ accuracy + "% accuracy");
+		} else
+			System.out.println("[PREDICTION] " + numberSamples + " instances, "
+					+ "n/a" + "% accuracy");
 	}
 }
