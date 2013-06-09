@@ -1,24 +1,41 @@
 package predictions;
 
+import weka.core.Instance;
+import moa.classifiers.Classifier;
+import moa.classifiers.trees.HoeffdingTree;
+
 public class GoalPredictor {
-	
+
+	int numberSamplesCorrect;
+	int numberSamples;
+	Classifier learner;
+	GoalPredictionInstanceManager instanceManager;
+
 	public GoalPredictor() {
 		init();
 	}
 
 	private void init() {
-		// TODO Auto-generated method stub
-		
+		learner = new HoeffdingTree();
+		instanceManager = new GoalPredictionInstanceManager();
+
+		learner.setModelContext(instanceManager.getHeader());
+		learner.prepareForUse();
+
+		numberSamplesCorrect = 0;
+		numberSamples = 0;
 	}
 
 	public void onEvent(String event) {
-		// goal / ball loss / ball out of bounds
-		// TODO train the learner with the event
+		Instance trainingInstance = instanceManager.getTrainingInstance(event);
+		learner.trainOnInstance(trainingInstance);
 
+		numberSamples++;
 	}
 
 	public void onPlayerChange(String nameOfPlayerWithBall) {
-		// TODO count ball possession of player and test prediction
+		// count ball possession of player
+		instanceManager.updateInstance(nameOfPlayerWithBall);
 
 	}
 }

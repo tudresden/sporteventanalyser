@@ -86,7 +86,7 @@ public class GoalPredictionInstanceManager {
 	public void updateInstance(String playerName) {
 		int playerIndex = playerNames.indexOf(playerName);
 		currentInstance.setValue(playerIndex,
-				currentInstance.value(playerIndex));
+				currentInstance.value(playerIndex) + 1);
 	}
 
 }
