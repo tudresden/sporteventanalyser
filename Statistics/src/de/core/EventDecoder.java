@@ -3,7 +3,7 @@ package de.core;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
 import com.espertech.esper.client.EPRuntime;
 
 public class EventDecoder

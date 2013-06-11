@@ -46,10 +46,10 @@ public class Main
 		main = new Main();
 
 		// main.test2();
-		main.test();
+//		main.test();
 	}
 
-	public void test()
+	public Main()
 	{
 
 		eventDecoder = new EventDecoder(esperTest.getCepRT());
@@ -69,8 +69,8 @@ public class Main
 		}
 
 		// start decoding the file async
-		Callable<Void> c = new CallableDecode(eventDecoder, 100000000, "full-game.gz");
-		executor.submit(c);
+//		Callable<Void> c = new CallableDecode(eventDecoder, 100000000, "full-game.gz");
+//		executor.submit(c);
 
 		System.out.println("============================================");
 	}
@@ -78,6 +78,10 @@ public class Main
 	public EventDecoder getEventDecoder()
 	{
 		return eventDecoder;
+	}
+	
+	public EsperTest getEsperTest() {
+		return esperTest;
 	}
 
 	public Entity getEntityFromId(int id)
