@@ -1,5 +1,7 @@
 package de.core;
 
+import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
+
 /**
  * 
  * @author Alrik Geselle

@@ -7,7 +7,7 @@ import com.espertech.esper.client.UpdateListener;
 
 import de.core.Ball;
 import de.core.Entity;
-import de.core.Event;
+import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
 import de.core.Goalkeeper;
 import de.core.Main;
 import de.core.Player;
@@ -18,8 +18,8 @@ public class CEPListener implements UpdateListener
 	public void update(EventBean[] newData, EventBean[] oldData)
 	{
 		Event event = ((Event) newData[0].getUnderlying());
-		Entity entity = Main.main.getEntityFromId(event.getId());
-		final int gameTime = Utils.convertTimeToOffset(event.getTimeStamp());
+		Entity entity = Main.main.getEntityFromId(event.getSender());
+		final int gameTime = Utils.convertTimeToOffset(event.getTimestamp());
 
 		if (gameTime >= 0)
 		{

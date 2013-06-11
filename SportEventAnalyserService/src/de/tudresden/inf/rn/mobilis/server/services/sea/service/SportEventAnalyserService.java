@@ -3,6 +3,7 @@ package de.tudresden.inf.rn.mobilis.server.services.sea.service;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 
+import de.core.Main;
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.manager.observer.ReceptionListener;
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.Raw;
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
@@ -21,6 +22,8 @@ import de.tudresden.inf.rn.mobilis.xmpp.server.BeanProviderAdapter;
 
 public class SportEventAnalyserService extends MobilisService {
 
+	private Main main;
+
 	public SportEventAnalyserService() {
 		new Thread() {
 			public void run() {
@@ -34,6 +37,9 @@ public class SportEventAnalyserService extends MobilisService {
 				}
 			}
 		}.start();
+		main = new Main();
+		main.main = main;
+		//hier init
 	}
 
 	@Override
@@ -59,13 +65,14 @@ public class SportEventAnalyserService extends MobilisService {
 							first = false;
 						}
 						Event event = (Event) item;
+						main.getEsperTest().getCepRT().sendEvent(event);
 						// System.out.println(event.getSender() + ", "
-						// + event.getTimestamp() + ", "
-						// + event.getAcceleration());
-						c++;
-						if (c % 100000 == 0)
-							System.out.println("Received " + c + " Events in "
-									+ (System.currentTimeMillis() - cT) + "ms");
+//						// + event.getTimestamp() + ", "
+//						// + event.getAcceleration());
+//						c++;
+//						if (c % 100000 == 0)
+//							System.out.println("Received " + c + " Events in "
+//									+ (System.currentTimeMillis() - cT) + "ms");
 					}
 
 				});

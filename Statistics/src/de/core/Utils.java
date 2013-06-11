@@ -2,6 +2,7 @@ package de.core;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
 
 public class Utils
 {

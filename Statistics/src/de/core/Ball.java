@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
 
 /**
  * 
@@ -112,7 +113,7 @@ public class Ball extends Entity
 		this.acceleration = event.getAcceleration();
 		this.velocity = event.getVelocity();
 
-		this.timeStamp = event.getTimeStamp();
+		this.timeStamp = event.getTimestamp();
 		updateList(event);
 	}
 }
