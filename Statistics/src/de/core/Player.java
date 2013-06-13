@@ -24,8 +24,10 @@ public class Player extends Entity
 	protected int shots;
 	private int missedPasses;
 	private int successfulPasses;
-	protected int ballContacts;
-	protected long ballPossessionTime;
+//	protected int ballContacts;
+//	protected long ballPossessionTime;
+	private int ballContacts;
+	private long ballPossessionTime;
 	public int leftFootID;
 	public int rightFootID;
 	private Map<Integer, Integer> passesFrom;
@@ -159,6 +161,17 @@ public class Player extends Entity
 	{
 		this.missedPasses = missedPasses;
 	}
+	
+	public long getBallPossessionTime()
+	{
+		return ballPossessionTime;
+	}
+
+	public void setBallPossessionTime(long ballPossessionTime)
+	{
+		this.ballPossessionTime = ballPossessionTime;
+	}
+	
 
 	private void updatePosition()
 	{
