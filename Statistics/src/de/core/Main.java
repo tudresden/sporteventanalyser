@@ -20,15 +20,18 @@ public class Main
 	public static Main main;
 	public int ballPosX = 0;
 	public int ballPosY = 0;
-	public long timePlayer;
-	public long timeAllPlayer = 0;
-	public long timeBall;
-	public long timeAllBall = 0;
+//	public long timePlayer;
+//	public long timeAllPlayer = 0;
+	public long timeBall = 0;	//timestamp of lastBallEvent - BESSER: letztes Ball Objekt halten - ging nur nicht bei mir o.O genauso unten lastBallPossessionTimeStamp
+	public long timeAllBall = 0;	//Difference of timestamps for counter
+	public int currentBallAcc = 1; // ball for counter in utils
 
 	public Player currentPlayer = null;
 	public int currentActiveBallId = 0; // ball id
 	public int currentBallPossessionId = 0; // player
-	public int currentBallAcc = 1; // ball
+	
+	public long lastBallPossessionTimeStamp = 0;
+
 	public final static float BALLPOSSESSIONTHRESHOLD = 1000f; // 1000mm = 1m
 	public final static long GAMESTARTTIMESTAMP = 10753295594424116L;
 	public final static int BALLCONTACTTHRESHOLD = 0;
