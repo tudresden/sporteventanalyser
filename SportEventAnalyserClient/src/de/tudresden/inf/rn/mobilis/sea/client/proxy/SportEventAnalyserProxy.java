@@ -1,6 +1,6 @@
 package de.tudresden.inf.rn.mobilis.sea.client.proxy;
 
-import java.util.List;
+import de.tudresden.inf.rn.mobilis.xmpp.beans.XMPPBean;
 public class SportEventAnalyserProxy {
 
 	private ISportEventAnalyserOutgoing _bindingStub;
@@ -16,14 +16,16 @@ public class SportEventAnalyserProxy {
 	}
 
 
-	public void EventNotification( String toJid, List< Event > Sender ) {
-		if ( null == _bindingStub )
-			return;
+	public XMPPBean PlayerMappings( String toJid, IXMPPCallback< Mappings > callback ) {
+		if ( null == _bindingStub || null == callback )
+			return null;
 
-		Events out = new Events( Sender );
+		MappingRequest out = new MappingRequest(  );
 		out.setTo( toJid );
 
-		_bindingStub.sendXMPPBean( out );
+		_bindingStub.sendXMPPBean( out, callback );
+
+		return out;
 	}
 
 }

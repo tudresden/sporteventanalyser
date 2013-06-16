@@ -74,7 +74,7 @@
 
 	<xsl:template match="/" mode="generateService">
 		<xsl:variable name="fileName"
-			select="concat($outputFolder, concat(lower-case($serviceName), '.js'))" />
+			select="concat($outputFolder, concat(lower-case($serviceName), '.sample.js'))" />
 		<xsl:value-of select="$fileName" />
 
 		<!-- creates a file with the filename -->
@@ -525,11 +525,11 @@
 		<!-- add onResult-callback -->
 		<xsl:choose>
 			<xsl:when test="$mepPattern = $mepInOut">
-				<xsl:text>Mobilis.</xsl:text>
+				<xsl:text>onResult ? Mobilis.</xsl:text>
 				<xsl:value-of select="lower-case($serviceName)" />
 				<xsl:text>.DECORATORS.</xsl:text>
 				<xsl:value-of select="$interfaceOperationName" />
-				<xsl:text>Handler(onResult, false)</xsl:text>
+				<xsl:text>Handler(onResult, false) : null</xsl:text>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:text>null</xsl:text>
@@ -541,11 +541,11 @@
 		<!-- append onError whenever any error should be handled -->
 		<xsl:choose>
 			<xsl:when test="../msdl:outfault">
-				<xsl:text>Mobilis.</xsl:text>
+				<xsl:text>onError ? Mobilis.</xsl:text>
 				<xsl:value-of select="lower-case($serviceName)" />
 				<xsl:text>.DECORATORS.</xsl:text>
 				<xsl:value-of select="$interfaceOperationName" />
-				<xsl:text>FaultHandler(onError)</xsl:text>
+				<xsl:text>FaultHandler(onError) : null</xsl:text>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:text>null</xsl:text>
@@ -563,7 +563,7 @@
 		<xsl:value-of select="$indent" />
 		<xsl:text>}</xsl:text>
 		<xsl:if
-			test="following-sibling::msdl:input or ../following-sibling::msdl:operation/msdl:output or ../preceding-sibling::msdl:operation/msdl:output">
+			test="following-sibling::msdl:input or /msdl:description/msdl:interface/msdl:operation/msdl:output">
 			<xsl:text>,</xsl:text>
 		</xsl:if>
 
@@ -1802,7 +1802,7 @@ $(window).unload(function() {
 		 *    The current unix time (in ms)
 		 */
 		getUnixTime : function() {
-			return parseInt(new Date.getTime() / 1000);
+			return new Date().getTime();
 		}
 	}
 

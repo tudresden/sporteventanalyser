@@ -3,8 +3,8 @@ package de.tudresden.inf.rn.mobilis.server.services.sea.service.listener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.packet.Packet;
 
-import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.Events;
 import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.ISportEventAnalyserIncoming;
+import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.MappingRequest;
 import de.tudresden.inf.rn.mobilis.xmpp.beans.XMPPBean;
 import de.tudresden.inf.rn.mobilis.xmpp.server.BeanIQAdapter;
 
@@ -25,8 +25,8 @@ public class IQListener implements PacketListener {
 			XMPPBean xmppBean = ((BeanIQAdapter) packet).getBean();
 
 			// Distribute beans
-			if (xmppBean instanceof Events) {
-				dispatcher.onEventNotification((Events) xmppBean);
+			if (xmppBean instanceof MappingRequest) {
+				dispatcher.onPlayerMappings((MappingRequest) xmppBean);
 			}
 		}
 	}
