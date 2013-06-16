@@ -2,6 +2,7 @@ package de.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
 
 /**
  * 
@@ -23,8 +24,10 @@ public class Player extends Entity
 	protected int shots;
 	private int missedPasses;
 	private int successfulPasses;
-	protected int ballContacts;
-	protected long ballPossessionTime;
+//	protected int ballContacts;
+//	protected long ballPossessionTime;
+	private int ballContacts;
+	private long ballPossessionTime;
 	public int leftFootID;
 	public int rightFootID;
 	private Map<Integer, Integer> passesFrom;
@@ -158,6 +161,17 @@ public class Player extends Entity
 	{
 		this.missedPasses = missedPasses;
 	}
+	
+	public long getBallPossessionTime()
+	{
+		return ballPossessionTime;
+	}
+
+	public void setBallPossessionTime(long ballPossessionTime)
+	{
+		this.ballPossessionTime = ballPossessionTime;
+	}
+	
 
 	private void updatePosition()
 	{
@@ -215,15 +229,15 @@ public class Player extends Entity
 	public void update(Event event)
 	{
 		// update events holder
-		if (Ids.containsKey(event.getId()))
+		if (Ids.containsKey(event.getSender()))
 		{
-			Ids.put(event.getId(), event);
+			Ids.put(event.getSender(), event);
 
-			if (event.getId() == leftFootID)
+			if (event.getSender() == leftFootID)
 			{
 				left = true;
 			}
-			else if (event.getId() == rightFootID)
+			else if (event.getSender() == rightFootID)
 			{
 				right = true;
 			}
@@ -232,7 +246,7 @@ public class Player extends Entity
 			updateVelocity();
 			updateAcceleration();
 
-			this.timeStamp = event.getTimeStamp();
+			this.timeStamp = event.getTimestamp();
 		}
 	}
 }
