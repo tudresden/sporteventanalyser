@@ -11,6 +11,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import de.core.Main;
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.manager.observer.ReceptionListener;
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.Raw;
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
@@ -32,8 +33,9 @@ import de.tudresden.inf.rn.mobilis.xmpp.server.BeanProviderAdapter;
 
 public class SportEventAnalyserService extends MobilisService {
 
-	private Mappings mappings;
+	private Main main;
 
+	private Mappings mappings;
 	public SportEventAnalyserService() {
 		new Thread() {
 			public void run() {
@@ -47,7 +49,9 @@ public class SportEventAnalyserService extends MobilisService {
 				}
 			}
 		}.start();
-
+		main = new Main();
+		main.main = main;
+		//hier init
 		mappings = new Mappings();
 
 		try {
@@ -132,12 +136,13 @@ public class SportEventAnalyserService extends MobilisService {
 							first = false;
 						}
 						Event event = (Event) item;
+						// main.getEsperTest().getCepRT().sendEvent(event);
 						// System.out.println(event.getSender() + ", "
 						// + event.getTimestamp() + ", "
 						// + event.getAcceleration());
-						if (event.getSender() == 4) {
-							seaPubSub.getStatistics().setPositionOfPlayer(4, event.getPositionX(), event.getPositionY(), event.getVelocityX(), event.getVelocityY());
-						}
+						//if (event.getSender() == 4) {
+							//seaPubSub.getStatistics().setPositionOfPlayer(4, event.getPositionX(), event.getPositionY(), event.getVelocityX(), event.getVelocityY());
+						//}
 //						c++;
 //						if (c % 100000 == 0)
 //							System.out.println("Received " + c + " Events in "
