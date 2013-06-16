@@ -10,32 +10,24 @@
 	<msdl:types>
 		<xs:schema targetNamespace="http://mobilis.inf.tu-dresden.de/SportEventAnalyser">
 
-			<xs:element name="Events">
+			<xs:complexType name="Mapping">
+				<xs:sequence>
+					<xs:element name="PlayerID" type="xs:int" />
+					<xs:element name="PlayerName" type="xs:string" />
+					<xs:element name="TeamID" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:element name="Mappings">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="Sender" type="tns:Event" minOccurs="1"
+						<xs:element name="Mappings" type="tns:Mapping" minOccurs="1"
 							maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-
-			<xs:complexType name="Event">
-				<xs:sequence>
-					<xs:element name="Sender" type="xs:int" />
-					<xs:element name="Timestamp" type="xs:long" />
-					<xs:element name="PositionX" type="xs:int" />
-					<xs:element name="PositionY" type="xs:int" />
-					<xs:element name="PositionZ" type="xs:int" />
-					<xs:element name="Velocity" type="xs:int" />
-					<xs:element name="Acceleration" type="xs:int" />
-					<xs:element name="VelocityX" type="xs:int" />
-					<xs:element name="VelocityY" type="xs:int" />
-					<xs:element name="VelocityZ" type="xs:int" />
-					<xs:element name="AccelerationX" type="xs:int" />
-					<xs:element name="AccelerationY" type="xs:int" />
-					<xs:element name="AccelerationZ" type="xs:int" />
-				</xs:sequence>
-			</xs:complexType>
+			
+			<xs:element name="MappingRequest" />
 
 		</xs:schema>
 	</msdl:types>
@@ -45,9 +37,9 @@
 
 	<msdl:interface name="SEAInterface">
 
-		<msdl:operation name="EventNotification"
-			pattern="http://www.w3.org/ns/wsdl/in-only">
-			<msdl:input element="tns:Events" />
+		<msdl:operation name="PlayerMappings" pattern="http://www.w3.org/ns/wsdl/in-out">
+			<msdl:input element="tns:MappingRequest" />
+			<msdl:output element="tns:Mappings" />
 		</msdl:operation>
 
 	</msdl:interface>
@@ -57,8 +49,9 @@
 	<msdl:binding name="SEABinding" interface="tns:SEAInterface"
 		type="http://mobilis.inf.tu-dresden.de/xmpp/">
 
-		<msdl:operation ref="tns:EventNotification" xmpp:ident="sea:iq:eventnoti">
-			<msdl:input xmpp:type="set" />
+		<msdl:operation ref="tns:PlayerMappings" xmpp:ident="sea:iq:playermappings">
+			<msdl:input xmpp:type="get" />
+			<msdl:output xmpp:type="result" />
 		</msdl:operation>
 
 	</msdl:binding>

@@ -1,4 +1,4 @@
-package de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy;
+package de.tudresden.inf.rn.mobilis.sea.client.proxy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,22 +7,22 @@ import org.xmlpull.v1.XmlPullParser;
 
 import de.tudresden.inf.rn.mobilis.xmpp.beans.XMPPBean;
 
-public class Events extends XMPPBean {
+public class Mappings extends XMPPBean {
 
-	private List< Event > Sender = new ArrayList< Event >();
+	private List< Mapping > Mappings = new ArrayList< Mapping >();
 
 
-	public Events( List< Event > Sender ) {
+	public Mappings( List< Mapping > Mappings ) {
 		super();
-		for ( Event entity : Sender ) {
-			this.Sender.add( entity );
+		for ( Mapping entity : Mappings ) {
+			this.Mappings.add( entity );
 		}
 
-		this.setType( XMPPBean.TYPE_SET );
+		this.setType( XMPPBean.TYPE_RESULT );
 	}
 
-	public Events(){
-		this.setType( XMPPBean.TYPE_SET );
+	public Mappings(){
+		this.setType( XMPPBean.TYPE_RESULT );
 	}
 
 
@@ -38,11 +38,11 @@ public class Events extends XMPPBean {
 				if (tagName.equals(getChildElement())) {
 					parser.next();
 				}
-				else if (tagName.equals( Event.CHILD_ELEMENT ) ) {
-					Event entity = new Event();
+				else if (tagName.equals( Mapping.CHILD_ELEMENT ) ) {
+					Mapping entity = new Mapping();
 
 					entity.fromXML( parser );
-					this.Sender.add( entity );
+					this.Mappings.add( entity );
 					
 					parser.next();
 				}
@@ -67,14 +67,14 @@ public class Events extends XMPPBean {
 		} while (!done);
 	}
 
-	public static final String CHILD_ELEMENT = "Events";
+	public static final String CHILD_ELEMENT = "Mappings";
 
 	@Override
 	public String getChildElement() {
 		return CHILD_ELEMENT;
 	}
 
-	public static final String NAMESPACE = "sea:iq:eventnoti";
+	public static final String NAMESPACE = "sea:iq:playermappings";
 
 	@Override
 	public String getNamespace() {
@@ -83,7 +83,7 @@ public class Events extends XMPPBean {
 
 	@Override
 	public XMPPBean clone() {
-		Events clone = new Events( Sender );
+		Mappings clone = new Mappings( Mappings );
 		clone.cloneBasicAttributes( clone );
 
 		return clone;
@@ -93,10 +93,10 @@ public class Events extends XMPPBean {
 	public String payloadToXML() {
 		StringBuilder sb = new StringBuilder();
 
-		for( Event entry : Sender ) {
-			sb.append( "<" + Event.CHILD_ELEMENT + ">" );
+		for( Mapping entry : this.Mappings ) {
+			sb.append( "<" + Mapping.CHILD_ELEMENT + ">" );
 			sb.append( entry.toXML() );
-			sb.append( "</" + Event.CHILD_ELEMENT + ">" );
+			sb.append( "</" + Mapping.CHILD_ELEMENT + ">" );
 		}
 
 		sb = appendErrorPayload(sb);
@@ -105,12 +105,12 @@ public class Events extends XMPPBean {
 	}
 
 
-	public List< Event > getSender() {
-		return this.Sender;
+	public List< Mapping > getMappings() {
+		return this.Mappings;
 	}
 
-	public void setSender( List< Event > Sender ) {
-		this.Sender = Sender;
+	public void setMappings( List< Mapping > Mappings ) {
+		this.Mappings = Mappings;
 	}
 
 }

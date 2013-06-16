@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!-- Mappings: Name/Team for each player (IDs are distributed during runtime!) -->
+<playerConfig>
+
+	<!-- Team A -->
+	<player>
+		<name>Nick Gertje</name>
+		<team>Team A</team>
+	</player>
+
+	<player>
+		<name>Dennis Dotterweich</name>
+		<team>Team A</team>
+	</player>
+
+	<player>
+		<name>Niklas Waelzlein</name>
+		<team>Team A</team>
+	</player>
+
+	<player>
+		<name>Wili Sommer</name>
+		<team>Team A</team>
+	</player>
+
+	<player>
+		<name>Philipp Harlass</name>
+		<team>Team A</team>
+	</player>
+
+	<player>
+		<name>Roman Hartleb</name>
+		<team>Team A</team>
+	</player>
+
+	<player>
+		<name>Erik Engelhardt</name>
+		<team>Team A</team>
+	</player>
+
+	<player>
+		<name>Sandro Schneider</name>
+		<team>Team A</team>
+	</player>
+
+	<!-- Team B -->
+	<player>
+		<name>Leon Krapf</name>
+		<team>Team B</team>
+	</player>
+
+	<player>
+		<name>Kevin Baer</name>
+		<team>Team B</team>
+	</player>
+
+	<player>
+		<name>Luca Ziegler</name>
+		<team>Team B</team>
+	</player>
+
+	<player>
+		<name>Ben Mueller</name>
+		<team>Team B</team>
+	</player>
+
+	<player>
+		<name>Vale Reitstetter</name>
+		<team>Team B</team>
+	</player>
+
+	<player>
+		<name>Christopher Lee</name>
+		<team>Team B</team>
+	</player>
+
+	<player>
+		<name>Leon Heinze</name>
+		<team>Team B</team>
+	</player>
+
+	<player>
+		<name>Leo Langhans</name>
+		<team>Team B</team>
+	</player>
+
+</playerConfig>

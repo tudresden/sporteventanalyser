@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/MobilisServer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SportEventAnalyserJingle"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SportEventAnalyserPubSub"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
