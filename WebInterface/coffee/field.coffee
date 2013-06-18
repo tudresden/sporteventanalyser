@@ -47,6 +47,8 @@ class Ball extends Drawable
     @shadow.position.y = 0.01
     @followers = [@ball]
     @drawables = [@ball, @shadow]
+    @ball.position.set 0, 0, 0
+
   animate: (time) ->
     @ball.position.y = 1
     @ball.position.y += Math.abs 2 * Math.sin time/120
@@ -65,6 +67,7 @@ class Ball extends Drawable
 
     @shadow.scale.z = @ball.position.y
     @shadow.scale.z -= @ball.geometry.height
+
   toString: ->
     "Ball"
 
