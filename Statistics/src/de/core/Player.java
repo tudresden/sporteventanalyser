@@ -2,6 +2,7 @@ package de.core;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
 
 /**
@@ -24,8 +25,8 @@ public class Player extends Entity
 	protected int shots;
 	private int missedPasses;
 	private int successfulPasses;
-//	protected int ballContacts;
-//	protected long ballPossessionTime;
+	// protected int ballContacts;
+	// protected long ballPossessionTime;
 	private int ballContacts;
 	private long ballPossessionTime;
 	public int leftFootID;
@@ -75,15 +76,10 @@ public class Player extends Entity
 		Ids.put(rightFootID, new Event(rightFootID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
 	}
 
-	public void updateHeatmap()
-	{
-		heatmap.incrementCellValue(super.positionY, super.positionX);
-	}
-
-	public int getId()
-	{
-		return id;
-	}
+	//public void updateHeatmap()
+	//{
+	//	heatmap.incrementCellValue(super.getAccelerationY(), super.getAccelerationX());
+	//}
 
 	public String getTeam()
 	{
@@ -161,7 +157,7 @@ public class Player extends Entity
 	{
 		this.missedPasses = missedPasses;
 	}
-	
+
 	public long getBallPossessionTime()
 	{
 		return ballPossessionTime;
@@ -171,7 +167,6 @@ public class Player extends Entity
 	{
 		this.ballPossessionTime = ballPossessionTime;
 	}
-	
 
 	private void updatePosition()
 	{

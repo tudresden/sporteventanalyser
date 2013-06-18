@@ -9,28 +9,28 @@ import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
  */
 public abstract class Entity
 {
-	public int positionX;
-	public int positionY;
-	public int positionZ;
+	protected int positionX;
+	protected int positionY;
+	protected int positionZ;
 
-	public int velocityX;
-	public int velocityY;
-	public int velocityZ;
+	protected int velocityX;
+	protected int velocityY;
+	protected int velocityZ;
 
-	public int accelerationX;
-	public int accelerationY;
-	public int accelerationZ;
+	protected int accelerationX;
+	protected int accelerationY;
+	protected int accelerationZ;
 
-	public int acceleration;
-	public int velocity;
+	protected int acceleration;
+	protected int velocity;
 
-	public int topSpeedX;
-	public int topSpeedY;
-	public int topSpeedZ;
+	protected int topSpeedX;
+	protected int topSpeedY;
+	protected int topSpeedZ;
 
-	public long timeStamp = 0;
+	protected long timeStamp = 0;
 	protected float totalDistance = -1f;
-	public int id;
+	protected int id;
 
 	public Entity(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, int acc, int vel)
 	{
