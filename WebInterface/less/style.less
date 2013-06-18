@@ -1,3 +1,4 @@
+@import "reset";
 @import "palette";
 @import "layout";
 
@@ -15,7 +16,6 @@
 .infobox {
   .bordered;
   background: rgba(0,0,0,.5);
-  margin: 2pt;
 }
 
 .colored_table {
@@ -41,8 +41,8 @@ html {
   font-family: DejaVu Sans, Helvetica;
 }
 
-header {
-  font-size: 33%;
+header, footer {
+  font-size: 8pt;
 }
 
 video {
@@ -50,6 +50,12 @@ video {
   width: 100%;
   height: 128pt;
   border: 1pt solid #000;
+}
+
+#goals {
+  h1 {
+    font-size: 19pt;
+  }
 }
 
 #goals, #field {
@@ -90,10 +96,12 @@ video {
     }
     .team {
       .infobox;
+      margin: 2pt;
       .colored_table;
       overflow: auto;
     }
     #playerstatsa, #playerstatsb {
+      margin: 2pt;
       height: 200pt;
       .infobox;
     }
