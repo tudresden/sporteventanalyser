@@ -2,4 +2,4 @@
 
 mkdir -p ./js
 coffee -j js/engine.js -c coffee/*.coffee || exit 1
-lessc less/style.less css/style.css
+lessc --yuicompress less/style.less css/style.css
