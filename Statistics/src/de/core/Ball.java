@@ -1,9 +1,7 @@
 package de.core;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
 
 /**
@@ -31,7 +29,7 @@ public class Ball extends Entity
 
 	public String toString()
 	{
-		return "Ball " + this.getId() + " " + this.getTimeStamp() + " (" + this.positionX + ", " + this.positionY + ", " + this.positionZ + ") (" + this.velocityX + ", " + this.velocityY + ", " + this.velocityZ + ") (" + this.accelerationX + ", " + this.accelerationY + ", " + this.accelerationZ + ")";
+		return "Ball " + this.getId() + " " + this.getTimeStamp() + " (" + this.getPositionX() + ", " + this.getPositionY() + ", " + this.getPositionZ() + ") (" + this.getVelocityX() + ", " + this.getVelocityY() + ", " + this.getVelocityZ() + ") (" + this.getAccelerationX() + ", " + this.getAccelerationY() + ", " + this.getAccelerationZ() + ")";
 	}
 
 	private void updateTotalDistance(int x, int y, int z)
@@ -45,25 +43,30 @@ public class Ball extends Entity
 			this.totalDistance += distanceBetween(x, y, z);
 		}
 	}
-	
-	private void updateList(Event jon){
+
+	private void updateList(Event jon)
+	{
 		Ids.addFirst(jon);
-		if(Ids.size()>5){
-		Ids.removeLast();
+		if (Ids.size() > 5)
+		{
+			Ids.removeLast();
 		}
 	}
-	
-	public long getAvgAcceleration(){
+
+	public long getAvgAcceleration()
+	{
 		avgAcceleration = calculateAvgAcceleration();
 		return avgAcceleration;
 	}
-	
-	public long calculateAvgAcceleration(){
+
+	public long calculateAvgAcceleration()
+	{
 		long sum = 0;
-		for(Event joni :Ids){
-			sum+=joni.getAcceleration();
+		for (Event joni : Ids)
+		{
+			sum += joni.getAcceleration();
 		}
-		return sum/Ids.size();
+		return sum / Ids.size();
 	}
 
 	private void setAffected(boolean bool)
@@ -75,11 +78,10 @@ public class Ball extends Entity
 	{
 		return possibleContact;
 	}
+
 	/*
-	public Event[] getSensors()
-	{
-		return new Event[] { Ids.get(id) };
-	}*/
+	 * public Event[] getSensors() { return new Event[] { Ids.get(id) }; }
+	 */
 
 	@Override
 	public void update(Event event)
