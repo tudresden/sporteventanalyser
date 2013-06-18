@@ -1,6 +1,6 @@
-engine = new Engine()
-field = new Field()
 ball = new Ball()
+field = new Field()
+engine = new Engine(ball)
 
 players = []
 for i in [1..11]
@@ -11,7 +11,6 @@ for i in [1..11]
     players.push new Player "img/trikot_rot_" + i + ".svg"
 
 engine.add field
-engine.add ball
 engine.add plr for plr in players
 
 

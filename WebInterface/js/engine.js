@@ -5,9 +5,11 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   Engine = (function() {
-    function Engine() {
+    function Engine(ball) {
       var now;
 
+      this.ball = ball;
+      console.log(this.ball);
       this.resolution = [640, 480];
       this.bgcolor = 0..fffff0;
       this.obj_stack = [];
@@ -24,6 +26,13 @@
       this.renderer.setSize(this.resolution[0], this.resolution[1]);
       now = new Date;
       this.start_time = now.getTime();
+      this.add(this.ball);
+      this.mean_ball_cnt = 1000;
+      this.mean_ball_pos = {
+        x: 0,
+        y: 0,
+        z: 0
+      };
     }
 
     Engine.prototype.get_canvas = function(target_div) {
@@ -57,6 +66,13 @@
         obj = _ref1[_j];
         obj.animate(time);
       }
+      this.mean_ball_pos.x = this.mean_ball_cnt * this.mean_ball_pos.x + this.ball.ball.position.x;
+      this.mean_ball_pos.x /= this.mean_ball_cnt + 1;
+      this.mean_ball_pos.y = this.mean_ball_cnt * this.mean_ball_pos.y + this.ball.ball.position.y;
+      this.mean_ball_pos.y /= this.mean_ball_cnt + 1;
+      this.mean_ball_pos.z = this.mean_ball_cnt * this.mean_ball_pos.z + this.ball.ball.position.z;
+      this.mean_ball_pos.z /= this.mean_ball_cnt + 1;
+      console.log(this.mean_ball_pos);
       switch (this.camera_mode) {
         case "BIRD":
           this.camera.position.set(0, 60, 0);
@@ -64,19 +80,17 @@
           break;
         case "KEEPERA":
           this.camera.position.set(-60, 10, 0);
-          this.camera.rotation.set(0, -Math.PI / 2, 0);
-          this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+          this.camera.lookAt(this.mean_ball_pos);
           break;
         case "KEEPERB":
           this.camera.position.set(60, 10, 0);
-          this.camera.rotation.set(0, Math.PI / 2, 0);
-          this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+          this.camera.lookAt(this.mean_ball_pos);
           break;
         default:
           this.camera.position.x = 5 * Math.cos(time / 1200);
           this.camera.position.y = 33 + 5 * Math.sin(time / 600);
           this.camera.position.z = 50 + 25 * Math.sin(time / 2700);
-          this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+          this.camera.lookAt(this.mean_ball_pos);
       }
       return this.renderer.render(this.scene, this.camera);
     };
@@ -171,6 +185,7 @@
       this.shadow.position.y = 0.01;
       this.followers = [this.ball];
       this.drawables = [this.ball, this.shadow];
+      this.ball.position.set(0, 0, 0);
     }
 
     Ball.prototype.animate = function(time) {
@@ -257,11 +272,11 @@
 
   })(Drawable);
 
-  engine = new Engine();
+  ball = new Ball();
 
   field = new Field();
 
-  ball = new Ball();
+  engine = new Engine(ball);
 
   players = [];
 
@@ -280,8 +295,6 @@
   }
 
   engine.add(field);
-
-  engine.add(ball);
 
   for (_k = 0, _len = players.length; _k < _len; _k++) {
     plr = players[_k];
