@@ -69,7 +69,7 @@ public class Player extends Entity
 		this.ballPossessionTime = 0;
 		this.passesFrom = new HashMap<Integer, Integer>();
 		this.passesTo = new HashMap<Integer, Integer>();
-		this.heatmap = new HeatMapGrid(20, 67925, 52477);
+		this.heatmap = new HeatMapGrid(13, -33960, 33965, -50, 52489);
 
 		Ids.put(leftFootID, new Event(leftFootID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
 		Ids.put(rightFootID, new Event(rightFootID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
