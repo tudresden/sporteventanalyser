@@ -1,0 +1,127 @@
+package predictions;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
+
+import de.core.Entity;
+
+import moa.classifiers.Classifier;
+import moa.core.InstancesHeader;
+import weka.classifiers.lazy.IBk;
+import weka.core.Attribute;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.neighboursearch.LinearNNSearch;
+
+public class PassPredictor {
+
+  int numberSamplesCorrect;
+	int numberSamples;
+	int single=0;
+	IBk ibk;
+	Instances Instances;
+	InstancesHeader instanceHeader;
+	Instance currentInstance;
+	
+	public PassPredictor(String[] attributeName){
+		
+		ArrayList<Attribute> attributes = new ArrayList<Attribute>();
+		for(String name: attributeName)
+			attributes.add( new Attribute(name));
+		
+		this.instanceHeader = new InstancesHeader(new Instances(this.getClass().getName(), attributes, 0));
+		this.instanceHeader.setClassIndex(this.instanceHeader.numAttributes() - 1);
+		
+		ibk = new IBk(10);
+		Instances = new Instances(this.instanceHeader);
+	}
+	
+	public void onEvent(Integer[] Data){
+	
+		this.logInt(Data);
+		
+		for(int i=0;i<currentInstance.numAttributes()-1;i++)
+			currentInstance.setValue(0, Data[i]);
+		
+		try {
+			double[] distances = ibk.distributionForInstance(currentInstance);
+			double distance=ibk.classifyInstance(currentInstance);
+			for(double db : distances)
+				System.out.println("[PREDICTION]"+ db);
+			
+			System.out.println("[PREDICTION] "+ distance);
+			
+		} catch (Exception e) {
+			System.out.println("[PREDICTION] no neighbors found");
+		}
+		
+		currentInstance.setValue(currentInstance.numAttributes()-1, Data[currentInstance.numAttributes()-1]);
+		
+		Instances.add(currentInstance);
+		
+		try {
+			ibk.updateClassifier(currentInstance);	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void logPositions(ConcurrentHashMap<Integer, Entity> entityList, int result){
+		try {
+			PrintWriter out = new PrintWriter(new FileWriter("log.position.txt",true));
+			Iterator it=entityList.keySet().iterator();
+			String str="";
+			String header="";
+			Integer counter=0;
+			int single=0;
+			while(it.hasNext()){
+				Integer key=(Integer)it.next();
+				Entity entity=entityList.get(key);
+				if(single==0)
+					header+="pos"+counter+",pos"+counter+1+",";
+				str+=entity.getPositionX()+","+entity.getPositionY()+",";
+				counter++;
+			}
+			if(single==0){
+				out.write(header+"\n");
+				single=1;
+			}
+			
+			str+=result+"\n";
+			out.write(str);
+			out.close();
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void logInt(Integer dataSet[]){
+		try {
+			PrintWriter out = new PrintWriter(new FileWriter("log.dataset.txt",true));
+			String str="";
+			String header="";
+			int counter=0;
+			for(int data : dataSet){
+				if(this.single==0)
+					header+="data"+counter+",";
+				str+=data+",";
+				counter++;
+			}
+			if(this.single==0){
+				out.write(header+"\n");
+				this.single=1;
+			}
+			
+			str+="\n";
+			out.write(str);
+			out.close();
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+	
+}
