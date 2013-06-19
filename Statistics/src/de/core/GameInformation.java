@@ -10,23 +10,20 @@ import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
 
 public class GameInformation implements UpdateListener
 {
-	private Config config;
-
+	private int ballPosX = 0;
+	private int ballPosY = 0;
+	private int currentActiveBallId = 0; // ball id
+	private int currentBallAcc = 1; // ball for counter in utils
 	// Team
 	private int[] a = { 47, 49, 19, 53, 23, 57, 59 }; // vorerst ohne Torwart
 	private int[] b = { 63, 65, 67, 69, 71, 73, 75 }; // vorerst ohne Torwart
-	private int ballPosX = 0;
-	private int ballPosY = 0;
-
-	private int currentActiveBallId = 0; // ball id
-	public int currentBallAcc = 1; // ball for counter in utils
-	private Player currentPlayer = null;
 
 	private long lastBallPossessionTimeStamp = 0;
+	private long timeAllBall = 0; // Difference of timestamps for counter
+	private long timeBall = 0; // timestamp of lastBallEvent - BESSER: letztes Ball Objekt halten - ging nur nicht bei mir o.O genauso unten
 
-	public long timeAllBall = 0; // Difference of timestamps for counter
-
-	public long timeBall = 0; // timestamp of lastBallEvent - BESSER: letztes Ball Objekt halten - ging nur nicht bei mir o.O genauso unten
+	private Config config;
+	private Player currentPlayer = null;
 
 	public GameInformation()
 	{
@@ -43,19 +40,7 @@ public class GameInformation implements UpdateListener
 		return currentActiveBallId;
 	}
 
-	public Entity getEntityFromId(int id)
-	{
-		final ConcurrentHashMap<Integer, Entity> entityList = config.getEntityList();
-
-		if (entityList.containsKey(id))
-		{
-			return entityList.get(id);
-		}
-
-		return null;
-	}
-
-	public boolean getBallHit(Player nearestPlayer, Ball ball)
+	private boolean getBallHit(Player nearestPlayer, Ball ball)
 	{
 		// Counter for time - add Difference of timestamp - only all 10ms one BallHit!
 		if (currentBallAcc == 0)
@@ -88,21 +73,33 @@ public class GameInformation implements UpdateListener
 		return false;
 	}
 
-	public int getBallPosX()
+	private int getBallPosX()
 	{
 		return ballPosX;
 	}
 
-	// Ball
-
-	public int getBallPosY()
+	private int getBallPosY()
 	{
 		return ballPosY;
 	}
 
+	// Ball
+
+	private Entity getEntityFromId(int id)
+	{
+		final ConcurrentHashMap<Integer, Entity> entityList = config.getEntityList();
+
+		if (entityList.containsKey(id))
+		{
+			return entityList.get(id);
+		}
+
+		return null;
+	}
+
 	// Player
 
-	public Player getNearestPlayer(Ball ball)
+	private Player getNearestPlayer(Ball ball)
 	{
 		float nearestPlayerDistance = Float.MAX_VALUE;
 		float distance;
@@ -304,17 +301,17 @@ public class GameInformation implements UpdateListener
 		return 100 * (successfulPasses / missedPasses);
 	}
 
-	public void setBallPosX(int posX)
+	private void setBallPosX(int posX)
 	{
 		this.ballPosX = posX;
 	}
 
-	public void setBallPosY(int posY)
+	private void setBallPosY(int posY)
 	{
 		this.ballPosY = posY;
 	}
 
-	public void shotOnGoal(LocalEventDecoder ed, Ball ball)
+	private void shotOnGoal(LocalEventDecoder ed, Ball ball)
 	{
 		final int oldX = getBallPosX();
 		final int oldY = getBallPosY();
