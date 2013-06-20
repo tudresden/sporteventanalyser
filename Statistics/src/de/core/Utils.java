@@ -108,4 +108,26 @@ public class Utils
 	{
 		return (Config.GAMEFIELDMINX <= x) && (x <= Config.GAMEFIELDMAXX) && (Config.GAMEFIELDMINY <= y) && (y <= Config.GAMEFIELDMAXY);
 	}
+
+	/**
+	 * Calculates all values of a HeatMapInit object needed to create new HeatMapGrid objects.
+	 * 
+	 * @return HeatMapInit object with all its information.
+	 */
+	public static HeatMapInit calculateHeatMapInit()
+	{
+		HeatMapInit heatMapInit = new HeatMapInit();
+		int fieldWidthInMM = Config.GAMEFIELDMAXY + Math.abs(Config.GAMEFIELDMINY);
+		int fieldHeightInMM = Config.GAMEFIELDMAXX + Math.abs(Config.GAMEFIELDMINX);
+		heatMapInit.widthInCells = Config.heatMapWidthInCells;
+		heatMapInit.widthResolution = fieldWidthInMM / Config.heatMapWidthInCells;
+		heatMapInit.heightInCells = Math.round((float) fieldHeightInMM / heatMapInit.widthResolution);
+		heatMapInit.heightResolution = fieldHeightInMM / heatMapInit.heightInCells;
+		if (Config.GAMEFIELDMINY < 0)
+			heatMapInit.yMinNegativeAbs -= Config.GAMEFIELDMINY;
+		if (Config.GAMEFIELDMINX < 0)
+			heatMapInit.xMinNegativeAbs -= Config.GAMEFIELDMINX;
+
+		return heatMapInit;
+	}
 }
