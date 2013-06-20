@@ -70,16 +70,16 @@ public class Player extends Entity
 		this.ballPossessionTime = 0;
 		this.passesFrom = new HashMap<Integer, Integer>();
 		this.passesTo = new HashMap<Integer, Integer>();
-		this.heatmap = new HeatMapGrid(13, -33960, 33965, -50, 52489);
+		this.heatmap = new HeatMapGrid(Config.heatMapInit);
 
 		Ids.put(leftFootID, new Event(leftFootID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
 		Ids.put(rightFootID, new Event(rightFootID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
 	}
 
-	//public void updateHeatmap()
-	//{
-	//	heatmap.incrementCellValue(super.getAccelerationY(), super.getAccelerationX());
-	//}
+	// public void updateHeatmap()
+	// {
+	// heatmap.incrementCellValue(super.getAccelerationY(), super.getAccelerationX());
+	// }
 
 	public String getTeam()
 	{
@@ -240,6 +240,8 @@ public class Player extends Entity
 			updatePosition();
 			updateVelocity();
 			updateAcceleration();
+
+			heatmap.incrementCellValue(event.getPositionY(), event.getPositionX());
 
 			this.timeStamp = event.getTimestamp();
 		}
