@@ -12,15 +12,34 @@ import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
 public class GameInformation implements UpdateListener
 {
 	private int currentGameTime = 0;
-	private int currentActiveBallId = 0; // ball id
-	private int currentBallAcc = 1; // ball for counter
-	// Team
-	private int[] a = { 47, 49, 19, 53, 23, 57, 59 }; // vorerst ohne Torwart
-	private int[] b = { 63, 65, 67, 69, 71, 73, 75 }; // vorerst ohne Torwart
+	/**
+	 * ball id
+	 */
+	private int currentActiveBallId = 0;
+
+	/**
+	 * ball for counter
+	 */
+	private int currentBallAcc = 1;
+	/**
+	 * Team A vorerst ohne Torwart
+	 */
+	private int[] a = { 47, 49, 19, 53, 23, 57, 59 };
+	/**
+	 * Team B vorerst ohne Torwart
+	 */
+	private int[] b = { 63, 65, 67, 69, 71, 73, 75 };
 
 	private long lastBallPossessionTimeStamp = 0;
-	private long timeAllBall = 0; // Difference of timestamps for counter
-	private long timeBall = 0; // timestamp of lastBallEvent - BESSER: letztes Ball Objekt halten - ging nur nicht bei mir o.O genauso unten
+	/**
+	 * Difference of timestamps for counter.
+	 */
+	private long timeAllBall = 0;
+
+	/**
+	 * timestamp of lastBallEvent - BESSER: letztes Ball Objekt halten - ging nur nicht bei mir o.O genauso unten
+	 */
+	private long timeBall = 0;
 
 	private Config config;
 	private Player currentPlayer = null;
@@ -419,7 +438,7 @@ public class GameInformation implements UpdateListener
 	}
 
 	/**
-	 * Calculates if the Ball moves towards the goals
+	 * Calculates if the <code>Ball</code> moves towards the goals
 	 * 
 	 * @param ball
 	 *            the <code>Ball</code> object
