@@ -1,5 +1,6 @@
 package de.core;
 
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -70,17 +71,17 @@ public class Utils
 	}
 
 	/**
-	 * Checks if a pass is successful or not or if there is no pass
+	 * Checks if a pass is successful or not or if there is no pass.
 	 * 
 	 * @param a
-	 *            player
+	 *            first player
 	 * @param b
-	 *            player
-	 * @return 0 no pass, 1 pass, 2 pass failed
+	 *            second player
+	 * @return 0 no pass, 1 pass, 2 pass failed.
 	 */
 	public static int pass(Player a, Player b)
 	{
-		if (a != null & b != null)
+		if (a != null && b != null)
 		{
 			if (a.getTeam().equals(b.getTeam()) && (a.getId() != b.getId()))
 			{
@@ -107,5 +108,39 @@ public class Utils
 	public static boolean positionWithinField(int x, int y)
 	{
 		return (Config.GAMEFIELDMINX <= x) && (x <= Config.GAMEFIELDMAXX) && (Config.GAMEFIELDMINY <= y) && (y <= Config.GAMEFIELDMAXY);
+	}
+
+	/**
+	 * Calculates all values of a HeatMapInit object needed to create new HeatMapGrid objects.
+	 * 
+	 * @return HeatMapInit object with all its information.
+	 */
+	public static HeatMapInit calculateHeatMapInit()
+	{
+		HeatMapInit heatMapInit = new HeatMapInit();
+
+		int fieldWidthInMM = Config.GAMEFIELDMAXY + Math.abs(Config.GAMEFIELDMINY);
+		int fieldHeightInMM = Config.GAMEFIELDMAXX + Math.abs(Config.GAMEFIELDMINX);
+
+		heatMapInit.widthInCells = Config.heatMapWidthInCells;
+		heatMapInit.widthResolution = fieldWidthInMM / Config.heatMapWidthInCells;
+		heatMapInit.heightInCells = fastRound((float) fieldHeightInMM / heatMapInit.widthResolution);
+		heatMapInit.heightResolution = fieldHeightInMM / heatMapInit.heightInCells;
+
+		if (Config.GAMEFIELDMINY < 0)
+		{
+			heatMapInit.yMinNegativeAbs -= Config.GAMEFIELDMINY;
+		}
+		if (Config.GAMEFIELDMINX < 0)
+		{
+			heatMapInit.xMinNegativeAbs -= Config.GAMEFIELDMINX;
+		}
+
+		return heatMapInit;
+	}
+
+	public static String timeToHumanReadable(final int seconds)
+	{
+		return String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(seconds), TimeUnit.SECONDS.toSeconds(seconds) % 60);
 	}
 }
