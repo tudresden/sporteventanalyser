@@ -40,6 +40,8 @@ public class Player extends Entity
 	private boolean left = false;
 	private boolean right = false;
 
+	private Pass lastPass;
+
 	protected Map<Integer, Event> Ids;
 
 	private HeatMapGrid heatmap;
@@ -166,6 +168,27 @@ public class Player extends Entity
 	public void setBallPossessionTime(long ballPossessionTime)
 	{
 		this.ballPossessionTime = ballPossessionTime;
+	}
+
+	/**
+	 * Get the last pass of this player.
+	 * 
+	 * @return True if successful, false if not or null if there was no pass in the past.
+	 */
+	public Pass getLastPass()
+	{
+		return lastPass;
+	}
+
+	/**
+	 * Set the last pass of this player.
+	 * 
+	 * @param pass
+	 *            The new <code>Pass</code> object.
+	 */
+	public void setLastPass(Pass pass)
+	{
+		lastPass = pass;
 	}
 
 	private void updatePosition()
