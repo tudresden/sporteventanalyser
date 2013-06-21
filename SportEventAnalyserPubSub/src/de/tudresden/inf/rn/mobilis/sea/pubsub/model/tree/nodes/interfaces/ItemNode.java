@@ -2,7 +2,7 @@ package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces;
 
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.interfaces.Visitor;
 
-public abstract class ItemNode extends Node implements
+public abstract class ItemNode<T> extends Node<T> implements
 		de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.utils.Iterable {
 
 	/**

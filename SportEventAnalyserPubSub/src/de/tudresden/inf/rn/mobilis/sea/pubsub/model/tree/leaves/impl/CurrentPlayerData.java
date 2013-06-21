@@ -5,10 +5,9 @@ import java.util.Map;
 
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.PlayerStatistic;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.DataNode;
-import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.Node;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.interfaces.Visitor;
 
-public class CurrentPlayerData extends DataNode {
+public class CurrentPlayerData extends DataNode<CurrentPlayerData> {
 
 	private static final String NODENAME = "CurrentPlayerData";
 
@@ -70,11 +69,55 @@ public class CurrentPlayerData extends DataNode {
 	}
 
 	@Override
-	public Node clone() {
+	public String toPredictiveCodedXML(CurrentPlayerData iNode) {
+		boolean c = false;
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("<CurrentPlayerData>");
+
+		// Append PlayerStatistic
+		String s;
+		for (PlayerStatistic playerStatistic : playerStatistics.values()) {
+			if (iNode.getPlayerStatistic(playerStatistic.getId()) == null) {
+				s = playerStatistic.toXML();
+			} else {
+				s = playerStatistic.toPredictiveCodedXML(iNode
+						.getPlayerStatistic(playerStatistic.getId()));
+			}
+			if (s.length() > 0) {
+				c = true;
+				sb.append(s);
+			}
+		}
+
+		if (c) {
+			sb.append("</CurrentPlayerData>");
+
+			return sb.toString();
+		}
+
+		return "";
+	}
+
+	@Override
+	public void copy(CurrentPlayerData dest) {
+		// Copy PlayerStatistics
+		PlayerStatistic destPlayerStatistic;
+		for (PlayerStatistic playerStatistic : playerStatistics.values()) {
+			if ((destPlayerStatistic = dest.getPlayerStatistic(playerStatistic
+					.getId())) == null) {
+				dest.registerPlayerStatistic(playerStatistic.clone());
+			} else {
+				playerStatistic.copy(destPlayerStatistic);
+			}
+		}
+	}
+
+	@Override
+	public CurrentPlayerData clone() {
 		CurrentPlayerData clone = new CurrentPlayerData();
 		for (PlayerStatistic playerStatistic : playerStatistics.values()) {
-			clone.registerPlayerStatistic((PlayerStatistic) playerStatistic
-					.clone());
+			clone.registerPlayerStatistic(playerStatistic.clone());
 		}
 		return clone;
 	}

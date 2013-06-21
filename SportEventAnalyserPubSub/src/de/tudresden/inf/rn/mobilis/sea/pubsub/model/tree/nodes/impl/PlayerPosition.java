@@ -1,9 +1,8 @@
 package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl;
 
-import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.Node;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.PositionNode;
 
-public class PlayerPosition extends PositionNode {
+public class PlayerPosition extends PositionNode<PlayerPosition> {
 
 	/**
 	 * ID of this player
@@ -45,7 +44,41 @@ public class PlayerPosition extends PositionNode {
 	}
 
 	@Override
-	public Node clone() {
+	public String toPredictiveCodedXML(PlayerPosition iNode) {
+		boolean c = false;
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("<PlayerPosition>");
+
+		// ID
+		sb.append("<id>");
+		sb.append(id);
+		sb.append("</id>");
+
+		// Append super
+		String s = super.toPredictiveCodedXML(iNode);
+		if (s.length() > 0) {
+			c = true;
+			sb.append(s);
+		}
+
+		if (c) {
+			sb.append("</PlayerPosition>");
+
+			return sb.toString();
+		}
+
+		return "";
+	}
+
+	@Override
+	public void copy(PlayerPosition dest) {
+		// Copy super
+		super.copy(dest);
+	}
+
+	@Override
+	public PlayerPosition clone() {
 		return new PlayerPosition(this.getID(), this.getPositionX(),
 				this.getPositionY(), this.getVelocityX(), this.getVelocityY());
 	}

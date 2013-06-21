@@ -16,7 +16,7 @@ public class SportEventAnalyserProxy {
 	}
 
 
-	public XMPPBean PlayerMappings( String toJid, IXMPPCallback< Mappings > callback ) {
+	public XMPPBean GameMappings( String toJid, IXMPPCallback< Mappings > callback ) {
 		if ( null == _bindingStub || null == callback )
 			return null;
 

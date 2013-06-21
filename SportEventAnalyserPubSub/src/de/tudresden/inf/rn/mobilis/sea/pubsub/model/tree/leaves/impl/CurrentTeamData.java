@@ -2,10 +2,9 @@ package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl;
 
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.TeamStatistic;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.DataNode;
-import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.Node;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.interfaces.Visitor;
 
-public class CurrentTeamData extends DataNode {
+public class CurrentTeamData extends DataNode<CurrentTeamData> {
 
 	private static final String NODENAME = "CurrentTeamData";
 
@@ -38,14 +37,14 @@ public class CurrentTeamData extends DataNode {
 	/**
 	 * Register teams
 	 * 
-	 * @param firstTeamname
-	 *            the name of the first team
-	 * @param secondTeamname
-	 *            the name of the second team
+	 * @param firstTeam
+	 *            the <code>TeamStatistic</code> of the first team
+	 * @param secondTeam
+	 *            the <code>TeamStatistic</code> of the second team
 	 */
-	public void registerFirstTeam(String firstTeamname, String secondTeamname) {
-		teamA = new TeamStatistic(firstTeamname, 50d, 100d);
-		teamB = new TeamStatistic(secondTeamname, 50d, 100d);
+	public void registerTeams(TeamStatistic firstTeam, TeamStatistic secondTeam) {
+		teamA = firstTeam;
+		teamB = secondTeam;
 	}
 
 	/**
@@ -130,17 +129,73 @@ public class CurrentTeamData extends DataNode {
 			sb.append(teamB.toXML());
 		}
 
-		sb.append("<CurrentTeamData>");
+		sb.append("</CurrentTeamData>");
 
 		return sb.toString();
 	}
 
 	@Override
-	public Node clone() {
+	public String toPredictiveCodedXML(CurrentTeamData iNode) {
+		boolean c = false;
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("<CurrentTeamData>");
+
+		String s;
+		// Append teamA
+		if (teamA != null) {
+			if (iNode.getTeamStatisticOfFirstTeam() == null) {
+				s = teamA.toXML();
+			} else {
+				s = teamA.toPredictiveCodedXML(iNode.getTeamStatistic(teamA
+						.getTeamname()));
+			}
+			if (s.length() > 0) {
+				c = true;
+				sb.append(s);
+			}
+
+			// Append teamB
+			if (iNode.getTeamStatisticOfSecondTeam() == null) {
+				s = teamB.toXML();
+			} else {
+				s = teamB.toPredictiveCodedXML(iNode.getTeamStatistic(teamB
+						.getTeamname()));
+			}
+			if (s.length() > 0) {
+				c = true;
+				sb.append(s);
+			}
+		}
+
+		if (c) {
+			sb.append("</CurrentTeamData>");
+
+			return sb.toString();
+		}
+
+		return "";
+	}
+
+	@Override
+	public void copy(CurrentTeamData dest) {
+		// Copy TeamStatistic
+		TeamStatistic destTeamA;
+		if (teamA != null) {
+			if ((destTeamA = dest.getTeamStatistic(teamA.getTeamname())) == null) {
+				dest.registerTeams(teamA.clone(), teamB.clone());
+			} else {
+				teamA.copy(destTeamA);
+				teamB.copy(dest.getTeamStatistic(teamB.getTeamname()));
+			}
+		}
+	}
+
+	@Override
+	public CurrentTeamData clone() {
 		if (teamA == null)
 			return new CurrentTeamData();
-		return new CurrentTeamData((TeamStatistic) teamA.clone(),
-				(TeamStatistic) teamB.clone());
+		return new CurrentTeamData(teamA.clone(), teamB.clone());
 	}
 
 }

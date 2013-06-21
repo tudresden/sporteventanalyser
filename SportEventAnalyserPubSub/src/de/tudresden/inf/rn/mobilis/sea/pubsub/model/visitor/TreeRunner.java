@@ -41,6 +41,7 @@ public class TreeRunner implements Runnable {
 		while (iterator.hasNext()) {
 			iterator.next().accept(visitor);
 		}
+		iterator.reset();
 	}
 
 }

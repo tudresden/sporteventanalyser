@@ -2,7 +2,7 @@ package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl;
 
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.Node;
 
-public class PlayerStatistic extends Node {
+public class PlayerStatistic extends Node<PlayerStatistic> {
 
 	/**
 	 * ID of this player
@@ -262,6 +262,11 @@ public class PlayerStatistic extends Node {
 		sb.append(passesMade);
 		sb.append("</passesMade>");
 
+		// passesMissed
+		sb.append("<passesMissed>");
+		sb.append(passesMissed);
+		sb.append("</passesMissed>");
+
 		// passesReceived
 		sb.append("<passesReceived>");
 		sb.append(passesReceived);
@@ -298,7 +303,104 @@ public class PlayerStatistic extends Node {
 	}
 
 	@Override
-	public Node clone() {
+	public String toPredictiveCodedXML(PlayerStatistic iNode) {
+		boolean c = false;
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("<PlayerStatistic>");
+
+		// ID
+		sb.append("<id>");
+		sb.append(id);
+		sb.append("</id>");
+
+		// passesMade
+		if (iNode.getPassesMade() != this.getPassesMade()) {
+			c = true;
+			sb.append("<passesMade>");
+			sb.append(passesMade);
+			sb.append("</passesMade>");
+		}
+
+		// passesMissed
+		if (iNode.getPassesMissed() != this.getPassesMissed()) {
+			c = true;
+			sb.append("<passesMissed>");
+			sb.append(passesMissed);
+			sb.append("</passesMissed>");
+		}
+
+		// passesReceived
+		if (iNode.getPassesReceived() != this.getPassesReceived()) {
+			c = true;
+			sb.append("<passesReceived>");
+			sb.append(passesReceived);
+			sb.append("</passesReceived>");
+		}
+
+		// tacklings
+		if (iNode.getTacklings() != this.getTacklings()) {
+			c = true;
+			sb.append("<tacklings>");
+			sb.append(tacklings);
+			sb.append("</tacklings>");
+		}
+
+		// tacklesWon
+		if (iNode.getTacklesWon() != this.getTacklesWon()) {
+			c = true;
+			sb.append("<tacklesWon>");
+			sb.append(tacklesWon);
+			sb.append("</tacklesWon>");
+		}
+
+		// goalsScored
+		if (iNode.getGoalsScored() != this.getGoalsScored()) {
+			c = true;
+			sb.append("<goalsScored>");
+			sb.append(goalsScored);
+			sb.append("</goalsScored>");
+		}
+
+		// ballContacts
+		if (iNode.getBallContacts() != this.getBallContacts()) {
+			c = true;
+			sb.append("<ballContacts>");
+			sb.append(ballContacts);
+			sb.append("</ballContacts>");
+		}
+
+		// possessionTime
+		if (iNode.getPossessionTime() != this.getPossessionTime()) {
+			c = true;
+			sb.append("<possessionTime>");
+			sb.append(possessionTime);
+			sb.append("</possessionTime>");
+		}
+
+		if (c) {
+			sb.append("</PlayerStatistic>");
+
+			return sb.toString();
+		}
+
+		return "";
+	}
+
+	@Override
+	public void copy(PlayerStatistic dest) {
+		dest.setBallContacts(ballContacts);
+		dest.setGoalsScored(goalsScored);
+		dest.setPassesMade(passesMade);
+		dest.setPassesMissed(passesMissed);
+		dest.setPassesReceived(passesReceived);
+		dest.setPossessionTime(possessionTime);
+		dest.setTacklesWon(tacklesWon);
+		dest.setTacklings(tacklings);
+	}
+
+	@Override
+	public PlayerStatistic clone() {
 		return new PlayerStatistic(id, passesMade, passesReceived, tacklings,
 				tacklesWon, goalsScored, ballContacts, possessionTime);
 	}

@@ -8,10 +8,9 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPosi
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentTeamData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.CollectionNode;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.ItemNode;
-import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.Node;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.interfaces.Visitor;
 
-public class StatisticCollection extends CollectionNode {
+public class StatisticCollection extends CollectionNode<StatisticCollection> {
 
 	private static final String NODENAME = "StatisticCollection";
 
@@ -78,8 +77,8 @@ public class StatisticCollection extends CollectionNode {
 	}
 
 	@Override
-	public List<ItemNode> getChildren() {
-		List<ItemNode> list = new LinkedList<ItemNode>();
+	public List<ItemNode<?>> getChildren() {
+		List<ItemNode<?>> list = new LinkedList<ItemNode<?>>();
 		list.add(currentPositionData);
 		list.add(currentPlayerData);
 		list.add(currentTeamData);
@@ -92,11 +91,21 @@ public class StatisticCollection extends CollectionNode {
 	}
 
 	@Override
-	public Node clone() {
-		return new StatisticCollection(
-				(CurrentPositionData) this.currentPositionData.clone(),
-				(CurrentPlayerData) this.currentPlayerData.clone(),
-				(CurrentTeamData) this.currentTeamData.clone());
+	public void copy(StatisticCollection dest) {
+		// Copy CurrentPositionData
+		currentPositionData.copy(dest.getCurrentPositionData());
+
+		// Copy CurrentPlayerData
+		currentPlayerData.copy(dest.getCurrentPlayerData());
+
+		// Copy CurrentTeamData
+		currentTeamData.copy(dest.getCurrentTeamData());
+	}
+
+	@Override
+	public StatisticCollection clone() {
+		return new StatisticCollection(this.currentPositionData.clone(),
+				this.currentPlayerData.clone(), this.currentTeamData.clone());
 	}
 
 }

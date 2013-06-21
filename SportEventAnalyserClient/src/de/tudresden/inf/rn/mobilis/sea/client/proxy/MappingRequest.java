@@ -21,7 +21,7 @@ public class MappingRequest extends XMPPBean {
 		return CHILD_ELEMENT;
 	}
 
-	public static final String NAMESPACE = "sea:iq:playermappings";
+	public static final String NAMESPACE = "sea:iq:gamemappings";
 
 	@Override
 	public String getNamespace() {

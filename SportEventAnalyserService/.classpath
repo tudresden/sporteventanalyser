@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/MobilisServer"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/SportEventAnalyserJingle"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SportEventAnalyserPubSub"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/SportEventAnalyserPubSub"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Statistics"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

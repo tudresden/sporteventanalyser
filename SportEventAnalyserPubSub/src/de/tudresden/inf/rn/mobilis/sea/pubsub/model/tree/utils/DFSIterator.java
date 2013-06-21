@@ -1,5 +1,7 @@
 package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.utils;
 
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.StatisticsFacade;
+
 /**
  * Concrete <code>Iterator</code> through a syntax tree with depth first search
  * (DFS) method
@@ -7,13 +9,20 @@ package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.utils;
 public class DFSIterator extends Iterator {
 
 	/**
+	 * The <code>StatisticsFacade</code> which is used to access the model
+	 */
+	private StatisticsFacade statistics;
+
+	/**
 	 * Constructor for a <code>DFSIterator</code>
 	 * 
-	 * @param node
-	 *            <code>Iterable</code> to start DFS
+	 * @param statistics
+	 *            <code>StatisticsFacade</code> to get the current
+	 *            <code>StatisticCollection</code> from
 	 */
-	public DFSIterator(Iterable node) {
-		dfs(node);
+	public DFSIterator(StatisticsFacade statistics) {
+		this.statistics = statistics;
+		this.reset();
 	}
 
 	/**
@@ -29,5 +38,11 @@ public class DFSIterator extends Iterator {
 				dfs(s);
 			}
 		}
+	}
+
+	@Override
+	public void reset() {
+		super.reset();
+		dfs(statistics.getCurrentStatistics());
 	}
 }
