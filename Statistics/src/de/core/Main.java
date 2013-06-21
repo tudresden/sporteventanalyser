@@ -1,5 +1,6 @@
 package de.core;
 
+
 /**
  * Auslesen vonner Megadatei für ein Programm, welches es eigentlich schon vom Fraunhofer gibt
  * 
