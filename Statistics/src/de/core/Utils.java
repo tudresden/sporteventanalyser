@@ -52,11 +52,41 @@ public class Utils
 		return (int) (x + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
 	}
 
+	/**
+	  * Returns the nearest sensor to the <code>Ball</code> object.
+	  * 
+	  * @param sensors
+	  *            array of sensors
+	  * @param ball
+	  *            <code>Ball</code> object
+	  * @return The shortest distance in mm.
+	  */
 	public static float getNearestSensor(Event[] sensors, Ball ball)
 	{
 		return Math.min(ball.distanceBetween(sensors[0].getPositionX(), sensors[0].getPositionY()), ball.distanceBetween(sensors[1].getPositionX(), sensors[1].getPositionY()));
 	}
 
+	//TODO: schöner machen
+	public static float getDistanceBetween(int posx, int posy, int posxx, int posyy)
+	{
+			double dX = posx - posxx;
+			double dY = posy - posyy;
+			float result = (float) (dX * dX + dY * dY);
+			return (float) Math.sqrt(result);
+	}
+	
+	public static float getDistanceBetweenTwoPlayer(Player player1, Player player2)
+	{
+		Event obj1 = player1.getSensors()[0];
+		Event obj2 = player1.getSensors()[1];
+		Event obj3 = player2.getSensors()[0];
+		Event obj4 = player2.getSensors()[1];
+		
+		float a = Math.min(getDistanceBetween(obj1.getPositionX(), obj1.getPositionY(), obj3.getPositionX(), obj3.getPositionY()),getDistanceBetween(obj1.getPositionX(), obj1.getPositionY(), obj4.getPositionX(), obj4.getPositionY()));
+		float b = Math.min(getDistanceBetween(obj2.getPositionX(), obj2.getPositionY(), obj3.getPositionX(), obj3.getPositionY()),getDistanceBetween(obj2.getPositionX(), obj2.getPositionY(), obj4.getPositionX(), obj4.getPositionY()));
+		return Math.min(a, b);
+	}
+	
 	public static boolean isNumeric(String input)
 	{
 		try
