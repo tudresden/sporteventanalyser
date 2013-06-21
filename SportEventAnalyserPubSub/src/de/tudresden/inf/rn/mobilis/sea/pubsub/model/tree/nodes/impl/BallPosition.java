@@ -1,9 +1,8 @@
 package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl;
 
-import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.Node;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.PositionNode;
 
-public class BallPosition extends PositionNode {
+public class BallPosition extends PositionNode<BallPosition> {
 
 	/**
 	 * Position on the z-axis
@@ -55,7 +54,46 @@ public class BallPosition extends PositionNode {
 	}
 
 	@Override
-	public Node clone() {
+	public String toPredictiveCodedXML(BallPosition iNode) {
+		boolean c = false;
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("<BallPosition>");
+
+		// PositionZ
+		if (iNode.getPositionZ() != this.getPositionZ()) {
+			c = true;
+			sb.append("<positionZ>");
+			sb.append(positionZ);
+			sb.append("</positionZ>");
+		}
+
+		// Append super
+		String s = super.toPredictiveCodedXML(iNode);
+		if (s.length() > 0) {
+			c = true;
+			sb.append(s);
+		}
+
+		if (c) {
+			sb.append("</BallPosition>");
+
+			return sb.toString();
+		}
+
+		return "";
+	}
+
+	@Override
+	public void copy(BallPosition dest) {
+		// Copy super
+		super.copy(dest);
+
+		dest.setPositionZ(positionZ);
+	}
+
+	@Override
+	public BallPosition clone() {
 		return new BallPosition(this.getPositionX(), this.getPositionY(),
 				this.getPositionZ(), this.getVelocityX(), this.getVelocityY());
 	}

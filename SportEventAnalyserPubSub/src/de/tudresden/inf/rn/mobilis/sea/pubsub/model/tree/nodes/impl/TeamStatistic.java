@@ -2,7 +2,7 @@ package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl;
 
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.Node;
 
-public class TeamStatistic extends Node {
+public class TeamStatistic extends Node<TeamStatistic> {
 
 	/**
 	 * The name of the team
@@ -110,7 +110,50 @@ public class TeamStatistic extends Node {
 	}
 
 	@Override
-	public Node clone() {
+	public String toPredictiveCodedXML(TeamStatistic iNode) {
+		boolean c = false;
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("<TeamStatistic>");
+
+		// Teamname
+		sb.append("<teamname>");
+		sb.append(teamname);
+		sb.append("</teamname>");
+
+		// BallPossession
+		if (iNode.getBallPossession() != this.getBallPossession()) {
+			c = true;
+			sb.append("<ballPossession>");
+			sb.append(ballPossession);
+			sb.append("</ballPossession>");
+		}
+
+		// PassingAccuracy
+		if (iNode.getPassingAccuracy() != this.getPassingAccuracy()) {
+			c = true;
+			sb.append("<passingAccuracy>");
+			sb.append(passingAccuracy);
+			sb.append("</passingAccuracy>");
+		}
+
+		if (c) {
+			sb.append("</TeamStatistic>");
+
+			return sb.toString();
+		}
+
+		return "";
+	}
+
+	@Override
+	public void copy(TeamStatistic dest) {
+		dest.setBallPossession(ballPossession);
+		dest.setPassingAccuracy(passingAccuracy);
+	}
+
+	@Override
+	public TeamStatistic clone() {
 		return new TeamStatistic(teamname, ballPossession, passingAccuracy);
 	}
 

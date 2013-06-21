@@ -4,82 +4,98 @@
 
 	<!-- Team A -->
 	<player>
+		<id>13</id>
 		<name>Nick Gertje</name>
 		<team>Team A</team>
 	</player>
 
 	<player>
+		<id>47</id>
 		<name>Dennis Dotterweich</name>
 		<team>Team A</team>
 	</player>
 
 	<player>
+		<id>49</id>
 		<name>Niklas Waelzlein</name>
 		<team>Team A</team>
 	</player>
 
 	<player>
+		<id>19</id>
 		<name>Wili Sommer</name>
 		<team>Team A</team>
 	</player>
 
 	<player>
+		<id>53</id>
 		<name>Philipp Harlass</name>
 		<team>Team A</team>
 	</player>
 
 	<player>
+		<id>23</id>
 		<name>Roman Hartleb</name>
 		<team>Team A</team>
 	</player>
 
 	<player>
+		<id>57</id>
 		<name>Erik Engelhardt</name>
 		<team>Team A</team>
 	</player>
 
 	<player>
+		<id>59</id>
 		<name>Sandro Schneider</name>
 		<team>Team A</team>
 	</player>
 
 	<!-- Team B -->
 	<player>
+		<id>61</id>
 		<name>Leon Krapf</name>
 		<team>Team B</team>
 	</player>
 
 	<player>
+		<id>63</id>
 		<name>Kevin Baer</name>
 		<team>Team B</team>
 	</player>
 
 	<player>
+		<id>65</id>
 		<name>Luca Ziegler</name>
 		<team>Team B</team>
 	</player>
 
 	<player>
+		<id>67</id>
 		<name>Ben Mueller</name>
 		<team>Team B</team>
 	</player>
 
 	<player>
+		<id>69</id>
 		<name>Vale Reitstetter</name>
 		<team>Team B</team>
 	</player>
 
 	<player>
+		<id>71</id>
 		<name>Christopher Lee</name>
 		<team>Team B</team>
 	</player>
 
 	<player>
+		<id>73</id>
 		<name>Leon Heinze</name>
 		<team>Team B</team>
 	</player>
 
 	<player>
+		<id>75</id>
 		<name>Leo Langhans</name>
 		<team>Team B</team>
 	</player>

@@ -1,6 +1,6 @@
 package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces;
 
-public abstract class PositionNode extends Node {
+public abstract class PositionNode<T extends PositionNode<T>> extends Node<T> {
 
 	/**
 	 * Position on the x-axis
@@ -131,6 +131,47 @@ public abstract class PositionNode extends Node {
 		sb.append("</velocityY>");
 
 		return sb.toString();
+	}
+
+	@Override
+	public String toPredictiveCodedXML(
+			@SuppressWarnings("rawtypes") PositionNode iNode) {
+		StringBuilder sb = new StringBuilder();
+
+		// PositionX
+		if (iNode.getPositionX() != this.getPositionX()) {
+			sb.append("<positionX>");
+			sb.append(this.getPositionX());
+			sb.append("</positionX>");
+		}
+		// PositionY
+		if (iNode.getPositionY() != this.getPositionY()) {
+			sb.append("<positionY>");
+			sb.append(this.getPositionY());
+			sb.append("</positionY>");
+		}
+		// VelocityX
+		if (iNode.getVelocityX() != this.getVelocityX()) {
+			sb.append("<velocityX>");
+			sb.append(this.getVelocityX());
+			sb.append("</velocityX>");
+		}
+		// VelocityY
+		if (iNode.getVelocityY() != this.getVelocityY()) {
+			sb.append("<velocityY>");
+			sb.append(this.getVelocityY());
+			sb.append("</velocityY>");
+		}
+
+		return sb.toString();
+	}
+
+	@Override
+	public void copy(@SuppressWarnings("rawtypes") PositionNode dest) {
+		dest.setPositionX(positionX);
+		dest.setPositionY(positionY);
+		dest.setVelocityX(velocityX);
+		dest.setVelocityY(velocityY);
 	}
 
 }

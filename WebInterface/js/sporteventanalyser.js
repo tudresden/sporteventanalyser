@@ -2,15 +2,15 @@ var sea = {
 
 	HTTPBIND : "http://127.0.0.1:7070/http-bind/",
 
-	/** Function: getPlayerMappings
-	 *  Get mappings of all players (Receives an array of Mapping-Elements)
+	/** Function: getGameMappings
+	 *  Get mappings of the game (size of the gamefield, mappings for each player, position of goals)
 	 *
 	 *  Parameters:
 	 *    (Function) onResult - Callback function when result received
 	 *    (Function) onTimeout - Callback function when no result has been received (result timed out)
 	 */
-	getPlayerMappings : function(onResult, onTimeout) {
-		Mobilis.sporteventanalyser.PlayerMappings(new Mobilis.sporteventanalyser.ELEMENTS.MappingRequest(), onResult, onTimeout);
+	getGameMappings : function(onResult, onTimeout) {
+		Mobilis.sporteventanalyser.GameMappings(new Mobilis.sporteventanalyser.ELEMENTS.MappingRequest(), onResult, onTimeout);
 	},
 
 	/** Function: connect
@@ -36,39 +36,49 @@ $(function() {
 		sea.connect("seaclient@sea/Client", "sea", "mobilis@sea", function() {
 			// Do something special here!
 
-			// Mobilis.connection.pubsub.discoverNodes(function(iq) {
-				// console.log(iq);
-			// }, function(iq) {
-				// console.log(iq);
-			// });
-			var cT = Mobilis.utils.getUnixTime();
-			var i = 0;
-			sea.pubsub.subscribeCurrentPositionData(function(item) {
-				i++;
-				if (i % 100 == 0) {
-					console.log((Mobilis.utils.getUnixTime() - cT) + " ms");
-					console.log(item);
-				}
-				// console.log(item);
+			// var cT = Mobilis.utils.getUnixTime();
+			// var i = 0;
+
+			sea.getGameMappings(function(Mappings) {
+				var gameField = Mappings.GameFieldSize;
+				var goals = Mappings.Goals;
+				var playerMappings = Mappings.PlayerMappings;
+				console.log("Gamefield parameters:");
+				console.log("Min-X: " + gameField.GameFieldMinX + " Max-X: " + gameField.GameFieldMaxX);
+				console.log("Min-Y: " + gameField.GameFieldMinY + " Max-Y: " + gameField.GameFieldMaxY);
+				console.log("-------------------------------------------------");
+				console.log("Goal 1 parameters:");
+				console.log("Min-X: " + goals[0].GoalMinX + " Max-X: " + goals[0].GoalMaxX);
+				console.log("Goal 2 parameters:");
+				console.log("Min-X: " + goals[1].GoalMinX + " Max-X: " + goals[1].GoalMaxX);
+				console.log("-------------------------------------------------");
+				$.each(playerMappings, function(i, v) {
+					console.log("Player: " + v.PlayerName + " (ID: " + v.PlayerID + ", Team: " + v.TeamName + ")");
+				});
+			}, function() {
+				// TODO: Remove this sample function
+				console.log("Timed out!");
 			});
-			sea.pubsub.subscribeCurrentPlayerData(function(item) {
-				if (i % 100 == 0) {
-					console.log(item);
-				}
-			})
-			// Mobilis.connection.pubsub.subscribe("CurrentPositionData", [], function(iq) {
-				// // console.log(iq);
-				// //
-				// // Return true ist wegen Strophe Handlermanagement mandatory! Ansonsten wird Handler geloescht: Loesung wuerde entsprechend mit Decorator ideal umgesetzt
-				// return true;
-			// }, function(iq) {
-				// // Result: Ist wegen XEP-0060 mandatory, aber beinhaltet keine Informationen: Nur eine Art "Okay, du bist angemeldet" Nachricht
-				// console.log(iq);
-// 
-				// return false;
-			// }, function(iq) {
-				// console.log(iq);
-			// });
+
+			sea.pubsub.subscribeStatistic();
+			
+			sea.pubsub.addCurrentPositionDataHandler(function(item) {
+				// i++;
+				// if (i % 100 == 0) {
+					// console.log((Mobilis.utils.getUnixTime() - cT) + " ms");
+					// console.log(item);
+				// }
+			});
+			sea.pubsub.addCurrentPlayerDataHandler(function(item) {
+				// if (i % 10 == 0) {
+					// console.log(item);
+				// }
+			});
+			sea.pubsub.addCurrentTeamDataHandler(function(item) {
+				// if (i % 10 == 0) {
+					// console.log(item);
+				// }
+			});
 		});
 	});
 });

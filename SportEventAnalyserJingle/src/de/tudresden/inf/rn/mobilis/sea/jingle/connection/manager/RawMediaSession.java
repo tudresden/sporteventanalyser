@@ -49,7 +49,6 @@ public class RawMediaSession extends JingleMediaSession {
 						InetAddress.getByName(getRemote().getIp()), getRemote()
 								.getPort());
 			} catch (SocketException | UnknownHostException e) {
-				// TODO: Handle this!
 				e.printStackTrace();
 			}
 		} else {

@@ -6,7 +6,7 @@ import java.util.List;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.ItemNode;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.Node;
 
-public abstract class Iterator implements java.util.Iterator<Node> {
+public abstract class Iterator implements java.util.Iterator<Node<?>> {
 
 	/**
 	 * Chopped <code>List</code> holding all <code>Iterable</code>
@@ -25,8 +25,8 @@ public abstract class Iterator implements java.util.Iterator<Node> {
 	}
 
 	@Override
-	public ItemNode next() {
-		return (ItemNode) list.get(c++);
+	public ItemNode<?> next() {
+		return (ItemNode<?>) list.get(c++);
 	}
 
 	@Override
@@ -38,6 +38,7 @@ public abstract class Iterator implements java.util.Iterator<Node> {
 	 * Resets the <code>Iterator</code> so it may be used again
 	 */
 	public void reset() {
+		list.clear();
 		c = 0;
 	}
 

@@ -15,13 +15,13 @@ public class SEADispatcher implements ISportEventAnalyserIncoming {
 	}
 
 	@Override
-	public void onPlayerMappings(Mappings in) {
+	public void onGameMappings(Mappings in) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onPlayerMappingsError(MappingRequest in) {
+	public void onGameMappingsError(MappingRequest in) {
 		// TODO Auto-generated method stub
 		
 	}

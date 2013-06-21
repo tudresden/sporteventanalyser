@@ -7,11 +7,11 @@ import java.util.List;
  * A <code>DataNode</code> does only hold data. Therefore it is not
  * <code>Iterable</code>
  */
-public abstract class DataNode extends ItemNode {
+public abstract class DataNode<T> extends ItemNode<T> {
 
 	@Override
-	public List<ItemNode> getChildren() {
-		return new LinkedList<ItemNode>();
+	public List<ItemNode<?>> getChildren() {
+		return new LinkedList<ItemNode<?>>();
 	}
 
 }

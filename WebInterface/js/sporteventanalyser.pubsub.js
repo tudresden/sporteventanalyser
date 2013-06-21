@@ -29,7 +29,7 @@
 
 					arguments[0].children().each(function() {
 						switch($(this).prop("tagName")) {
-							case "id": _PlayerPosition.id = $(this).text();;
+							case "id": _PlayerPosition.id = $(this).text(); break;
 							case "positionX": _PlayerPosition.positionX = $(this).text(); break;
 							case "positionY": _PlayerPosition.positionY = $(this).text(); break;
 							case "velocityX": _PlayerPosition.velocityX = $(this).text(); break;
@@ -50,7 +50,7 @@
 
 					arguments[0].children().each(function() {
 						switch($(this).prop("tagName")) {
-							case "id": _PlayerPosition.id = $(this).text();;
+							case "id": _PlayerPosition.id = $(this).text(); break;
 							case "passesMade": _PlayerPosition.passesMade = $(this).text(); break;
 							case "passesMissed": _PlayerPosition.passesMissed = $(this).text(); break;
 							case "passesReceived": _PlayerPosition.passesReceived = $(this).text(); break;
@@ -73,6 +73,23 @@
 					this.possessionTime = possessionTime;
 				}
 			},
+			TeamStatistic : function TeamStatistic(id, ballPossession, passingAccuracy) {
+				if (arguments[0] instanceof jQuery) {
+					var _TeamStatistic = this;
+
+					arguments[0].children().each(function() {
+						switch($(this).prop("tagName")) {
+							case "teamname": _TeamStatistic.id = $(this).text(); break;
+							case "ballPossession": _TeamStatistic.ballPossession = $(this).text(); break;
+							case "passingAccuracy": _TeamStatistic.passingAccuracy = $(this).text(); break;
+						}
+					});
+				} else {
+					this.id = id;
+					this.ballPossession = ballPossession;
+					this.passingAccuracy = passingAccuracy;
+				}
+			},
 			CurrentPositionData : function CurrentPositionData(positionNodes) {
 				if (arguments[0] instanceof jQuery) {
 					var _CurrentPositionData = this;
@@ -88,65 +105,105 @@
 					this.positionNodes = positionNodes;
 				}
 			},
-			CurrentPlayerData : function CurrentPlayerData(playerStatisticNodes) {
+			CurrentPlayerData : function CurrentPlayerData(playerStatistics) {
 				if (arguments[0] instanceof jQuery) {
 					var _CurrentPlayerData = this;
-					_CurrentPlayerData.playerStatisticNodes = [];
+					_CurrentPlayerData.playerStatistics = [];
 
 					arguments[0].children().each(function() {
 						switch($(this).prop("tagName")) {
-							case "PlayerStatistic": _CurrentPlayerData.playerStatisticNodes.push(new sea.pubsub.ELEMENTS.PlayerStatistic($(this))); break;
+							case "PlayerStatistic": _CurrentPlayerData.playerStatistics.push(new sea.pubsub.ELEMENTS.PlayerStatistic($(this))); break;
 						}
 					});
 				} else {
-					this.playerStatisticNodes = playerStatisticNodes;
+					this.playerStatistics = playerStatistics;
 				}
+			},
+			CurrentTeamData : function CurrentTeamData(teamStatistics) {
+				if (arguments[0] instanceof jQuery) {
+					var _CurrentTeamData = this;
+					_CurrentTeamData.teamStatistics = [];
+
+					arguments[0].children().each(function() {
+						switch($(this).prop("tagName")) {
+							case "TeamStatistic": _CurrentTeamData.teamStatistics.push(new sea.pubsub.ELEMENTS.TeamStatistic($(this))); break;
+						}
+					});
+				} else {
+					this.teamStatistics = teamStatistics;
+				}
+			}
+		},
+
+		INTERNAL : {
+			handlers : [],
+			Handler : function(handler, node) {
+				this.handle = handler;
+				this.match = function(name) {
+					return node == name;
+				}
+			},
+			addHandler : function(handler, node) {
+				var hand = new sea.pubsub.INTERNAL.Handler(handler, node);
+				sea.pubsub.INTERNAL.handlers.push(hand);
+				return hand;
+			},
+			ItemDistributer : function(_iq) {
+				var $iq = $(_iq).children("event").children("items");
+
+				var $item, node;
+				$.each($iq.children("item"), function(index, value) {
+					node = ($item = $(value)).attr("node");
+					for (var i = 0; i < sea.pubsub.INTERNAL.handlers.length; i++) {
+						if (sea.pubsub.INTERNAL.handlers[i].match(node)) {
+							sea.pubsub.INTERNAL.handlers[i].handle($item);
+						}
+					}
+				});
+
+				return true;
 			}
 		},
 
 		DECORATORS : {
-			CurrentPositionDataHandler : function(_callback, _return) {
-				return function(_iq) {
-					var $iq = $(_iq).children("event").children("items");
-					
-					$.each($iq.children("item"), function(index, value) {
-						_callback.apply(this, [new sea.pubsub.ELEMENTS.CurrentPositionData($(value).children())]);
-					});
-
-					return _return;
+			CurrentPositionDataHandler : function(_callback) {
+				return function($item) {
+					_callback.apply(this, [new sea.pubsub.ELEMENTS.CurrentPositionData($item.children())]);
 				}
 			},
-			CurrentPlayerDataHandler : function(_callback, _return) {
-				return function(_iq) {
-					var $iq = $(_iq).children("event").children("items");
-					
-					$.each($iq.children("item"), function(index, value) {
-						_callback.apply(this, [new sea.pubsub.ELEMENTS.CurrentPlayerData($(value).children())]);
-					});
-
-					return _return;
+			CurrentPlayerDataHandler : function(_callback) {
+				return function($item) {
+					_callback.apply(this, [new sea.pubsub.ELEMENTS.CurrentPlayerData($item.children())]);
+				}
+			},
+			CurrentTeamDataHandler : function(_callback) {
+				return function($item) {
+					_callback.apply(this, [new sea.pubsub.ELEMENTS.CurrentTeamData($item.children())]);
 				}
 			}
 		},
 
-		subscribeCurrentPositionData : function(onEvent) {
-			Mobilis.connection.pubsub.subscribe("CurrentPositionData", [], sea.pubsub.DECORATORS.CurrentPositionDataHandler(onEvent, true), function(iq) {
+		subscribeStatistic : function() {
+			Mobilis.connection.pubsub.subscribe("Statistic", { "pubsub#subscription_type" : "items",
+				"pubsub#subscription_depth" : "all"}, sea.pubsub.INTERNAL.ItemDistributer, function(iq) {
 				// Result: Because of XEP-0060 mandatory but without useful informations (Just like: "Dude, you are registered!")
 				return false;
 			}, function(iq) {
 				// Errorcallback
-				Mobilis.utils.trace("(PubSub) CurrentPositionData", iq);
+				Mobilis.utils.trace("PubSub - Error on subscribing", iq);
 			});
 		},
 
-		subscribeCurrentPlayerData : function(onEvent) {
-			Mobilis.connection.pubsub.subscribe("CurrentPlayerData", [], sea.pubsub.DECORATORS.CurrentPlayerDataHandler(onEvent, true), function(iq) {
-				// Result: Because of XEP-0060 mandatory but without useful informations (Just like: "Dude, you are registered!")
-				return false;
-			}, function(iq) {
-				// Errorcallback
-				Mobilis.utils.trace("(PubSub) CurrentPlayerData", iq);
-			});
+		addCurrentPositionDataHandler : function(onEvent) {
+			sea.pubsub.INTERNAL.addHandler(sea.pubsub.DECORATORS.CurrentPositionDataHandler(onEvent), "CurrentPositionData");
+		},
+
+		addCurrentPlayerDataHandler : function(onEvent) {
+			sea.pubsub.INTERNAL.addHandler(sea.pubsub.DECORATORS.CurrentPlayerDataHandler(onEvent), "CurrentPlayerData");
+		},
+
+		addCurrentTeamDataHandler : function(onEvent) {
+			sea.pubsub.INTERNAL.addHandler(sea.pubsub.DECORATORS.CurrentTeamDataHandler(onEvent), "CurrentTeamData");
 		}
 
 	}

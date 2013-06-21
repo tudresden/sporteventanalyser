@@ -26,7 +26,7 @@ public class IQListener implements PacketListener {
 
 			// Distribute beans
 			if (xmppBean instanceof MappingRequest) {
-				dispatcher.onPlayerMappings((MappingRequest) xmppBean);
+				dispatcher.onGameMappings((MappingRequest) xmppBean);
 			}
 		}
 	}

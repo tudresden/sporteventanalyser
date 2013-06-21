@@ -9,13 +9,19 @@ import de.tudresden.inf.rn.mobilis.xmpp.beans.XMPPBean;
 
 public class Mappings extends XMPPBean {
 
-	private List< Mapping > Mappings = new ArrayList< Mapping >();
+	private GameField GameFieldSize = new GameField();
+	private List< Goal > Goals = new ArrayList< Goal >();
+	private List< Mapping > PlayerMappings = new ArrayList< Mapping >();
 
 
-	public Mappings( List< Mapping > Mappings ) {
+	public Mappings( GameField GameFieldSize, List< Goal > Goals, List< Mapping > PlayerMappings ) {
 		super();
-		for ( Mapping entity : Mappings ) {
-			this.Mappings.add( entity );
+		this.GameFieldSize = GameFieldSize;
+		for ( Goal entity : Goals ) {
+			this.Goals.add( entity );
+		}
+		for ( Mapping entity : PlayerMappings ) {
+			this.PlayerMappings.add( entity );
 		}
 
 		this.setType( XMPPBean.TYPE_RESULT );
@@ -38,11 +44,22 @@ public class Mappings extends XMPPBean {
 				if (tagName.equals(getChildElement())) {
 					parser.next();
 				}
+				else if (tagName.equals( GameField.CHILD_ELEMENT ) ) {
+					this.GameFieldSize.fromXML( parser );
+				}
+				else if (tagName.equals( Goal.CHILD_ELEMENT ) ) {
+					Goal entity = new Goal();
+
+					entity.fromXML( parser );
+					this.Goals.add( entity );
+					
+					parser.next();
+				}
 				else if (tagName.equals( Mapping.CHILD_ELEMENT ) ) {
 					Mapping entity = new Mapping();
 
 					entity.fromXML( parser );
-					this.Mappings.add( entity );
+					this.PlayerMappings.add( entity );
 					
 					parser.next();
 				}
@@ -74,7 +91,7 @@ public class Mappings extends XMPPBean {
 		return CHILD_ELEMENT;
 	}
 
-	public static final String NAMESPACE = "sea:iq:playermappings";
+	public static final String NAMESPACE = "sea:iq:gamemappings";
 
 	@Override
 	public String getNamespace() {
@@ -83,7 +100,7 @@ public class Mappings extends XMPPBean {
 
 	@Override
 	public XMPPBean clone() {
-		Mappings clone = new Mappings( Mappings );
+		Mappings clone = new Mappings( GameFieldSize, Goals, PlayerMappings );
 		clone.cloneBasicAttributes( clone );
 
 		return clone;
@@ -93,7 +110,17 @@ public class Mappings extends XMPPBean {
 	public String payloadToXML() {
 		StringBuilder sb = new StringBuilder();
 
-		for( Mapping entry : this.Mappings ) {
+		sb.append( "<" + this.GameFieldSize.getChildElement() + ">" )
+			.append( this.GameFieldSize.toXML() )
+			.append( "</" + this.GameFieldSize.getChildElement() + ">" );
+
+		for( Goal entry : this.Goals ) {
+			sb.append( "<" + Goal.CHILD_ELEMENT + ">" );
+			sb.append( entry.toXML() );
+			sb.append( "</" + Goal.CHILD_ELEMENT + ">" );
+		}
+
+		for( Mapping entry : this.PlayerMappings ) {
 			sb.append( "<" + Mapping.CHILD_ELEMENT + ">" );
 			sb.append( entry.toXML() );
 			sb.append( "</" + Mapping.CHILD_ELEMENT + ">" );
@@ -105,12 +132,28 @@ public class Mappings extends XMPPBean {
 	}
 
 
-	public List< Mapping > getMappings() {
-		return this.Mappings;
+	public GameField getGameFieldSize() {
+		return this.GameFieldSize;
 	}
 
-	public void setMappings( List< Mapping > Mappings ) {
-		this.Mappings = Mappings;
+	public void setGameFieldSize( GameField GameFieldSize ) {
+		this.GameFieldSize = GameFieldSize;
+	}
+
+	public List< Goal > getGoals() {
+		return this.Goals;
+	}
+
+	public void setGoals( List< Goal > Goals ) {
+		this.Goals = Goals;
+	}
+
+	public List< Mapping > getPlayerMappings() {
+		return this.PlayerMappings;
+	}
+
+	public void setPlayerMappings( List< Mapping > PlayerMappings ) {
+		this.PlayerMappings = PlayerMappings;
 	}
 
 }

@@ -32,9 +32,6 @@ public class SportEventAnalyserJingle {
 		// Enable Jingle
 		JingleManager.setJingleServiceEnabled();
 
-		// TODO:
-		// http://fisheye.igniterealtime.org/browse/smack/branches/soc/build/resources/
-		// TODO: Delelte cmd?!
 		// Create STUN-Transport-Manager (have a look at stun-config.xml) -> May
 		// also be a ICETransportManager (using TURN => Do you have a
 		// TURN-Server?)

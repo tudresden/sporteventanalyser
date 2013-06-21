@@ -4,6 +4,6 @@ import de.tudresden.inf.rn.mobilis.xmpp.beans.XMPPBean;
 
 public interface ISportEventAnalyserIncoming {
 
-	XMPPBean onPlayerMappings( MappingRequest in );
+	XMPPBean onGameMappings( MappingRequest in );
 
 }

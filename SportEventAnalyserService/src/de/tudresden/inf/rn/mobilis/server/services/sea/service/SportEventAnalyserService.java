@@ -33,9 +33,10 @@ import de.tudresden.inf.rn.mobilis.xmpp.server.BeanProviderAdapter;
 
 public class SportEventAnalyserService extends MobilisService {
 
-	private Main main;
+	private Main statistic;
 
 	private Mappings mappings;
+
 	public SportEventAnalyserService() {
 		new Thread() {
 			public void run() {
@@ -49,9 +50,10 @@ public class SportEventAnalyserService extends MobilisService {
 				}
 			}
 		}.start();
-		main = new Main();
-		main.main = main;
-		//hier init
+		
+		// Initialize statistic
+		statistic = new Main();
+
 		mappings = new Mappings();
 
 		try {
@@ -64,21 +66,20 @@ public class SportEventAnalyserService extends MobilisService {
 	private void loadPlayerConfig() throws ParserConfigurationException,
 			SAXException, IOException {
 		SAXParserFactory.newInstance().newSAXParser()
-				.parse("src/META-INF/playerConfig.xml", new DefaultHandler() {
+				.parse(getClass().getResource("../../../../../../../../../META-INF/playerConfig.xml").getPath(), new DefaultHandler() {
 
 					private Mapping mapping;
 
-					private int id = 0;
-
-					private boolean xName, xTeam;
+					private boolean xID, xName, xTeam;
 
 					public void startElement(String uri, String localName,
 							String qName, Attributes attributes)
 							throws SAXException {
 						if (qName.equals("player")) {
 							mapping = new Mapping();
-							mapping.setPlayerID(id++);
-						} else if (qName.equals("name"))
+						} else if (qName.equals("id"))
+							xID = true;	
+						else if (qName.equals("name"))
 							xName = true;
 						else if (qName.equals("team"))
 							xTeam = true;
@@ -87,16 +88,19 @@ public class SportEventAnalyserService extends MobilisService {
 					public void endElement(String uri, String localName,
 							String qName) throws SAXException {
 						if (qName.equals("player"))
-							mappings.getMappings().add(mapping);
+							mappings.getPlayerMappings().add(mapping);
 					}
 
 					public void characters(char ch[], int start, int length)
 							throws SAXException {
-						if (xName) {
+						if (xID) {
+							mapping.setPlayerID(Integer.valueOf(new String(ch, start, length)));
+							xID = false;
+						} else if (xName) {
 							mapping.setPlayerName(new String(ch, start, length));
 							xName = false;
 						} else if (xTeam) {
-							mapping.setTeamID(new String(ch, start, length));
+							mapping.setTeamName(new String(ch, start, length));
 							xTeam = false;
 						}
 					}
@@ -113,9 +117,9 @@ public class SportEventAnalyserService extends MobilisService {
 		// PubSub
 		final SportEventAnalyserPubSub seaPubSub = new SportEventAnalyserPubSub(
 				getAgent().getConnection());
-		for (Mapping mapping : mappings.getMappings()) {
+		for (Mapping mapping : mappings.getPlayerMappings()) {
 			//TODO: Remove Sysout
-			System.out.println("Player: " + mapping.getPlayerName() + " (ID: " + mapping.getPlayerID() + ", Team: " + mapping.getTeamID() + ")");
+			System.out.println("Player: " + mapping.getPlayerName() + " (ID: " + mapping.getPlayerID() + ", Team: " + mapping.getTeamName() + ")");
 			seaPubSub.getStatistics().registerPlayer(mapping.getPlayerID());
 		}
 
@@ -136,13 +140,11 @@ public class SportEventAnalyserService extends MobilisService {
 							first = false;
 						}
 						Event event = (Event) item;
-						// main.getEsperTest().getCepRT().sendEvent(event);
+						// statistic.getEsperTest().getCepRT().sendEvent(event);
 						// System.out.println(event.getSender() + ", "
 						// + event.getTimestamp() + ", "
 						// + event.getAcceleration());
-						//if (event.getSender() == 4) {
-							//seaPubSub.getStatistics().setPositionOfPlayer(4, event.getPositionX(), event.getPositionY(), event.getVelocityX(), event.getVelocityY());
-						//}
+						seaPubSub.getStatistics().setPositionOfPlayer(event.getSender(), event.getPositionX(), event.getPositionY(), event.getVelocityX(), event.getVelocityY());
 //						c++;
 //						if (c % 100000 == 0)
 //							System.out.println("Received " + c + " Events in "
