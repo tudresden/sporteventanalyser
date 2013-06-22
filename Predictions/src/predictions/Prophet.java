@@ -8,6 +8,8 @@ import java.util.TimerTask;
 import de.core.GameInformation;
 
 public class Prophet {
+	private static final long PREDICTIONS_PERIOD_TIME = 3 * 1000;
+
 	private List<Predictor> listOfPredictors;
 	private GameInformation gameInformation;
 	private Timer timer;
@@ -33,7 +35,7 @@ public class Prophet {
 			public void run() {
 				updatePredictors();
 			}
-		}, 0, 3 * 1000);
+		}, 0, PREDICTIONS_PERIOD_TIME);
 	}
 
 	/**
