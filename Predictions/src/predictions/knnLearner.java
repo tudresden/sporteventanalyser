@@ -34,15 +34,13 @@ public class knnLearner extends Learner {
 		 * update accuracy
 		 */
 
-		String result = trainingInstance.getInstanceForPrediction()
-				.stringValue(
-						trainingInstance.getInstanceForPrediction()
-								.classIndex());
+		String result = trainingInstance.getInstance().stringValue(
+				trainingInstance.getInstance().classIndex());
 
 		Instances nearestinstances;
 		try {
 			nearestinstances = knn.kNearestNeighbours(
-					trainingInstance.getInstanceForPrediction(), 3);
+					trainingInstance.getInstance(), 3);
 			double[] distances = knn.getDistances();
 			for (int neighborIndex = 0; neighborIndex < nearestinstances.size(); neighborIndex++) {
 				Instance neighbor = nearestinstances.get(neighborIndex);
@@ -71,7 +69,7 @@ public class knnLearner extends Learner {
 		 * train
 		 */
 
-		accumulatedInstances.add(trainingInstance.getInstanceForTraining());
+		accumulatedInstances.add(trainingInstance.getInstanceCopy());
 
 		try {
 			knn.setInstances(accumulatedInstances);
@@ -87,7 +85,7 @@ public class knnLearner extends Learner {
 		Instances nearestinstances;
 		try {
 			nearestinstances = knn.kNearestNeighbours(
-					predictionInstance.getInstanceForPrediction(), 3);
+					predictionInstance.getInstance(), 3);
 			double[] distances = knn.getDistances();
 			for (int neighborIndex = 0; neighborIndex < nearestinstances.size(); neighborIndex++) {
 				Instance neighbor = nearestinstances.get(neighborIndex);
@@ -112,11 +110,11 @@ public class knnLearner extends Learner {
 		if (numberSamples > 0) {
 			double accuracy = 100.0 * (double) numberSamplesCorrect
 					/ (double) numberSamples;
-			System.out.println(TAG + numberSamples + " instances, "
-					+ accuracy + "% accuracy");
+			System.out.println(TAG + numberSamples + " instances, " + accuracy
+					+ "% accuracy");
 		} else
-			System.out.println(TAG + numberSamples + " instances, "
-					+ "n/a" + "% accuracy");
+			System.out.println(TAG + numberSamples + " instances, " + "n/a"
+					+ "% accuracy");
 	}
 
 }

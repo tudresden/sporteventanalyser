@@ -3,14 +3,14 @@ package predictions;
 import weka.core.Instance;
 import moa.core.InstancesHeader;
 
-public interface PredictionInstance {
+public abstract class PredictionInstance {
 
 	abstract void init();
 
 	abstract InstancesHeader getHeader();
 
-	abstract Instance getInstanceForPrediction();
+	abstract Instance getInstance();
 
-	abstract Instance getInstanceForTraining();
+	abstract Instance getInstanceCopy();
 
 }
