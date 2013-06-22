@@ -10,6 +10,7 @@ import de.core.GameInformation;
 public class Prophet {
 	public static final String TAG = "[Predictions][Prophet] ";
 
+	// time between prediction updates TODO should be game time not system time
 	private static final long PREDICTIONS_PERIOD_TIME = 400;
 
 	private List<Predictor> listOfPredictors;
