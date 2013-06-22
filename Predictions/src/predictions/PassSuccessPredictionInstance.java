@@ -23,4 +23,10 @@ public class PassSuccessPredictionInstance implements PredictionInstance {
 		return null;
 	}
 
+	@Override
+	public Instance getInstanceForTraining() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
