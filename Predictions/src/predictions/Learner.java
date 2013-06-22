@@ -12,6 +12,6 @@ public abstract class Learner {
 
 	abstract void train(PredictionInstance trainingInstance);
 
-	abstract int getPrediction(PredictionInstance predictionInstance);
+	abstract void makePrediction(PredictionInstance predictionInstance);
 
 }

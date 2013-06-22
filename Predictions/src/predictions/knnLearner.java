@@ -77,10 +77,12 @@ public class knnLearner extends Learner {
 			e.printStackTrace();
 		}
 
+
+		printAccuracy();
 	}
 
 	@Override
-	public int getPrediction(PredictionInstance predictionInstance) {
+	public void makePrediction(PredictionInstance predictionInstance) {
 
 		Instances nearestinstances;
 		try {
@@ -103,7 +105,6 @@ public class knnLearner extends Learner {
 
 		printAccuracy();
 
-		return 0;
 	}
 
 	public void printAccuracy() {
