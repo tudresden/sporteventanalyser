@@ -8,7 +8,9 @@ import java.util.TimerTask;
 import de.core.GameInformation;
 
 public class Prophet {
-	private static final long PREDICTIONS_PERIOD_TIME = 3 * 1000;
+	public static final String TAG = "[Predictions][Prophet] ";
+
+	private static final long PREDICTIONS_PERIOD_TIME = 400;
 
 	private List<Predictor> listOfPredictors;
 	private GameInformation gameInformation;
@@ -25,7 +27,7 @@ public class Prophet {
 	 * Start the periodic predictions.
 	 */
 	public void start() {
-		System.out.println("Prophet awakened.");
+		System.out.println(TAG + "Prophet awakened.");
 
 		if (timer != null)
 			timer.cancel();
@@ -48,7 +50,7 @@ public class Prophet {
 	}
 
 	private void updatePredictors() {
-		System.out.println("Updating predictors.");
+		System.out.println(TAG + "Updating predictors.");
 
 		for (Predictor predictor : listOfPredictors)
 			predictor.update(gameInformation);
