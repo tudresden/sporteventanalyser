@@ -2,6 +2,11 @@ package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl;
 
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.PositionNode;
 
+/**
+ * A <code>PlayerPosition</code> may be used to handle the position of a player.
+ * It is a concrete <code>PositionNode</code> and holds additionally the id of
+ * the player
+ */
 public class PlayerPosition extends PositionNode<PlayerPosition> {
 
 	/**
@@ -9,6 +14,20 @@ public class PlayerPosition extends PositionNode<PlayerPosition> {
 	 */
 	private int id;
 
+	/**
+	 * Constructor for a <code>PlayerPosition</code>
+	 * 
+	 * @param id
+	 *            the ID of this this player
+	 * @param positionX
+	 *            the position of the player on the x-axis
+	 * @param positionY
+	 *            the position of the player on the y-axis
+	 * @param velocityX
+	 *            the velocity of the player on the x-axis
+	 * @param velocityY
+	 *            the velocity of the player on the y-axis
+	 */
 	public PlayerPosition(int id, int positionX, int positionY, int velocityX,
 			int velocityY) {
 		super(positionX, positionY, velocityX, velocityY);

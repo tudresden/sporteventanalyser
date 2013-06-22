@@ -5,6 +5,10 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPlay
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPositionData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentTeamData;
 
+/**
+ * This interface declares several concrete methods which a concrete
+ * <code>Visitor</code> must implement to access the PubSub-model
+ */
 public interface Visitor {
 
 	/**

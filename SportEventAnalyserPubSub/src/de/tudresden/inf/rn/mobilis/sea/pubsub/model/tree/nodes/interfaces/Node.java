@@ -1,5 +1,16 @@
 package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces;
 
+/**
+ * Any nodes within this PubSub-model are concrete <code>Node</code>s. A
+ * <code>Node</code> implements the <code>Cloneable</code> interface to indicate
+ * to the <code>java.lang.Object.clone()</code> method that it is legal for that
+ * method to make a field-for-field copy of instances of that class. Therefore a
+ * <code>Node</code> should pass a generic parameter to declare the type of the
+ * clone
+ * 
+ * @param <T>
+ *            generic parameter to declare the type of this node
+ */
 public abstract class Node<T> implements Cloneable {
 
 	/**
