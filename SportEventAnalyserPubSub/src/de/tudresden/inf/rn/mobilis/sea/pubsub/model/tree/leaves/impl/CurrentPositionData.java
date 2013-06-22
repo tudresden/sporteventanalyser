@@ -10,17 +10,30 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.DataNo
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.interfaces.Visitor;
 
 /**
- * Concrete statistic <code>Node</code> which is used to set actual positions of
- * players
+ * This <code>CurrentPositionData</code> is a concrete <code>DataNode</code>. It
+ * holds the <code>BallPosition</code> and the positions of all players
  */
 public class CurrentPositionData extends DataNode<CurrentPositionData> {
 
+	/**
+	 * The name of the node
+	 */
 	private static final String NODENAME = "CurrentPositionData";
 
+	/**
+	 * A <code>BallPosition</code> node to set the position of the ball
+	 */
 	private BallPosition ballPosition;
 
+	/**
+	 * A <code>Map</code> which holds all known <code>PlayerPosition</code>s
+	 * (key: ID of the player, value: concrete <code>PlayerPosition</code>)
+	 */
 	private Map<Integer, PlayerPosition> playerPositions;
 
+	/**
+	 * Constructor for this <code>CurrentPositionData</code>
+	 */
 	public CurrentPositionData() {
 		ballPosition = new BallPosition(0, 0, 0, 0, 0);
 		playerPositions = new HashMap<Integer, PlayerPosition>();

@@ -1,5 +1,12 @@
 package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces;
 
+/**
+ * This <code>PositionNode</code> is an auxiliary node to bundle the
+ * x/y-position and x/y-velocity of a subject
+ * 
+ * @param <T>
+ *            generic parameter to declare the type of this node
+ */
 public abstract class PositionNode<T extends PositionNode<T>> extends Node<T> {
 
 	/**
@@ -22,6 +29,18 @@ public abstract class PositionNode<T extends PositionNode<T>> extends Node<T> {
 	 */
 	private int velocityY;
 
+	/**
+	 * Constructor for a <code>PositionNode</code>
+	 * 
+	 * @param positionX
+	 *            the position of the subject on the x-axis
+	 * @param positionY
+	 *            the position of the subject on the y-axis
+	 * @param velocityX
+	 *            the velocity of the subject on the x-axis
+	 * @param velocityY
+	 *            the velocity of the subject on the y-axis
+	 */
 	public PositionNode(int positionX, int positionY, int velocityX,
 			int velocityY) {
 		this.positionX = positionX;

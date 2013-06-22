@@ -4,8 +4,15 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.TeamStatisti
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.DataNode;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.interfaces.Visitor;
 
+/**
+ * This <code>CurrentTeamData</code> is a concrete <code>DataNode</code>. It
+ * holds the <code>TeamStatistic</code> of both teams
+ */
 public class CurrentTeamData extends DataNode<CurrentTeamData> {
 
+	/**
+	 * The name of this node
+	 */
 	private static final String NODENAME = "CurrentTeamData";
 
 	/**

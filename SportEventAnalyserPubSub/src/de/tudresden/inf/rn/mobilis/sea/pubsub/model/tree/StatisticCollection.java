@@ -10,16 +10,38 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.Collec
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.ItemNode;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.interfaces.Visitor;
 
+/**
+ * This <code>StatisticCollection</code> is the root of the PubSub-tree. It does
+ * have several concrete <code>DataNode</code> children where new data may be
+ * set (you may use this <code>StatisticCollection</code> to subscribe to a
+ * <code>CollectionNode</code> to get all data which is published within this
+ * subtree)
+ */
 public class StatisticCollection extends CollectionNode<StatisticCollection> {
 
+	/**
+	 * The name of this node
+	 */
 	private static final String NODENAME = "StatisticCollection";
 
+	/**
+	 * A <code>CurrentPositionData</code> statistic node
+	 */
 	private CurrentPositionData currentPositionData;
 
+	/**
+	 * A <code>CurrentPlayerData</code> statistic node
+	 */
 	private CurrentPlayerData currentPlayerData;
 
+	/**
+	 * A <code>CurrentTeamData</code> statistic node
+	 */
 	private CurrentTeamData currentTeamData;
 
+	/**
+	 * Constructor for this <code>StatisticCollection</code>
+	 */
 	public StatisticCollection() {
 		this.currentPositionData = new CurrentPositionData();
 		this.currentPlayerData = new CurrentPlayerData();
