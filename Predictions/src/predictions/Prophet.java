@@ -18,6 +18,7 @@ public class Prophet {
 		this.gameInformation = gameInformation;
 
 		listOfPredictors = new ArrayList<Predictor>();
+		listOfPredictors.add(new PassSuccessPredictor());
 	}
 
 	/**

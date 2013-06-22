@@ -11,8 +11,9 @@ public class PassSuccessPredictor implements Predictor {
 	public void init() {
 		// TODO Auto-generated method stub
 
-		learner = new knnLearner();
 		predictionInstance = new PassSuccessPredictionInstance();
+		learner = new knnLearner(predictionInstance.getHeader());
+
 	}
 
 	@Override
