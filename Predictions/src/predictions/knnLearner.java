@@ -5,17 +5,14 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.neighboursearch.LinearNNSearch;
 
-public class knnLearner extends Learner {
+public class KnnLearner extends Learner {
 
-	public static final String TAG = "[Predictions][knnLearner] ";
+	public static final String TAG = "[Predictions][KnnLearner] ";
 
 	private Instances accumulatedInstances;
 	private LinearNNSearch knn;
 
-	private int numberSamplesCorrect = 0;
-	private int numberSamples = 0;
-
-	public knnLearner(InstancesHeader instanceHeader) {
+	public KnnLearner(InstancesHeader instanceHeader) {
 		super(instanceHeader);
 	}
 
@@ -77,8 +74,7 @@ public class knnLearner extends Learner {
 			e.printStackTrace();
 		}
 
-
-		printAccuracy();
+		printAccuracy(TAG);
 	}
 
 	@Override
@@ -103,19 +99,8 @@ public class knnLearner extends Learner {
 			System.out.println(TAG + "no neighbors found");
 		}
 
-		printAccuracy();
+		printAccuracy(TAG);
 
-	}
-
-	public void printAccuracy() {
-		if (numberSamples > 0) {
-			double accuracy = 100.0 * (double) numberSamplesCorrect
-					/ (double) numberSamples;
-			System.out.println(TAG + numberSamples + " instances, " + accuracy
-					+ "% accuracy");
-		} else
-			System.out.println(TAG + numberSamples + " instances, " + "n/a"
-					+ "% accuracy");
 	}
 
 }

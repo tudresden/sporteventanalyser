@@ -22,7 +22,9 @@ public class PassSuccessPredictor implements Predictor {
 	@Override
 	public void init() {
 		predictionInstance = new PassSuccessPredictionInstance();
-		learner = new knnLearner(predictionInstance.getHeader());
+		// learner = new KnnLearner(predictionInstance.getHeader());
+		learner = new HoeffdingTreeLearner(predictionInstance.getHeader());
+
 	}
 
 	@Override
@@ -90,7 +92,7 @@ public class PassSuccessPredictor implements Predictor {
 
 		((PassSuccessPredictionInstance) predictionInstance)
 				.setClassAttribute(result);
-		
+
 		learner.train(predictionInstance);
 
 		System.out
@@ -99,7 +101,6 @@ public class PassSuccessPredictor implements Predictor {
 						+ ((float) successfulPassesCounter
 								/ ((float) successfulPassesCounter + (float) failedPassesCounter) * 100)
 						+ "%");
-
 
 	}
 
