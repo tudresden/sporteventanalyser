@@ -23,7 +23,8 @@ public class PassSuccessPredictor implements Predictor {
 	public void init() {
 		predictionInstance = new PassSuccessPredictionInstance();
 		// learner = new KnnLearner(predictionInstance.getHeader());
-		learner = new HoeffdingTreeLearner(predictionInstance.getHeader());
+		// learner = new HoeffdingTreeLearner(predictionInstance.getHeader());
+		learner = new IbkLearner(predictionInstance.getHeader());
 
 	}
 
