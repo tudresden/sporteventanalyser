@@ -10,8 +10,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.utils.AppendingObjectOutputStream;
 
+/**
+ * The <code>RawTransmitter</code> is used to transmit <code>Datagram</code>s
+ * (UDP). It uses the <code>Raw</code> <code>Object</code>s which may be
+ * appended to a sending queue
+ */
 public class RawTransmitter implements Runnable {
 
+	/**
+	 * The maximum length of a <code>Datagram</code> packet which should be sent
+	 */
 	public final static int MAX_PAYLOAD_LENGTH = 1024;
 
 	/**
@@ -36,8 +44,8 @@ public class RawTransmitter implements Runnable {
 	private boolean transmit = false;
 
 	/**
-	 * <code>Boolean</code> which declares whether this RawTransmitter should
-	 * send data
+	 * <code>Boolean</code> which declares whether this
+	 * <code>RawTransmitter</code> should send data
 	 */
 	private boolean opened = true;
 
@@ -46,6 +54,19 @@ public class RawTransmitter implements Runnable {
 	 */
 	private LinkedBlockingQueue<Raw> queue;
 
+	/**
+	 * Constructor for a <code>RawTransmitter</code>
+	 * 
+	 * @param queue
+	 *            the <code>LinkedBlockingQueue</code> which may be used to
+	 *            append new <code>Raw</code> items
+	 * @param socket
+	 *            a <code>DatagramSocket</code> to send packets
+	 * @param remoteHost
+	 *            the IP address of the remote host
+	 * @param remotePort
+	 *            the port of the remote host
+	 */
 	public RawTransmitter(LinkedBlockingQueue<Raw> queue,
 			DatagramSocket socket, InetAddress remoteHost, int remotePort) {
 		this.queue = queue;
@@ -83,7 +104,6 @@ public class RawTransmitter implements Runnable {
 				// Actually write new payload into buffer
 				oos.writeByte(e.getPayloadType());
 				e.writeExternal(oos);
-				// System.out.println(baos.size());
 
 				if (transmit
 						&& (queue.isEmpty() || (baos.size() + b.size() > RawTransmitter.MAX_PAYLOAD_LENGTH))) {
@@ -99,7 +119,6 @@ public class RawTransmitter implements Runnable {
 
 					// Write new packetID
 					packetIDx++;
-					// System.out.println(packetIDx);
 					baos.write(packetIDx);
 				}
 				oos.flush();

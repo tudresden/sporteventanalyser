@@ -8,10 +8,29 @@ import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.MappingRequ
 import de.tudresden.inf.rn.mobilis.xmpp.beans.XMPPBean;
 import de.tudresden.inf.rn.mobilis.xmpp.server.BeanIQAdapter;
 
+/**
+ * An <code>IQListener</code> implements the <code>PacketListener</code>
+ * <code>interface</code>. It provides a mechanism to listen for packets that
+ * pass a <code>PacketTypeFilter</code> to filter IQs. This allows event-style
+ * programming -- every time a new packet is found, the
+ * <code>processPacket(Packet)</code> method will be called
+ */
 public class IQListener implements PacketListener {
 
+	/**
+	 * A concrete dispatcher which must implement the
+	 * <code>ISportEventAnalyserIncoming</code> <code>interface</code>
+	 */
 	private ISportEventAnalyserIncoming dispatcher;
 
+	/**
+	 * Constructor for an <code>IQListener</code>
+	 * 
+	 * @param dispatcher
+	 *            a dispatcher which implements the
+	 *            <code>ISportEventAnalyserIncoming</code>
+	 *            <code>interface</code>
+	 */
 	public IQListener(ISportEventAnalyserIncoming dispatcher) {
 		this.dispatcher = dispatcher;
 	}

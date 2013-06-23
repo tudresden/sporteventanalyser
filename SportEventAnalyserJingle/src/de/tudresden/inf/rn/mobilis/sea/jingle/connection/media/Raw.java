@@ -2,6 +2,13 @@ package de.tudresden.inf.rn.mobilis.sea.jingle.connection.media;
 
 import java.io.Externalizable;
 
+/**
+ * A <code>Raw</code> is used as communication <code>Object</code> between the
+ * transmitter and a receiver. Therefore a concrete <code>Raw</code> has to
+ * implement the <code>Object.clone()</code> method as well as the
+ * <code>Externalizable</code> <code>interface</code> to (de-)serialize the
+ * <code>Raw</code> <code>Object</code> into a binary representation
+ */
 public abstract class Raw implements Externalizable, Cloneable {
 
 	/**
@@ -28,38 +35,6 @@ public abstract class Raw implements Externalizable, Cloneable {
 	public byte getPayloadType() {
 		return payloadType;
 	}
-
-	// /**
-	// * Encodes this <code>Object</code> into the returned <code>byte[]</code>.
-	// * The returned <code>array</code> will have length
-	// * <code>this.getPayloadLength()</code>
-	// *
-	// * @return resulting payload
-	// */
-	// public byte[] encode() {
-	// byte[] _return = new byte[payloadLength];
-	// this.encode(_return);
-	// return _return;
-	// }
-	//
-	// /**
-	// * Encode an <code>Object</code> into the given <code>byte[]</code>
-	// *
-	// * @param buffer
-	// * buffer for holding the payload
-	// */
-	// protected abstract void encode(byte[] buffer);
-	//
-	// /**
-	// * Decodes the given payload into the resulting object
-	// *
-	// * @param payload
-	// * the payload which holds the <code>Object</code>. The
-	// * <code>byte[]</code> must be of length
-	// * <code>this.getPayloadLength()</code>
-	// * @return the decoded object
-	// */
-	// public abstract void decode(byte[] payload);
 
 	/*
 	 * (non-Javadoc)
@@ -95,7 +70,9 @@ public abstract class Raw implements Externalizable, Cloneable {
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#clone()
 	 */
 	public abstract Raw clone();
