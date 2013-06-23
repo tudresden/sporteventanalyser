@@ -11,7 +11,7 @@ public class Prophet {
 	public static final String TAG = "[Predictions][Prophet] ";
 
 	// time between prediction updates TODO should be game time not system time
-	private static final long PREDICTIONS_PERIOD_TIME = 400;
+	private static final long PREDICTIONS_PERIOD_TIME = 200;
 
 	private List<Predictor> listOfPredictors;
 	private GameInformation gameInformation;
@@ -21,7 +21,12 @@ public class Prophet {
 		this.gameInformation = gameInformation;
 
 		listOfPredictors = new ArrayList<Predictor>();
-		listOfPredictors.add(new PassSuccessPredictor());
+
+		// add predictors and the learner for the predictors
+		listOfPredictors.add(new PassSuccessPredictor(
+				new HoeffdingTreeLearner()));
+		listOfPredictors.add(new PassSuccessPredictor(new IbkLearner()));
+		// listOfPredictors.add(new PassSuccessPredictor(new KnnLearner()));
 	}
 
 	/**

@@ -5,7 +5,7 @@ import de.core.GameInformation;
 public class PassSuccessPredictor implements Predictor {
 	public static final String TAG = "[Predictions][PassSuccessPredictor] ";
 
-	private static final int PLAYER_RADIUS = 5;
+	private static final int PLAYER_RADIUS = 10;
 
 	private Learner learner;
 	private PredictionInstance predictionInstance;
@@ -15,17 +15,20 @@ public class PassSuccessPredictor implements Predictor {
 	private int successfulPassesCounter = 0;
 	private int failedPassesCounter = 0;
 
-	public PassSuccessPredictor() {
+	public PassSuccessPredictor(Learner learner) {
+		this.learner = learner;
 		init();
 	}
 
 	@Override
 	public void init() {
 		predictionInstance = new PassSuccessPredictionInstance();
+
 		// learner = new KnnLearner(predictionInstance.getHeader());
 		// learner = new HoeffdingTreeLearner(predictionInstance.getHeader());
-		learner = new IbkLearner(predictionInstance.getHeader());
+		// learner = new IbkLearner(predictionInstance.getHeader());
 
+		learner.init(predictionInstance.getHeader());
 	}
 
 	@Override
@@ -34,7 +37,8 @@ public class PassSuccessPredictor implements Predictor {
 				+ " - - - UPDATE: pass success prediction - - - ");
 
 		if (gameInformation.getCurrentBallPossessionPlayer() == null) {
-			System.out.println(TAG + "Prediction update failed: no data");
+			System.out.println(TAG
+					+ "Prediction update failed: no player has ball");
 			return;
 		}
 
@@ -46,14 +50,15 @@ public class PassSuccessPredictor implements Predictor {
 
 		// update instance
 		((PassSuccessPredictionInstance) predictionInstance)
-				.setAttributes(
-						gameInformation.getTeammatesInArea(PLAYER_RADIUS),
-						gameInformation.getOpponentsInArea(PLAYER_RADIUS),
-						(int) ((float) gameInformation
-								.getPlayerPassesSuccessful(idOfLastPlayerWithBall)
-								/ ((float) gameInformation
-										.getPlayerPassesSuccessful(idOfLastPlayerWithBall) + (float) gameInformation
-										.getPlayerPassesMissed(idOfLastPlayerWithBall)) * 100));
+				.setAttributes(gameInformation
+						.getTeammatesInArea(PLAYER_RADIUS), gameInformation
+						.getOpponentsInArea(PLAYER_RADIUS), gameInformation
+						.getPlayerPassesSuccessful(idOfLastPlayerWithBall),
+						gameInformation
+								.getPlayerPassesMissed(idOfLastPlayerWithBall),
+						gameInformation.getCurrentBallPossessionPlayer()
+								.getPositionX(), (int) gameInformation
+								.getDistanceOfNearestTeammate());
 
 		// pass occurred
 		if (idOfCurrentPlayerWithBall != idOfLastPlayerWithBall
