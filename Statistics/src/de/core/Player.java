@@ -36,6 +36,8 @@ public class Player extends Entity
 	protected boolean onBall;
 	protected Event leftFootEvent;
 	protected Event rightFootEvent;
+	private int oldPositionX;
+	private int oldPositionY;
 
 	private boolean left = false;
 	private boolean right = false;
@@ -70,6 +72,8 @@ public class Player extends Entity
 		this.successfulPasses = 0;
 		this.ballContacts = 0;
 		this.ballPossessionTime = 0;
+		this.oldPositionX = 0;
+		this.oldPositionY = 0;
 		this.passesFrom = new HashMap<Integer, Integer>();
 		this.passesTo = new HashMap<Integer, Integer>();
 		this.heatmap = new HeatMapGrid(Config.heatMapInit);
@@ -169,6 +173,26 @@ public class Player extends Entity
 	{
 		this.ballPossessionTime = ballPossessionTime;
 	}
+	
+	public int getOldPositionX()
+	{
+		return oldPositionX;
+	}
+
+	public void setOldPositionX(int oldPositionX)
+	{
+		this.oldPositionX = oldPositionX;
+	}
+	
+	public int getOldPositionY()
+	{
+		return oldPositionY;
+	}
+
+	public void setOldPositionY(int oldPositionY)
+	{
+		this.oldPositionY = oldPositionY;
+	}
 
 	/**
 	 * Get the last pass of this player.
@@ -221,6 +245,9 @@ public class Player extends Entity
 
 		// update total distance
 		updateTotalDistance(newPosX, newPosY, newPosZ);
+		
+		setOldPositionX(this.positionX);
+		setOldPositionY(this.positionY);
 
 		this.positionX = newPosX;
 		this.positionY = newPosY;

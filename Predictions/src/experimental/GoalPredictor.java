@@ -1,4 +1,4 @@
-package predictions;
+package experimental;
 
 import weka.core.Instance;
 import weka.core.Instances;
@@ -135,33 +135,32 @@ public class GoalPredictor {
 		 * Hoeffding tree
 		 */
 
-		// // predict
-		// double[] predictions = learner.getVotesForInstance(instanceManager
-		// .getInstanceForPrediction());
-		//
-		// if (predictions.length == 3) {
-		// double sum = predictions[0] + predictions[1] + predictions[2];
-		// System.out.println("[PREDICTION] " + sum + " votes:  "
-		// + predictions[0] / sum * 100 + "% goal  -  "
-		// + predictions[1] / sum * 100 + "% ball loss  -  "
-		// + predictions[2] / sum * 100 + "% out of bounds");
-		//
-		// String predictedEvent = "n/a";
-		// if (predictions[0] > predictions[1]
-		// && predictions[0] > predictions[2])
-		// predictedEvent = GoalPredictionInstanceManager.EVENT_GOAL;
-		// else if (predictions[1] > predictions[0]
-		// && predictions[1] > predictions[2])
-		// predictedEvent = GoalPredictionInstanceManager.EVENT_BALL_LOSS;
-		// else if (predictions[2] > predictions[0]
-		// && predictions[2] > predictions[1])
-		// predictedEvent =
-		// GoalPredictionInstanceManager.EVENT_BALL_OUT_OF_BOUNDS;
-		// System.out.println("[PREDICTION] predicted event: "
-		// + predictedEvent);
-		//
-		// } else
-		// System.out.println("[PREDICTION] Votes: - n/a -");
+		// predict
+		double[] predictions = learner.getVotesForInstance(instanceManager
+				.getInstanceForPrediction());
+
+		if (predictions.length == 3) {
+			double sum = predictions[0] + predictions[1] + predictions[2];
+			System.out.println("[PREDICTION] " + sum + " votes:  "
+					+ predictions[0] / sum * 100 + "% goal  -  "
+					+ predictions[1] / sum * 100 + "% ball loss  -  "
+					+ predictions[2] / sum * 100 + "% out of bounds");
+
+			String predictedEvent = "n/a";
+			if (predictions[0] > predictions[1]
+					&& predictions[0] > predictions[2])
+				predictedEvent = GoalPredictionInstanceManager.EVENT_GOAL;
+			else if (predictions[1] > predictions[0]
+					&& predictions[1] > predictions[2])
+				predictedEvent = GoalPredictionInstanceManager.EVENT_BALL_LOSS;
+			else if (predictions[2] > predictions[0]
+					&& predictions[2] > predictions[1])
+				predictedEvent = GoalPredictionInstanceManager.EVENT_BALL_OUT_OF_BOUNDS;
+			System.out.println("[PREDICTION] predicted event: "
+					+ predictedEvent);
+
+		} else
+			System.out.println("[PREDICTION] Votes: - n/a -");
 
 		/*
 		 * KNN
