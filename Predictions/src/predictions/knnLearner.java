@@ -12,15 +12,12 @@ public class KnnLearner extends Learner {
 	private Instances accumulatedInstances;
 	private LinearNNSearch knn;
 
-	public KnnLearner(InstancesHeader instanceHeader) {
-		super(instanceHeader);
-	}
-
 	@Override
 	public void init(InstancesHeader instanceHeader) {
+		this.instanceHeader = instanceHeader;
+
 		knn = new LinearNNSearch();
 		accumulatedInstances = new Instances(instanceHeader);
-
 	}
 
 	@Override

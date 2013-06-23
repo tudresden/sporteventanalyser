@@ -9,15 +9,11 @@ public class IbkLearner extends Learner {
 	public static final String TAG = "[Predictions][IbkLearner] ";
 
 	private IBk ibk;
-	private InstancesHeader instanceHeader;
-
-	public IbkLearner(InstancesHeader instanceHeader) {
-		super(instanceHeader);
-	}
 
 	@Override
 	public void init(InstancesHeader instanceHeader) {
 		this.instanceHeader = instanceHeader;
+
 		ibk = new IBk(3);
 		try {
 			ibk.buildClassifier(new Instances(instanceHeader));

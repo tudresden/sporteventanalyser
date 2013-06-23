@@ -10,16 +10,13 @@ public class HoeffdingTreeLearner extends Learner {
 
 	Classifier learner;
 
-	public HoeffdingTreeLearner(InstancesHeader instanceHeader) {
-		super(instanceHeader);
-	}
-
 	@Override
 	public void init(InstancesHeader instanceHeader) {
+		this.instanceHeader = instanceHeader;
+
 		learner = new HoeffdingTree();
 		learner.setModelContext(instanceHeader);
 		learner.prepareForUse();
-
 	}
 
 	@Override

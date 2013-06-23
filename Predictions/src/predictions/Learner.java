@@ -5,10 +5,7 @@ import moa.core.InstancesHeader;
 public abstract class Learner {
 	protected int numberSamplesCorrect = 0;
 	protected int numberSamples = 0;
-
-	public Learner(InstancesHeader instanceHeader) {
-		init(instanceHeader);
-	}
+	protected InstancesHeader instanceHeader;
 
 	protected abstract void init(InstancesHeader instanceHeader);
 
