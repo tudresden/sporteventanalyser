@@ -10,6 +10,11 @@ import de.tudresden.inf.rn.mobilis.sea.client.proxy.xmpp.BeanIQAdapter;
 import de.tudresden.inf.rn.mobilis.sea.client.proxy.xmpp.BeanProviderAdapter;
 import de.tudresden.inf.rn.mobilis.xmpp.beans.XMPPBean;
 
+/**
+ * The <code>SEADistributer</code> implements the
+ * <code>ISportEventAnalyserOutgoing</code> and defines all methods which are
+ * mandatory to connect to the XMPP-Server
+ */
 public abstract class SEADistributer implements ISportEventAnalyserOutgoing {
 
 	/**
@@ -56,12 +61,16 @@ public abstract class SEADistributer implements ISportEventAnalyserOutgoing {
 	}
 
 	/**
-	 * Connect to XMPP-Server
+	 * Connect to the XMPP-Server
 	 * 
 	 * @param server
+	 *            the address of the XMPP-Server
 	 * @param port
+	 *            the port of the XMPP-Server
 	 * @param service
-	 * @return
+	 *            the name of the service provided by an XMPP-Server
+	 * @return <code>true</code> if connecting succeeded (otherwise
+	 *         <code>false</code>)
 	 */
 	public abstract boolean connect(String server, int port, String service);
 
@@ -69,11 +78,16 @@ public abstract class SEADistributer implements ISportEventAnalyserOutgoing {
 	 * Try to login into XMPP-Server and update presence
 	 * 
 	 * @param username
+	 *            the name of the user (the user must be created first!)
 	 * @param password
+	 *            the password of the user
 	 * @param ressource
+	 *            the ressource of this client (is used to create a full-jid:
+	 *            e.g.: fulljid = barejid/ressource = username@domain/ressource)
 	 * @param toJID
-	 * @param distributer
-	 * @return
+	 *            the jid of the Mobilis-Server
+	 * @return <code>true</code> if login succeeded (otherwise
+	 *         <code>false</code>)
 	 */
 	public abstract boolean performLogin(String username, String password,
 			String ressource, String toJID);

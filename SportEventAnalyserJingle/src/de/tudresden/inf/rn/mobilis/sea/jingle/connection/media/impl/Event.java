@@ -6,8 +6,15 @@ import java.io.ObjectOutput;
 
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.Raw;
 
+/**
+ * An <code>Event</code> is used to hold all data which comes from the
+ * RedFir-sensors
+ */
 public class Event extends Raw {
 
+	/**
+	 * The type of this payload (must be unique)
+	 */
 	public static final byte PAYLOAD_TYPE = 0;
 
 	/**
@@ -75,6 +82,36 @@ public class Event extends Raw {
 	 */
 	private int AccelerationZ = Integer.MIN_VALUE;
 
+	/**
+	 * Constructor for an <code>Event</code>
+	 * 
+	 * @param Sender
+	 *            the ID of the sensor
+	 * @param Timestamp
+	 *            the timestamp when this <code>Event</code> has been created
+	 * @param PositionX
+	 *            the position of this sensor on the x-axis
+	 * @param PositionY
+	 *            the position of this sensor on the y-axis
+	 * @param PositionZ
+	 *            the position of this sensor on the z-axis
+	 * @param Velocity
+	 *            the velocity of this sensor
+	 * @param Acceleration
+	 *            the accelartion of this sensor
+	 * @param VelocityX
+	 *            the velocity of this sensor on the x-axis
+	 * @param VelocityY
+	 *            the velocity of this sensor on the y-axis
+	 * @param VelocityZ
+	 *            the velocity of this sensor on the z-axis
+	 * @param AccelerationX
+	 *            the accelartion of this sensor on the x-axis
+	 * @param AccelerationY
+	 *            the accelartion of this sensor on the y-axis
+	 * @param AccelerationZ
+	 *            the accelartion of this sensor on the z-axis
+	 */
 	public Event(int Sender, long Timestamp, int PositionX, int PositionY,
 			int PositionZ, int Velocity, int Acceleration, int VelocityX,
 			int VelocityY, int VelocityZ, int AccelerationX, int AccelerationY,
@@ -95,6 +132,9 @@ public class Event extends Raw {
 		this.AccelerationZ = AccelerationZ;
 	}
 
+	/**
+	 * No-Args constructor
+	 */
 	public Event() {
 		super(Event.PAYLOAD_TYPE);
 	}
@@ -330,7 +370,9 @@ public class Event extends Raw {
 		AccelerationZ = accelerationZ;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.Raw#clone()
 	 */
 	public Event clone() {

@@ -14,6 +14,13 @@ import de.tudresden.inf.rn.mobilis.sea.jingle.connection.manager.observer.Recept
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.manager.observer.SessionObserver;
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.Raw;
 
+/**
+ * This <code>RawMediaManager</code> is a concrete
+ * <code>JingleMediaManager</code> to create <code>RawMediaSession</code>s for
+ * all payloads of type 42 ("raw"). Due to an auxiliary
+ * <code>SessionObserver</code> it is also capable to lazy add
+ * <code>ReceptionListener</code>s and <code>Raw</code> media types
+ */
 public class RawMediaManager extends JingleMediaManager {
 
 	/**
@@ -28,6 +35,13 @@ public class RawMediaManager extends JingleMediaManager {
 	 */
 	private SessionObserver sessionObserver;
 
+	/**
+	 * Constructor for a <code>RawMediaManager</code>
+	 * 
+	 * @param transportManager
+	 *            the <code>JingleTransportManager</code> to negotiate
+	 *            connection
+	 */
 	public RawMediaManager(JingleTransportManager transportManager) {
 		super(transportManager);
 		setupPayloads();
