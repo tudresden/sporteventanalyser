@@ -48,12 +48,12 @@ public class Utils {
 
 			}
 			if(this.single==0){
-				out.write(header+"\n");
+				out.write(clean(header)+"\n");
 				this.single=1;
 			}
 			
-			str+="\n";
-			out.write(str);
+			
+			out.write(clean(str)+"\n");
 			out.close();
 		} catch (IOException e){
 			e.printStackTrace();
@@ -77,8 +77,8 @@ public class Utils {
 				this.single=1;
 			}
 			
-			str+="\n";
-			out.write(clean(str));
+			
+			out.write(clean(str)+"\n");
 			out.close();
 		} catch (IOException e){
 			e.printStackTrace();
