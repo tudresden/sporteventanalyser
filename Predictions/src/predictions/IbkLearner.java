@@ -3,10 +3,20 @@ package predictions;
 import moa.core.InstancesHeader;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instances;
+import weka.core.SelectedTag;
+import weka.core.Tag;
 
 public class IbkLearner extends Learner {
 
 	public static final String TAG = "[Predictions][IbkLearner] ";
+
+	private static final int WEIGHT_SIMILARITY = 4;
+	
+	private static final int WEIGHT_NONE = 1;
+	
+	private static final int WEIGHT_INVERSE = 2;
+
+	private static final Tag[] TAGS_WEIGHTING = {new Tag(4,"WEIGHT_SIMILARITY"),new Tag(1,"WEIGHT_NONE"),new Tag(2,"WEIGHT_INVERSE")};
 
 	private IBk ibk;
 
@@ -14,7 +24,12 @@ public class IbkLearner extends Learner {
 	public void init(InstancesHeader instanceHeader) {
 		this.instanceHeader = instanceHeader;
 
-		ibk = new IBk(3);
+		ibk = new IBk(11);
+		//ibk.setCrossValidate(true);
+		ibk.setDistanceWeighting(new SelectedTag(WEIGHT_SIMILARITY, TAGS_WEIGHTING));
+		int newWindowSize=100;
+		ibk.setWindowSize(newWindowSize);
+		
 		try {
 			ibk.buildClassifier(new Instances(instanceHeader));
 		} catch (Exception e) {
@@ -39,7 +54,7 @@ public class IbkLearner extends Learner {
 
 			distances = ibk.distributionForInstance(trainingInstance
 					.getInstance());
-
+			
 			float firstClassProbability = (float) (distances[0]
 					/ (distances[0] + distances[1]) * 100f);
 
