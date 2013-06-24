@@ -60,7 +60,8 @@ public class Utils {
 		}
 	}
 	
-	public void logInt(Integer dataSet[]){
+	
+	public void logIntToCsv(Integer dataSet[]){
 		try {
 			PrintWriter out = new PrintWriter(new FileWriter("log.dataset.csv",true));
 			String str="";
@@ -74,6 +75,31 @@ public class Utils {
 			}
 			if(this.single==0){
 				out.write(clean(header)+"\n");
+				this.single=1;
+			}
+			
+			
+			out.write(clean(str)+"\n");
+			out.close();
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void logInt(Integer dataSet[]){
+		try {
+			PrintWriter out = new PrintWriter(new FileWriter("log.dataset.arff",true));
+			String str="";
+			String header="";
+			int counter=0;
+			for(int data : dataSet){
+				if(this.single==0)
+					header+="@attribute data"+counter+" numeric \n";
+				str+=data+",";
+				counter++;
+			}
+			if(this.single==0){
+				out.write(clean(header)+"\n @data \n");
 				this.single=1;
 			}
 			
