@@ -1,6 +1,13 @@
 package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces;
 
-public abstract class PositionNode extends Node {
+/**
+ * This <code>PositionNode</code> is an auxiliary node to bundle the
+ * x/y-position and x/y-velocity of a subject
+ * 
+ * @param <T>
+ *            generic parameter to declare the type of this node
+ */
+public abstract class PositionNode<T extends PositionNode<T>> extends Node<T> {
 
 	/**
 	 * Position on the x-axis
@@ -22,6 +29,18 @@ public abstract class PositionNode extends Node {
 	 */
 	private int velocityY;
 
+	/**
+	 * Constructor for a <code>PositionNode</code>
+	 * 
+	 * @param positionX
+	 *            the position of the subject on the x-axis
+	 * @param positionY
+	 *            the position of the subject on the y-axis
+	 * @param velocityX
+	 *            the velocity of the subject on the x-axis
+	 * @param velocityY
+	 *            the velocity of the subject on the y-axis
+	 */
 	public PositionNode(int positionX, int positionY, int velocityX,
 			int velocityY) {
 		this.positionX = positionX;
@@ -131,6 +150,47 @@ public abstract class PositionNode extends Node {
 		sb.append("</velocityY>");
 
 		return sb.toString();
+	}
+
+	@Override
+	public String toPredictiveCodedXML(
+			@SuppressWarnings("rawtypes") PositionNode iNode) {
+		StringBuilder sb = new StringBuilder();
+
+		// PositionX
+		if (iNode.getPositionX() != this.getPositionX()) {
+			sb.append("<positionX>");
+			sb.append(this.getPositionX());
+			sb.append("</positionX>");
+		}
+		// PositionY
+		if (iNode.getPositionY() != this.getPositionY()) {
+			sb.append("<positionY>");
+			sb.append(this.getPositionY());
+			sb.append("</positionY>");
+		}
+		// VelocityX
+		if (iNode.getVelocityX() != this.getVelocityX()) {
+			sb.append("<velocityX>");
+			sb.append(this.getVelocityX());
+			sb.append("</velocityX>");
+		}
+		// VelocityY
+		if (iNode.getVelocityY() != this.getVelocityY()) {
+			sb.append("<velocityY>");
+			sb.append(this.getVelocityY());
+			sb.append("</velocityY>");
+		}
+
+		return sb.toString();
+	}
+
+	@Override
+	public void copy(@SuppressWarnings("rawtypes") PositionNode dest) {
+		dest.setPositionX(positionX);
+		dest.setPositionY(positionY);
+		dest.setVelocityX(velocityX);
+		dest.setVelocityY(velocityY);
 	}
 
 }

@@ -25,7 +25,7 @@ public class LocalEventDecoder
 		executor.submit(c);
 	}
 
-	public void decodeFile(int lines, String filePath)
+	public void decodeFile(final int lines, final String filePath)
 	{
 		try
 		{
@@ -59,7 +59,7 @@ public class LocalEventDecoder
 
 		if (data == null || length < 13)
 		{
-			Logger.getLogger("GZipReader").log(Level.WARNING, "Warning: {0} not vaild format!", new Object[] { data });
+			Logger.getLogger("GZipReader").log(Level.SEVERE, "Warning: {0} not vaild format!", new Object[] { data });
 		}
 
 		int id = Integer.parseInt(data[0]);

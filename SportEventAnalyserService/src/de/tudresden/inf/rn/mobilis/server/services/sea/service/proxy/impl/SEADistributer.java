@@ -9,6 +9,10 @@ import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.IXMPPCallba
 import de.tudresden.inf.rn.mobilis.xmpp.beans.XMPPBean;
 import de.tudresden.inf.rn.mobilis.xmpp.server.BeanIQAdapter;
 
+/**
+ * The <code>SEADistributer</code> implements the
+ * <code>ISportEventAnalyserOutgoing</code> to send <code>XMPPBean</code>s
+ */
 public class SEADistributer implements ISportEventAnalyserOutgoing {
 
 	/**
@@ -56,8 +60,8 @@ public class SEADistributer implements ISportEventAnalyserOutgoing {
 
 	/**
 	 * Retrieves the <code>IXMPPCallback</code> which is linked to this
-	 * packetID. This method will return null, if there does not exist an
-	 * <code>IXMPPCallback</code> for this packetID.
+	 * packetID. This method will return <code>null</code>, if there does not
+	 * exist an <code>IXMPPCallback</code> for this packetID
 	 * 
 	 * @param packetID
 	 *            the packetID whose <code>IXMPPCallback</code> should be

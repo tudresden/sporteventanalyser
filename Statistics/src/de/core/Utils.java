@@ -1,5 +1,6 @@
 package de.core;
 
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,11 +52,41 @@ public class Utils
 		return (int) (x + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
 	}
 
+	/**
+	  * Returns the nearest sensor to the <code>Ball</code> object.
+	  * 
+	  * @param sensors
+	  *            array of sensors
+	  * @param ball
+	  *            <code>Ball</code> object
+	  * @return The shortest distance in mm.
+	  */
 	public static float getNearestSensor(Event[] sensors, Ball ball)
 	{
 		return Math.min(ball.distanceBetween(sensors[0].getPositionX(), sensors[0].getPositionY()), ball.distanceBetween(sensors[1].getPositionX(), sensors[1].getPositionY()));
 	}
 
+	//TODO: schöner machen
+	public static float getDistanceBetween(int posx, int posy, int posxx, int posyy)
+	{
+			double dX = posx - posxx;
+			double dY = posy - posyy;
+			float result = (float) (dX * dX + dY * dY);
+			return (float) Math.sqrt(result);
+	}
+	
+	public static float getDistanceBetweenTwoPlayer(Player player1, Player player2)
+	{
+		Event obj1 = player1.getSensors()[0];
+		Event obj2 = player1.getSensors()[1];
+		Event obj3 = player2.getSensors()[0];
+		Event obj4 = player2.getSensors()[1];
+		
+		float a = Math.min(getDistanceBetween(obj1.getPositionX(), obj1.getPositionY(), obj3.getPositionX(), obj3.getPositionY()),getDistanceBetween(obj1.getPositionX(), obj1.getPositionY(), obj4.getPositionX(), obj4.getPositionY()));
+		float b = Math.min(getDistanceBetween(obj2.getPositionX(), obj2.getPositionY(), obj3.getPositionX(), obj3.getPositionY()),getDistanceBetween(obj2.getPositionX(), obj2.getPositionY(), obj4.getPositionX(), obj4.getPositionY()));
+		return Math.min(a, b);
+	}
+	
 	public static boolean isNumeric(String input)
 	{
 		try
@@ -70,17 +101,17 @@ public class Utils
 	}
 
 	/**
-	 * Checks if a pass is successful or not or if there is no pass
+	 * Checks if a pass is successful or not or if there is no pass.
 	 * 
 	 * @param a
-	 *            player
+	 *            first player
 	 * @param b
-	 *            player
-	 * @return 0 no pass, 1 pass, 2 pass failed
+	 *            second player
+	 * @return 0 no pass, 1 pass, 2 pass failed.
 	 */
 	public static int pass(Player a, Player b)
 	{
-		if (a != null & b != null)
+		if (a != null && b != null)
 		{
 			if (a.getTeam().equals(b.getTeam()) && (a.getId() != b.getId()))
 			{
@@ -107,5 +138,39 @@ public class Utils
 	public static boolean positionWithinField(int x, int y)
 	{
 		return (Config.GAMEFIELDMINX <= x) && (x <= Config.GAMEFIELDMAXX) && (Config.GAMEFIELDMINY <= y) && (y <= Config.GAMEFIELDMAXY);
+	}
+
+	/**
+	 * Calculates all values of a HeatMapInit object needed to create new HeatMapGrid objects.
+	 * 
+	 * @return HeatMapInit object with all its information.
+	 */
+	public static HeatMapInit calculateHeatMapInit()
+	{
+		HeatMapInit heatMapInit = new HeatMapInit();
+
+		int fieldWidthInMM = Config.GAMEFIELDMAXY + Math.abs(Config.GAMEFIELDMINY);
+		int fieldHeightInMM = Config.GAMEFIELDMAXX + Math.abs(Config.GAMEFIELDMINX);
+
+		heatMapInit.widthInCells = Config.heatMapWidthInCells;
+		heatMapInit.widthResolution = fieldWidthInMM / Config.heatMapWidthInCells;
+		heatMapInit.heightInCells = fastRound((float) fieldHeightInMM / heatMapInit.widthResolution);
+		heatMapInit.heightResolution = fieldHeightInMM / heatMapInit.heightInCells;
+
+		if (Config.GAMEFIELDMINY < 0)
+		{
+			heatMapInit.yMinNegativeAbs -= Config.GAMEFIELDMINY;
+		}
+		if (Config.GAMEFIELDMINX < 0)
+		{
+			heatMapInit.xMinNegativeAbs -= Config.GAMEFIELDMINX;
+		}
+
+		return heatMapInit;
+	}
+
+	public static String timeToHumanReadable(final int seconds)
+	{
+		return String.format("%d min, %d sec", TimeUnit.SECONDS.toMinutes(seconds), TimeUnit.SECONDS.toSeconds(seconds) % 60);
 	}
 }

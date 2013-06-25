@@ -15,6 +15,6 @@ public interface Iterable {
 	 * 
 	 * @return <code>Collection</code> of <code>Iterable</code> children
 	 */
-	public List<ItemNode> getChildren();
+	public List<ItemNode<?>> getChildren();
 
 }
