@@ -55,7 +55,10 @@ public class Prophet {
 			timer.cancel();
 	}
 
-	private void updatePredictors() {
+	/**
+	 * Updates predictions.
+	 */
+	public void updatePredictors() {
 		System.out.println(TAG + "Updating predictors.");
 
 		for (Predictor predictor : listOfPredictors)
