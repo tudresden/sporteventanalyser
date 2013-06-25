@@ -523,6 +523,46 @@ public class GameInformation implements UpdateListener
 		return nearestTeammateDistance;
 	}
 	
+	/**
+	  * Returns the distance of nearest opponent to the player with the ball.
+	  * 
+	  * @return The distance of nearest opponent in mm or -1 if the player-object does not exists.
+	  */
+	public float getDistanceOfNearestOpponent()
+	{
+		Player activePlayer = (Player) getCurrentBallPossessionPlayer();
+		float nearestOpponentDistance = Float.MAX_VALUE;
+		if(activePlayer!=null && activePlayer.getTeam().equals("GELB"))
+		{
+			for(int i=0; i<b.length; i++)
+			{
+				Player player = (Player) getEntityFromId(b[i]);
+				float distance = Utils.getDistanceBetweenTwoPlayer(player, activePlayer);
+				if(distance<nearestOpponentDistance && !player.equals(activePlayer))
+				{
+					nearestOpponentDistance = distance;
+				}
+			}
+		}
+		else if(activePlayer!=null && activePlayer.getTeam().equals("ROT"))
+		{
+			for(int s=0; s<a.length; s++)
+			{
+				Player player = (Player) getEntityFromId(a[s]);
+				float distance = Utils.getDistanceBetweenTwoPlayer(player, activePlayer);
+				if(distance<nearestOpponentDistance && !player.equals(activePlayer))
+				{
+					nearestOpponentDistance = distance;
+				}
+			}
+		}
+		else
+		{
+			return -1;
+		}
+		return nearestOpponentDistance;
+	}
+	
 	//TODO: verbessern
 	/**
 	  * Returns the running direction of a given player.
@@ -641,6 +681,24 @@ public class GameInformation implements UpdateListener
 			System.out.println("TORSCHUSS AUF TOR2");
 		}
 	}
+	
+
+	/**
+	  
+	  */
+	public boolean isPlayerOnOwnSide(Player player)
+	{
+		if(player.getPositionY()>=0 && player.getTeam().equals("ROT"))
+		{
+			return true;
+		}
+		if(player.getPositionY()<0 && player.getTeam().equals("GELB"))
+		{
+			return true;
+		}
+		return false;
+	}
+	
 
 	public void update(EventBean[] newData, EventBean[] oldData)
 	{
