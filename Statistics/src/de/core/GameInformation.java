@@ -71,6 +71,7 @@ public class GameInformation implements UpdateListener
 	 *            the <code>Ball</code> object
 	 * @return True if the <code>Ball</code> was hit or false.
 	 */
+	
 	private boolean getBallHit(Player nearestPlayer, Ball ball)
 	{
 		// Counter for time - add Difference of timestamp - only all 50ms one BallHit!
@@ -184,7 +185,7 @@ public class GameInformation implements UpdateListener
 	}
 	
 	/**
-	 * function for sum of ballContacts of one player.
+	 * Returns the sum of ballContacts of one player.
 	 * 
 	 * @param id
 	 *            player id
@@ -201,7 +202,7 @@ public class GameInformation implements UpdateListener
 	}
 
 	/**
-	 * Get the absolute ball possession time the player for a given player id.
+	 * Returns the absolute ball possession time of one player for a given player id.
 	 * 
 	 * @param id
 	 *            player id
@@ -275,7 +276,7 @@ public class GameInformation implements UpdateListener
 	}
 
 	/**
-	 * Get sum of all successful passes for a given player id.
+	 * Returns the absolute sum of successful passes of the player for a given playerID.
 	 * 
 	 * @param id
 	 *            player id
@@ -293,11 +294,11 @@ public class GameInformation implements UpdateListener
 
 	//TODO: Verbessern
 	/**
-	 * Get BallPossession of a given Team
+	 * Get ballPossession percentage of a given team.
 	 * 
 	 * @param teamkuerzel
 	 *            int-Array of a given Team (a oder b)
-	 * @return BallPossession Percentage
+	 * @return ballPossession percentage
 	 */
 	public long getTeamBallPossession(int[] teamkuerzel)
 	{
@@ -332,7 +333,7 @@ public class GameInformation implements UpdateListener
 	}
 
 	/**
-	 * function for sum of all ballcontacts of one team.
+	 * Returns sum of all ballcontacts of a given team.
 	 * 
 	 * @param teamkuerzel
 	 *            int-Array of a given Team (a oder b)
@@ -352,7 +353,7 @@ public class GameInformation implements UpdateListener
 	}
 
 	/**
-	 * function for teampassquote.
+	 * Returns the teampassquote for a given team.
 	 * 
 	 * @param teamkuerzel
 	 *            int-Array of a given Team (a oder b)
@@ -684,7 +685,7 @@ public class GameInformation implements UpdateListener
 
 			if (nearestPlayer != null)
 			{
-				// Function for BallContacts - only one ball contact all 50ms (see Utils.getBallHit)
+				// Function for BallContacts - only one ball contact all 50ms (see getBallHit)
 				if (getBallHit(nearestPlayer, ball))
 				{
 					System.out.println("--------------");
