@@ -7,12 +7,26 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.PlayerStatis
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.DataNode;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.interfaces.Visitor;
 
+/**
+ * This <code>CurrentPlayerData</code> is a concrete <code>DataNode</code>. It
+ * holds all the data of a player
+ */
 public class CurrentPlayerData extends DataNode<CurrentPlayerData> {
 
+	/**
+	 * The name of this node
+	 */
 	private static final String NODENAME = "CurrentPlayerData";
 
+	/**
+	 * A <code>Map</code> which holds all known <code>PlayerStatistic</code>s
+	 * (key: ID of the player, value: concrete <code>PlayerStatistic</code>)
+	 */
 	private Map<Integer, PlayerStatistic> playerStatistics;
 
+	/**
+	 * Constructor for this <code>CurrentPlayerData</code>
+	 */
 	public CurrentPlayerData() {
 		playerStatistics = new HashMap<Integer, PlayerStatistic>();
 	}

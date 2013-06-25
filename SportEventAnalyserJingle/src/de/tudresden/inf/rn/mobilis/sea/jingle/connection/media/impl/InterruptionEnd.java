@@ -6,8 +6,15 @@ import java.io.ObjectOutput;
 
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.Raw;
 
+/**
+ * The <code>InterruptionEnd</code> <code>Raw</code> is used to indicate that an
+ * interruption ended
+ */
 public class InterruptionEnd extends Raw {
 
+	/**
+	 * The type of this payload (must be unique)
+	 */
 	public static final byte PAYLOAD_TYPE = 2;
 
 	/**
@@ -15,11 +22,20 @@ public class InterruptionEnd extends Raw {
 	 */
 	private long end;
 
+	/**
+	 * Constructor for an <code>InterruptionEnd</code>
+	 * 
+	 * @param end
+	 *            the end of this interruption
+	 */
 	public InterruptionEnd(long end) {
 		super(InterruptionEnd.PAYLOAD_TYPE);
 		this.end = end;
 	}
 
+	/**
+	 * No-Args constructor
+	 */
 	public InterruptionEnd() {
 		super(InterruptionEnd.PAYLOAD_TYPE);
 	}

@@ -6,8 +6,18 @@ import org.jivesoftware.smackx.pubsub.ConfigureForm;
 import org.jivesoftware.smackx.pubsub.FormType;
 import org.jivesoftware.smackx.pubsub.PublishModel;
 
+/**
+ * This abstract class sets default values for all nodes which are created
+ * within the PubSub-tree of the XMPP-Server
+ */
 public abstract class CommonSubmitNodeConfig extends ConfigureForm {
 
+	/**
+	 * Constructor for this <code>CommonSubmitNodeConfig</code>
+	 * 
+	 * @param title
+	 *            human readable title for the node
+	 */
 	public CommonSubmitNodeConfig(String title) {
 		super(FormType.submit);
 		// Set title
@@ -26,7 +36,7 @@ public abstract class CommonSubmitNodeConfig extends ConfigureForm {
 		this.setSubscribe(true);
 		// Subscribers should definitely be notified when configuration changed!
 		this.setNotifyConfig(true);
-		//TODO: true? Eigentlich sollte man auch aktiv sein!
+		// Anyone may receive the items (even though he is not present)
 		this.setPresenceBasedDelivery(false);
 	}
 

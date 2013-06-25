@@ -20,14 +20,33 @@ import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.InterruptionBegin;
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.InterruptionEnd;
 
+/**
+ * The <code>SportEventAnalyserJingle</code> may be used to establish a
+ * jingle-connection to a remote host or receive incoming <code>Raw</code>s
+ */
 public class SportEventAnalyserJingle {
 
-	private JingleSession incoming;
-
+	/**
+	 * The <code>smackx.jingle.JingleManager</code> which provides the bulk of
+	 * functionality as defined in the jingle specification XEP-0166
+	 */
 	private final JingleManager jM;
 
+	/**
+	 * The internal <code>RawMediaManager</code> which does create
+	 * <code>RawMediaSession</code>s for all payloads of type 42 ("raw")
+	 */
 	private final RawMediaManager rMM;
 
+	/**
+	 * Constructor for a <code>SportEventAnalyserJingle</code>. This class may
+	 * be used to establish a jingle-connection to a remote host or receive
+	 * incoming <code>Raw</code>s
+	 * 
+	 * @param connection
+	 *            the <code>smack.Connection</code> which is used to communicate
+	 *            with the XMPP-Server
+	 */
 	public SportEventAnalyserJingle(Connection connection) {
 		// Enable Jingle
 		JingleManager.setJingleServiceEnabled();
@@ -52,11 +71,10 @@ public class SportEventAnalyserJingle {
 			@Override
 			public void sessionRequested(JingleSessionRequest request) {
 				try {
-					incoming = request.accept();
+					JingleSession incoming = request.accept();
 
 					incoming.startIncoming();
 				} catch (XMPPException e) {
-					// TODO: Handle this!
 					e.printStackTrace();
 				}
 			}

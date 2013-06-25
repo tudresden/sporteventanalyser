@@ -8,13 +8,13 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.PlayerPositi
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.PlayerStatistic;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.TeamStatistic;
 
-//TODO: This cmd^^
 /**
  * The <code>StatisticsFacade</code> is used to bundle all available interfaces
  * of the <code>StatisticCollection</code> into one auxiliary proxy. For
  * multi-thread purposes it is also capable to delegate calls to a free
- * resource. So you may toggle the model to work with (the returned model will
- * not be filled with new data until you release it by toggling again)
+ * resource. So you may get at any time the current
+ * <code>StatisticCollection</code> which then will not be filled with new data
+ * again (until you release it by getting it again)
  */
 public class StatisticsFacade implements ICurrentPositionData,
 		ICurrentPlayerData, ICurrentTeamData {

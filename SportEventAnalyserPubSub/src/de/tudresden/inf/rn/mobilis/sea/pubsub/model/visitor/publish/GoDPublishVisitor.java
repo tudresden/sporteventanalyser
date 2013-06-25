@@ -22,14 +22,40 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.interfaces.Visitor;
  */
 public class GoDPublishVisitor implements Visitor {
 
+	/**
+	 * This is the starting point for access to the pubsub service. It provides
+	 * access to general information about the service, as well as create or
+	 * retrieve pubsub LeafNode instances. These instances provide the bulk of
+	 * the functionality as defined in the pubsub specification XEP-0060
+	 */
 	private PubSubManager manager;
 
+	/**
+	 * The <code>StatisticsFacade</code> to publish items
+	 */
 	private StatisticsFacade statistics;
 
+	/**
+	 * An internal model which will be refilled with the current data on each
+	 * sent intra-frame (it is used to get the difference between a predicitve
+	 * coded frame and intra-frames)
+	 */
 	private StatisticCollection iStatistics;
 
+	/**
+	 * Counts the cycles (is resettet when an intra-frame has been sent)
+	 */
 	private byte cycleCounter;
 
+	/**
+	 * Constructor for a <code>GoDPublishVisitor</code>
+	 * 
+	 * @param manager
+	 *            the <code>smackx.pubsub.PubSubManager</code> to access the
+	 *            pubsub service
+	 * @param statistics
+	 *            the <code>StatisticsFacade</code> to publish items
+	 */
 	public GoDPublishVisitor(PubSubManager manager, StatisticsFacade statistics) {
 		this.manager = manager;
 		this.statistics = statistics;
@@ -37,10 +63,17 @@ public class GoDPublishVisitor implements Visitor {
 		cycleCounter = Byte.MAX_VALUE;
 	}
 
+	/**
+	 * Sends the given payload to the node with the given name. If the payload
+	 * is empty nothing will be published
+	 * 
+	 * @param nodeName
+	 *            the name of the <code>Node</code> where the data should be
+	 *            published
+	 * @param payload
+	 *            the payload which should be sent
+	 */
 	private void sendPayload(String nodeName, String payload) {
-		// TODO: Use publish instead! Send is definitely useful when developing
-		// (due to Error-Handling on response), but "send" may take some time
-		// when sending some items
 		if (!payload.equals("")) {
 			try {
 				((LeafNode) manager.getNode(nodeName))

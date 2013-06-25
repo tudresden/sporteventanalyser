@@ -9,12 +9,36 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.TreeRunner;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.init.InitializationVisitor;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.publish.GoDPublishVisitor;
 
+/**
+ * This <code>SportEventAnalyserPubSub</code> is used to handle the build of
+ * functionality which comes along with XEP-0060 (PubSub). Therefore it uses an
+ * internal model which is accessed by using the <code>StatisticsFacade</code>
+ * and may be filled with new data. Any changes within the model are published
+ * frequently so any client may subscribe itself within the running game and
+ * still has the ability to get all current informations
+ */
 public class SportEventAnalyserPubSub {
 
+	/**
+	 * This is the starting point for access to the pubsub service. It provides
+	 * access to general information about the service, as well as create or
+	 * retrieve pubsub LeafNode instances. These instances provide the bulk of
+	 * the functionality as defined in the pubsub specification XEP-0060
+	 */
 	private PubSubManager manager;
 
+	/**
+	 * The <code>StatisticsFacade</code> to publish items
+	 */
 	private StatisticsFacade statistics;
 
+	/**
+	 * Constructor for this <code>SportEventAnalyserPubSub</code>
+	 * 
+	 * @param connection
+	 *            the <code>smack.Connection</code> which is used to communicate
+	 *            with the XMPP-Server
+	 */
 	public SportEventAnalyserPubSub(Connection connection) {
 		manager = new PubSubManager(connection, "pubsub."
 				+ connection.getServiceName());
@@ -24,6 +48,10 @@ public class SportEventAnalyserPubSub {
 		initializeTree();
 	}
 
+	/**
+	 * Initializes the PubSub-Tree on the XMPP-Server and starts a
+	 * <code>Thread</code> which will publish new items in a 30ms cycle (~30Hz)
+	 */
 	private void initializeTree() {
 		TreeRunner runner = new TreeRunner(new InitializationVisitor(manager),
 				new DFSIterator(statistics));
@@ -31,19 +59,14 @@ public class SportEventAnalyserPubSub {
 
 		new Thread(new Runnable() {
 
-			private long cT;
-
 			private DFSIterator iterator = new DFSIterator(statistics);
 
 			private TreeRunner treeRunner = new TreeRunner(
-					new GoDPublishVisitor(manager, statistics),
-					iterator);
+					new GoDPublishVisitor(manager, statistics), iterator);
 
 			@Override
 			public void run() {
 				while (true) {
-					cT = System.currentTimeMillis();
-
 					treeRunner.run();
 
 					try {
@@ -51,15 +74,18 @@ public class SportEventAnalyserPubSub {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					//TODO: Remove this
-//					System.out.println("Elapsed: "
-//							+ (System.currentTimeMillis() - cT) + "ms");
 				}
 			}
 
 		}).start();
 	}
 
+	/**
+	 * Get the <code>StatisticsFacade</code> which should be used to publish new
+	 * items
+	 * 
+	 * @return the <code>StatisticsFacade</code> to publish items
+	 */
 	public StatisticsFacade getStatistics() {
 		return statistics;
 	}

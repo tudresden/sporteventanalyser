@@ -9,6 +9,12 @@ import java.util.Map;
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.manager.RawMediaSession;
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.Raw;
 
+/**
+ * This auxiliary <code>SessionObserver</code> is used to lazy add
+ * <code>ReceptionListener</code>s and <code>Raw</code> media types when a
+ * <code>JingleSession</code> has been created (so you may add the prototypes
+ * and listeners at any time)
+ */
 public class SessionObserver {
 
 	/**
@@ -29,6 +35,9 @@ public class SessionObserver {
 	 */
 	private RawMediaSession session = null;
 
+	/**
+	 * Constructor for a <code>SessionObserver</code>
+	 */
 	public SessionObserver() {
 		prototypes = new LinkedList<Raw>();
 		listeners = new HashMap<Byte, ReceptionListener>();

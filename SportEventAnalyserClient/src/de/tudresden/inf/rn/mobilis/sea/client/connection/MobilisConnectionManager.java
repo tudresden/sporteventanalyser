@@ -16,15 +16,36 @@ import de.tudresden.inf.rn.mobilis.sea.client.proxy.impl.SEADistributer;
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.Raw;
 import de.tudresden.inf.rn.mobilis.sea.jingle.core.SportEventAnalyserJingle;
 
+/**
+ * The <code>MobilisConnectionManager</code> is used to connect to the
+ * Mobilis-Server using the smack library
+ */
 public class MobilisConnectionManager extends SEADistributer {
 
+	/**
+	 * This is the auxiliary <code>SportEventAnalyserJingle</code> which may be
+	 * use to use the bulk of functionality which is provided by XEP-0166
+	 * (Jingle)
+	 */
 	private SportEventAnalyserJingle seaJingle;
 
+	/**
+	 * Default constructor for a <code>MobilisConnectionManager</code> (Debug
+	 * disabled)
+	 */
 	public MobilisConnectionManager() {
 		// Default: false
 		XMPPConnection.DEBUG_ENABLED = false;
 	}
 
+	/**
+	 * Constructor for a <code>MobilisConnectionManager</code> where you may set
+	 * whether debug-mode of smack should be enabled or not
+	 * 
+	 * @param debugEnabled
+	 *            <code>true</code> if debug should be enabled (otherwise
+	 *            <code>false</code>)
+	 */
 	public MobilisConnectionManager(boolean debugEnabled) {
 		XMPPConnection.DEBUG_ENABLED = debugEnabled;
 	}
