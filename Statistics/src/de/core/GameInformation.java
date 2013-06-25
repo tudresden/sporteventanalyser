@@ -787,6 +787,12 @@ public class GameInformation implements UpdateListener
 
 			ball.update(event);
 
+			/* send data update to the visualization project */
+			if (getStatisticsFacade() != null)
+			{
+				getStatisticsFacade().setPositionOfBall(ball.getId(), ball.getPositionX(), ball.getPositionY(), ball.getVelocityX(), ball.getVelocityY());
+			}
+
 			Player nearestPlayer = getNearestPlayer(ball);
 			Player lastPlayer = currentPlayer;
 
@@ -838,7 +844,14 @@ public class GameInformation implements UpdateListener
 		}
 		else if (entity instanceof Player)
 		{
-			((Player) entity).update(event);
+			Player player = (Player) entity;
+			player.update(event);
+
+			/* send data update to the visualization project */
+			if (getStatisticsFacade() != null)
+			{
+				getStatisticsFacade().setPositionOfPlayer(player.getId(), player.getPositionX(), player.getPositionY(), player.getVelocityX(), player.getVelocityY());
+			}
 		}
 		else if (entity instanceof Goalkeeper)
 		{
