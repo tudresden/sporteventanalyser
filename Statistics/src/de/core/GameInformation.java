@@ -46,6 +46,10 @@ public class GameInformation implements UpdateListener
 	 * false for half 1, true for half 2
 	 */
 	private boolean halftime = false;
+	/**
+	 * false for no interruption, true for interruption
+	 */
+	private boolean gameinterruption = false;
 	private Config config;
 	private Player currentPlayer = null;
 
@@ -92,7 +96,7 @@ public class GameInformation implements UpdateListener
 		}
 
 		//ball-Beschleunigung >= 80m/s²?
-		if (currentBallAcc == 1 && ball.getAvgAcceleration() >= 80000000)
+		if (currentBallAcc == 1 && ball.getAvgAcceleration() >= 80000000 && gameinterruption == false)
 		{
 			currentBallAcc = 0;
 			timeBall = ball.getTimeStamp(); // setLastBallTime
