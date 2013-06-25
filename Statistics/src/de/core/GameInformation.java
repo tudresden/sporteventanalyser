@@ -50,6 +50,14 @@ public class GameInformation implements UpdateListener
 	 */
 	private long lastPushedStatistics = 0;
 
+	/**
+	 * false for half 1, true for half 2
+	 */
+	private boolean halftime = false;
+	/**
+	 * false for no interruption, true for interruption
+	 */
+	private boolean gameinterruption = false;
 	private Config config;
 	private Player currentPlayer = null;
 
@@ -110,7 +118,7 @@ public class GameInformation implements UpdateListener
 		}
 
 		// ball-Beschleunigung >= 80m/s²?
-		if (currentBallAcc == 1 && ball.getAvgAcceleration() >= 80000000)
+		if (!gameinterruption && currentBallAcc == 1 && ball.getAvgAcceleration() >= 80000000)
 		{
 			currentBallAcc = 0;
 			timeBall = ball.getTimeStamp(); // setLastBallTime
@@ -716,13 +724,27 @@ public class GameInformation implements UpdateListener
 	  */
 	public boolean isPlayerOnOwnSide(Player player)
 	{
-		if (player.getPositionY() >= 0 && player.getTeam().equals("ROT"))
+		if (halftime == false)
 		{
-			return true;
+			if (player.getPositionY() >= 0 && player.getTeam().equals("ROT"))
+			{
+				return true;
+			}
+			if (player.getPositionY() < 0 && player.getTeam().equals("GELB"))
+			{
+				return true;
+			}
 		}
-		if (player.getPositionY() < 0 && player.getTeam().equals("GELB"))
+		else
 		{
-			return true;
+			if (player.getPositionY() < 0 && player.getTeam().equals("ROT"))
+			{
+				return true;
+			}
+			if (player.getPositionY() >= 0 && player.getTeam().equals("GELB"))
+			{
+				return true;
+			}
 		}
 		return false;
 	}
