@@ -836,6 +836,10 @@ public class GameInformation implements UpdateListener
 
 					// Function for Passes
 					setPasses(lastPlayer, nearestPlayer);
+					if (getStatisticsFacade() != null)
+					{
+						getStatisticsFacade().setPassesMade(lastPlayer.getId(), lastPlayer.getMissedPasses()+lastPlayer.getSuccessfulPasses());
+					}
 
 					currentPlayer = nearestPlayer;
 					lastBallPossessionTimeStamp = nearestPlayer.getTimeStamp();
