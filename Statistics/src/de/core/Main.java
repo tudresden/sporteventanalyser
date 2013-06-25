@@ -2,7 +2,6 @@ package de.core;
 
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.StatisticsFacade;
 
-
 /**
  * Auslesen vonner Megadatei für ein Programm, welches es eigentlich schon vom Fraunhofer gibt
  * 
@@ -17,16 +16,12 @@ public class Main
 {
 	private Esper esper;
 	private GameInformation gameInformation;
-	private StatisticsFacade statisticsFacade;
 
 	public Main(StatisticsFacade statisticsFacade)
 	{
 		this.esper = new Esper();
-		this.statisticsFacade = statisticsFacade;
-		
-		System.out.println(statisticsFacade);
-		
-		gameInformation = new GameInformation();
+
+		gameInformation = new GameInformation(statisticsFacade);
 
 		for (int player : Config.PLAYERSENSORIDS)
 		{
@@ -49,10 +44,6 @@ public class Main
 	public GameInformation getGameInformation()
 	{
 		return gameInformation;
-	}
-
-	public StatisticsFacade getStatisticsFacade() {
-		return statisticsFacade;
 	}
 
 	/**
