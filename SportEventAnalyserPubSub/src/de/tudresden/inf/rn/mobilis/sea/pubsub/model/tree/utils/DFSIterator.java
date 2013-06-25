@@ -3,8 +3,8 @@ package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.utils;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.StatisticsFacade;
 
 /**
- * Concrete <code>Iterator</code> through a syntax tree with depth first search
- * (DFS) method
+ * Concrete <code>Iterator</code> which uses the depth first search (DFS) method
+ * to chop the PubSub-tree
  */
 public class DFSIterator extends Iterator {
 

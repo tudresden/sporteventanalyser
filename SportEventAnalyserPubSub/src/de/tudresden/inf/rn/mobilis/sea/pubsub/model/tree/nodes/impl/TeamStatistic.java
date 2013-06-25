@@ -2,6 +2,10 @@ package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl;
 
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.Node;
 
+/**
+ * A <code>TeamStatistic</code> may be used to set all statistical parameters of
+ * a team
+ */
 public class TeamStatistic extends Node<TeamStatistic> {
 
 	/**
