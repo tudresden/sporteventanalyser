@@ -18,17 +18,20 @@ public class IbkLearner extends Learner {
 
 	private static final Tag[] TAGS_WEIGHTING = {new Tag(4,"WEIGHT_SIMILARITY"),new Tag(1,"WEIGHT_NONE"),new Tag(2,"WEIGHT_INVERSE")};
 
+	private static final int KNN = 11;
+
 	private IBk ibk;
+	
+	private int counter=0;
 
 	@Override
 	public void init(InstancesHeader instanceHeader) {
 		this.instanceHeader = instanceHeader;
 
-		ibk = new IBk(11);
-		//ibk.setCrossValidate(true);
+		ibk = new IBk(KNN);
 		ibk.setDistanceWeighting(new SelectedTag(WEIGHT_SIMILARITY, TAGS_WEIGHTING));
-		int newWindowSize=100;
-		ibk.setWindowSize(newWindowSize);
+		//int newWindowSize=300;
+		//ibk.setWindowSize(newWindowSize);
 		
 		try {
 			ibk.buildClassifier(new Instances(instanceHeader));
@@ -82,6 +85,9 @@ public class IbkLearner extends Learner {
 
 		try {
 			ibk.updateClassifier(trainingInstance.getInstanceCopy());
+			counter++;
+			if(counter>KNN)
+				ibk.setCrossValidate(true);
 		} catch (Exception e) {
 		}
 
