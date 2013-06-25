@@ -7,21 +7,33 @@ import java.util.Map;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.BallPosition;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.PlayerPosition;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.DataNode;
-import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.Node;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.interfaces.Visitor;
 
 /**
- * Concrete statistic <code>Node</code> which is used to set actual positions of
- * players
+ * This <code>CurrentPositionData</code> is a concrete <code>DataNode</code>. It
+ * holds the <code>BallPosition</code> and the positions of all players
  */
-public class CurrentPositionData extends DataNode {
+public class CurrentPositionData extends DataNode<CurrentPositionData> {
 
+	/**
+	 * The name of the node
+	 */
 	private static final String NODENAME = "CurrentPositionData";
 
+	/**
+	 * A <code>BallPosition</code> node to set the position of the ball
+	 */
 	private BallPosition ballPosition;
 
+	/**
+	 * A <code>Map</code> which holds all known <code>PlayerPosition</code>s
+	 * (key: ID of the player, value: concrete <code>PlayerPosition</code>)
+	 */
 	private Map<Integer, PlayerPosition> playerPositions;
 
+	/**
+	 * Constructor for this <code>CurrentPositionData</code>
+	 */
 	public CurrentPositionData() {
 		ballPosition = new BallPosition(0, 0, 0, 0, 0);
 		playerPositions = new HashMap<Integer, PlayerPosition>();
@@ -74,17 +86,6 @@ public class CurrentPositionData extends DataNode {
 	}
 
 	/**
-	 * Removes a registered <code>PlayerPosition</code>. This may be useful when
-	 * a player is substituted
-	 * 
-	 * @param id
-	 *            the ID of the <code>PlayerPosition</code>
-	 */
-	public void removePlayerPosition(int id) {
-		playerPositions.remove(id);
-	}
-
-	/**
 	 * Get the <code>BallPosition</code>
 	 * 
 	 * @return the <code>BallPosition</code>
@@ -96,6 +97,11 @@ public class CurrentPositionData extends DataNode {
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
+	}
+
+	@Override
+	public String getNodeName() {
+		return NODENAME;
 	}
 
 	@Override
@@ -118,17 +124,66 @@ public class CurrentPositionData extends DataNode {
 	}
 
 	@Override
-	public String getNodeName() {
-		return NODENAME;
+	public String toPredictiveCodedXML(CurrentPositionData iNode) {
+		boolean c = false;
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("<CurrentPositionData>");
+
+		// Append BallPosition
+		String s = ballPosition.toPredictiveCodedXML(iNode.getBallPosition());
+		if (s.length() > 0) {
+			c = true;
+			sb.append(s);
+		}
+
+		// Append PlayerPosition
+		for (PlayerPosition node : playerPositions.values()) {
+			if (iNode.getPlayerPosition(node.getID()) == null) {
+				s = node.toXML();
+			} else {
+				s = node.toPredictiveCodedXML(iNode.getPlayerPosition(node
+						.getID()));
+			}
+			if (s.length() > 0) {
+				c = true;
+				sb.append(s);
+			}
+		}
+
+		if (c) {
+			sb.append("</CurrentPositionData>");
+
+			return sb.toString();
+		}
+
+		return "";
 	}
 
 	@Override
-	public Node clone() {
+	public void copy(CurrentPositionData dest) {
+		// Copy BallPosition
+		ballPosition.copy(dest.getBallPosition());
+
+		// Copy PlayerPositons
+		PlayerPosition destPlayerPosition;
+		for (PlayerPosition playerPosition : playerPositions.values()) {
+			if ((destPlayerPosition = dest.getPlayerPosition(playerPosition
+					.getID())) == null) {
+				dest.registerPlayerPosition(playerPosition.clone());
+			} else {
+				playerPosition.copy(destPlayerPosition);
+			}
+		}
+	}
+
+	@Override
+	public CurrentPositionData clone() {
 		CurrentPositionData clone = new CurrentPositionData(
-				(BallPosition) this.ballPosition.clone());
+				this.ballPosition.clone());
 		// Append PlayerPositions
 		for (PlayerPosition node : playerPositions.values()) {
-			clone.registerPlayerPosition((PlayerPosition) node.clone());
+			clone.registerPlayerPosition(node.clone());
 		}
 
 		return clone;

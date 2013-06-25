@@ -36,9 +36,13 @@ public class Player extends Entity
 	protected boolean onBall;
 	protected Event leftFootEvent;
 	protected Event rightFootEvent;
+	private int oldPositionX;
+	private int oldPositionY;
 
 	private boolean left = false;
 	private boolean right = false;
+
+	private Pass lastPass;
 
 	protected Map<Integer, Event> Ids;
 
@@ -68,18 +72,20 @@ public class Player extends Entity
 		this.successfulPasses = 0;
 		this.ballContacts = 0;
 		this.ballPossessionTime = 0;
+		this.oldPositionX = 0;
+		this.oldPositionY = 0;
 		this.passesFrom = new HashMap<Integer, Integer>();
 		this.passesTo = new HashMap<Integer, Integer>();
-		this.heatmap = new HeatMapGrid(13, -33960, 33965, -50, 52489);
+		this.heatmap = new HeatMapGrid(Config.heatMapInit);
 
 		Ids.put(leftFootID, new Event(leftFootID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
 		Ids.put(rightFootID, new Event(rightFootID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
 	}
 
-	//public void updateHeatmap()
-	//{
-	//	heatmap.incrementCellValue(super.getAccelerationY(), super.getAccelerationX());
-	//}
+	// public void updateHeatmap()
+	// {
+	// heatmap.incrementCellValue(super.getAccelerationY(), super.getAccelerationX());
+	// }
 
 	public String getTeam()
 	{
@@ -167,6 +173,47 @@ public class Player extends Entity
 	{
 		this.ballPossessionTime = ballPossessionTime;
 	}
+	
+	public int getOldPositionX()
+	{
+		return oldPositionX;
+	}
+
+	public void setOldPositionX(int oldPositionX)
+	{
+		this.oldPositionX = oldPositionX;
+	}
+	
+	public int getOldPositionY()
+	{
+		return oldPositionY;
+	}
+
+	public void setOldPositionY(int oldPositionY)
+	{
+		this.oldPositionY = oldPositionY;
+	}
+
+	/**
+	 * Get the last pass of this player.
+	 * 
+	 * @return True if successful, false if not or null if there was no pass in the past.
+	 */
+	public Pass getLastPass()
+	{
+		return lastPass;
+	}
+
+	/**
+	 * Set the last pass of this player.
+	 * 
+	 * @param pass
+	 *            The new <code>Pass</code> object.
+	 */
+	public void setLastPass(Pass pass)
+	{
+		lastPass = pass;
+	}
 
 	private void updatePosition()
 	{
@@ -198,6 +245,9 @@ public class Player extends Entity
 
 		// update total distance
 		updateTotalDistance(newPosX, newPosY, newPosZ);
+		
+		setOldPositionX(this.positionX);
+		setOldPositionY(this.positionY);
 
 		this.positionX = newPosX;
 		this.positionY = newPosY;
@@ -240,6 +290,8 @@ public class Player extends Entity
 			updatePosition();
 			updateVelocity();
 			updateAcceleration();
+
+			heatmap.incrementCellValue(event.getPositionY(), event.getPositionX());
 
 			this.timeStamp = event.getTimestamp();
 		}

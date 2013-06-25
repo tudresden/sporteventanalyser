@@ -14,19 +14,37 @@
 				<xs:sequence>
 					<xs:element name="PlayerID" type="xs:int" />
 					<xs:element name="PlayerName" type="xs:string" />
-					<xs:element name="TeamID" type="xs:string" />
+					<xs:element name="TeamName" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="GameField">
+				<xs:sequence>
+					<xs:element name="GameFieldMinX" type="xs:int" />
+					<xs:element name="GameFieldMaxX" type="xs:int" />
+					<xs:element name="GameFieldMinY" type="xs:int" />
+					<xs:element name="GameFieldMaxY" type="xs:int" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="Goal">
+				<xs:sequence>
+					<xs:element name="GoalMinX" type="xs:int" />
+					<xs:element name="GoalMaxX" type="xs:int" />
 				</xs:sequence>
 			</xs:complexType>
 
 			<xs:element name="Mappings">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="Mappings" type="tns:Mapping" minOccurs="1"
+						<xs:element name="GameFieldSize" type="tns:GameField" />
+						<xs:element name="Goals" type="tns:Goal" minOccurs="2" maxOccurs="unbounded" />
+						<xs:element name="PlayerMappings" type="tns:Mapping" minOccurs="1"
 							maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-			
+
 			<xs:element name="MappingRequest" />
 
 		</xs:schema>
@@ -37,7 +55,7 @@
 
 	<msdl:interface name="SEAInterface">
 
-		<msdl:operation name="PlayerMappings" pattern="http://www.w3.org/ns/wsdl/in-out">
+		<msdl:operation name="GameMappings" pattern="http://www.w3.org/ns/wsdl/in-out">
 			<msdl:input element="tns:MappingRequest" />
 			<msdl:output element="tns:Mappings" />
 		</msdl:operation>
@@ -49,7 +67,7 @@
 	<msdl:binding name="SEABinding" interface="tns:SEAInterface"
 		type="http://mobilis.inf.tu-dresden.de/xmpp/">
 
-		<msdl:operation ref="tns:PlayerMappings" xmpp:ident="sea:iq:playermappings">
+		<msdl:operation ref="tns:GameMappings" xmpp:ident="sea:iq:gamemappings">
 			<msdl:input xmpp:type="get" />
 			<msdl:output xmpp:type="result" />
 		</msdl:operation>

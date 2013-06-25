@@ -2,20 +2,29 @@ package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.utils;
 
 import java.util.LinkedList;
 
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.StatisticsFacade;
+
 /**
- * Concrete <code>Iterator</code> through a syntax tree with breadth first
- * search (DFS) method
+ * Concrete <code>Iterator</code> which uses the breadth first search (DFS)
+ * method to chop the PubSub-tree
  */
 public class BFSIterator extends Iterator {
 
 	/**
+	 * The <code>StatisticsFacade</code> which is used to access the model
+	 */
+	private StatisticsFacade statistics;
+
+	/**
 	 * Constructor for a <code>BFSIterator</code>
 	 * 
-	 * @param node
-	 *            <code>Iterable</code> to start BFS
+	 * @param statistics
+	 *            <code>StatisticsFacade</code> to get the current
+	 *            <code>StatisticCollection</code> from
 	 */
-	public BFSIterator(Iterable node) {
-		bfs(node);
+	public BFSIterator(StatisticsFacade statistics) {
+		this.statistics = statistics;
+		this.reset();
 	}
 
 	/**
@@ -36,5 +45,11 @@ public class BFSIterator extends Iterator {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void reset() {
+		super.reset();
+		bfs(statistics.getCurrentStatistics());
 	}
 }

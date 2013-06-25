@@ -20,12 +20,39 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.interfaces.Visitor;
  */
 public class InitializationVisitor implements Visitor {
 
+	/**
+	 * This is the starting point for access to the pubsub service. It provides
+	 * access to general information about the service, as well as create or
+	 * retrieve pubsub LeafNode instances. These instances provide the bulk of
+	 * the functionality as defined in the pubsub specification XEP-0060
+	 */
 	private PubSubManager manager;
 
+	/**
+	 * Constructor for an <code>InitializationVisitor</code>
+	 * 
+	 * @param manager
+	 *            the <code>smackx.pubsub.PubSubManager</code> to access the
+	 *            pubsub service
+	 */
 	public InitializationVisitor(PubSubManager manager) {
 		this.manager = manager;
 	}
 
+	/**
+	 * Create a PubSub-<code>Node</code>. If there is already a
+	 * <code>Node</code> with such an id, this <code>Node</code> will be deleted
+	 * first and then replaced with a new <code>Node</code>. This ensures that
+	 * there are no more old items which may corrupt the data
+	 * 
+	 * @param id
+	 *            the ID of the <code>Node</code> which should be added
+	 * @param config
+	 *            a <code>CommonSubmitNodeConfig</code> to be used with the
+	 *            <code>Node</code>
+	 * @return the created <code>Node</code>
+	 * @throws XMPPException
+	 */
 	private Node createNode(String id, CommonSubmitNodeConfig config)
 			throws XMPPException {
 		Node node = null;

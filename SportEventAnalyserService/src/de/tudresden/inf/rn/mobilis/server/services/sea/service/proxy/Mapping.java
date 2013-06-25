@@ -8,14 +8,14 @@ public class Mapping implements XMPPInfo {
 
 	private int PlayerID = Integer.MIN_VALUE;
 	private String PlayerName = null;
-	private String TeamID = null;
+	private String TeamName = null;
 
 
-	public Mapping( int PlayerID, String PlayerName, String TeamID ) {
+	public Mapping( int PlayerID, String PlayerName, String TeamName ) {
 		super();
 		this.PlayerID = PlayerID;
 		this.PlayerName = PlayerName;
-		this.TeamID = TeamID;
+		this.TeamName = TeamName;
 	}
 
 	public Mapping(){}
@@ -40,8 +40,8 @@ public class Mapping implements XMPPInfo {
 				else if (tagName.equals( "PlayerName" ) ) {
 					this.PlayerName = parser.nextText();
 				}
-				else if (tagName.equals( "TeamID" ) ) {
-					this.TeamID = parser.nextText();
+				else if (tagName.equals( "TeamName" ) ) {
+					this.TeamName = parser.nextText();
 				}
 				else
 					parser.next();
@@ -87,9 +87,9 @@ public class Mapping implements XMPPInfo {
 			.append( this.PlayerName )
 			.append( "</PlayerName>" );
 
-		sb.append( "<TeamID>" )
-			.append( this.TeamID )
-			.append( "</TeamID>" );
+		sb.append( "<TeamName>" )
+			.append( this.TeamName )
+			.append( "</TeamName>" );
 
 		return sb.toString();
 	}
@@ -112,12 +112,12 @@ public class Mapping implements XMPPInfo {
 		this.PlayerName = PlayerName;
 	}
 
-	public String getTeamID() {
-		return this.TeamID;
+	public String getTeamName() {
+		return this.TeamName;
 	}
 
-	public void setTeamID( String TeamID ) {
-		this.TeamID = TeamID;
+	public void setTeamName( String TeamName ) {
+		this.TeamName = TeamName;
 	}
 
 }

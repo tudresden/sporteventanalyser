@@ -18,11 +18,11 @@ public class SportEventAnalyserProxy {
 	}
 
 
-	public XMPPBean PlayerMappings( String toJid, String packetId, List< Mapping > Mappings ) {
+	public XMPPBean GameMappings( String toJid, String packetId, GameField GameFieldSize, List< Goal > Goals, List< Mapping > PlayerMappings ) {
 		if ( null == _bindingStub )
 			return null;
 
-		Mappings out = new Mappings( Mappings );
+		Mappings out = new Mappings( GameFieldSize, Goals, PlayerMappings );
 		out.setTo( toJid );
 		out.setId( packetId );
 

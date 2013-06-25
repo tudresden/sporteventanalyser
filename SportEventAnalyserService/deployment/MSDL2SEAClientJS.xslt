@@ -1520,7 +1520,7 @@ $(window).unload(function() {
 		connect : function(uFullJid, uPassword, mBareJid, bind, onSuccess, onError) {
 			// Set full jid of coordinator service
 			Mobilis.core.SERVICES[Mobilis.core.NS.COORDINATOR].jid = mBareJid + "/Coordinator";
-			onError = onError || this.trace;
+			onError = onError || Mobilis.utils.trace;
 
 			var conn = new Strophe.Connection(bind);
 			conn.connect(uFullJid, uPassword, function(status) {

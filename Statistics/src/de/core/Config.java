@@ -25,6 +25,9 @@ public class Config
 	public final static int[] PLAYERSENSORIDS = { 47, 16, 49, 88, 19, 52, 53, 54, 23, 24, 57, 58, 59, 28, 63, 64, 65, 66, 67, 68, 69, 38, 71, 40, 73, 74, 75, 44 };
 	public final static int[] BALLIDS = { 4, 8, 10 };
 
+	public static final HeatMapInit heatMapInit = Utils.calculateHeatMapInit();
+	public static final int heatMapWidthInCells = 13;
+
 	public Config()
 	{
 		entityList = new ConcurrentHashMap<Integer, Entity>();

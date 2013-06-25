@@ -18,18 +18,57 @@ import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.Raw;
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.RawReceiver;
 import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.RawTransmitter;
 
+/**
+ * This <code>RawMediaSession</code> extends the <code>JingleMediaSession</code>
+ * to create a session (it decides itself whether this
+ * <code>RawMediaSession</code> should transmit or receive data)
+ */
 public class RawMediaSession extends JingleMediaSession {
 
+	/**
+	 * A <code>RawTransmitter</code> to send data
+	 */
 	private RawTransmitter transmitter = null;
 
+	/**
+	 * This is an auxiliary queue to append <code>Raw</code>s which should be
+	 * sent
+	 */
 	private LinkedBlockingQueue<Raw> transmissionQueue = null;
 
+	/**
+	 * A <code>RawReceiver</code> which may receive data
+	 */
 	private RawReceiver receiver = null;
 
+	/**
+	 * A <code>Map</code> of all payloadTypes which are allowed (those are the
+	 * communication <code>Object</code>s of type <code>Raw</code>)
+	 */
 	private Map<Byte, Raw> payloadTypes = null;
 
+	/**
+	 * A <code>Map</code> of all registered listeners (the receiver will use
+	 * those listeners to distribute incoming <code>Raw</code>s)
+	 */
 	private Map<Byte, ReceptionListener> listeners = null;
 
+	/**
+	 * Constructor for a <code>RawMediaSession</code>
+	 * 
+	 * @param payloadType
+	 *            the payloadType (which should be of type 42 ("raw")
+	 * @param remote
+	 *            the chosen <code>TransportCandidate</code> for the remote
+	 *            device
+	 * @param local
+	 *            the chosen <code>TransportCandidate</code> for the local
+	 *            device
+	 * @param mediaLocator
+	 *            an auxiliary mediaLocator-<code>String</code>
+	 * @param jingleSession
+	 *            the concrete <code>JingleSession</code> which has been created
+	 */
 	public RawMediaSession(PayloadType payloadType, TransportCandidate remote,
 			TransportCandidate local, String mediaLocator,
 			JingleSession jingleSession) {
@@ -49,7 +88,6 @@ public class RawMediaSession extends JingleMediaSession {
 						InetAddress.getByName(getRemote().getIp()), getRemote()
 								.getPort());
 			} catch (SocketException | UnknownHostException e) {
-				// TODO: Handle this!
 				e.printStackTrace();
 			}
 		} else {
