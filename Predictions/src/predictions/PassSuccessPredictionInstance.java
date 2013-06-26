@@ -22,12 +22,26 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 
 	public static final String ATTRIBUTE_CLASS = "class";
 
+	private static final String ATTRIBUTE_TEAMMATE_IN_AREA = "ATTRIBUTE_TEAMMATE_IN_AREA";
+	private static final String ATTRIBUTE_OPPPOSITE_IN_AREA = "ATTRIBUTE_OPPPOSITE_IN_AREA";
+	private static final String ATTRIBUTE_PLAYER_PASS_SUCCESS = "ATTRIBUTE_PLAYER_PASS_SUCCESS";
+	private static final String ATTRIBUTE_PLAYER_PASS_MISSED = "ATTRIBUTE_PLAYER_PASS_MISSED";
+	private static final String ATTRIBUTE_PLAYER_BALLCONTACT = "ATTRIBUTE_PLAYER_BALLCONTACT";
+	private static final String ATTRIBUTE_lAST_PLAYER_ID = "ATTRIBUTE_lAST_PLAYER_ID";
+	private static final String ATTRIBUTE_CURRENT_PLAYER_ID = "ATTRIBUTE_CURRENT_PLAYER_ID";
+	private static final String ATTRIBUTE_CURRENT_PLAYER_X = "ATTRIBUTE_CURRENT_PLAYER_X";
+	private static final String ATTRIBUTE_CURRENT_PLAYER_Y = "ATTRIBUTE_CURRENT_PLAYER_Y";
+	private static final String ATTRIBUTE_CURRENT_PLAYER_DISTANCE = "ATTRIBUTE_CURRENT_PLAYER_DISTANCE";
+	
 	private static final List<String> ATTRIBUTE_LIST = Arrays
-			.asList(new String[] { ATTRIBUTE_TEAMMATE_RATE_IN_AREA,
-					ATTRIBUTE_PLAYER_PASS_SUCCESS_RATE, ATTRIBUTE_AREA,
-					ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER, ATTRIBUTE_CLASS
-
+			.asList(new String[] { ATTRIBUTE_TEAMMATE_IN_AREA,ATTRIBUTE_OPPPOSITE_IN_AREA,
+					ATTRIBUTE_PLAYER_PASS_SUCCESS,ATTRIBUTE_PLAYER_PASS_MISSED,ATTRIBUTE_PLAYER_BALLCONTACT,ATTRIBUTE_lAST_PLAYER_ID,ATTRIBUTE_CURRENT_PLAYER_ID,
+					ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER,ATTRIBUTE_CURRENT_PLAYER_X,ATTRIBUTE_CURRENT_PLAYER_Y,ATTRIBUTE_CURRENT_PLAYER_DISTANCE,
+					ATTRIBUTE_AREA,ATTRIBUTE_CLASS
 			});
+
+
+
 
 	private InstancesHeader instanceHeader;
 	private Instance currentInstance;
@@ -42,15 +56,50 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 		/*
 		 * attributes
 		 */
+		ArrayList<String> players = new ArrayList<String>();
+		players.add("47");
+		players.add("49");
+		players.add("19");
+		players.add("53");
+		players.add("23");
+		players.add("57");
+		players.add("59");
+		players.add("63");
+		players.add("65");
+		players.add("67");
+		players.add("69");
+		players.add("71");
+		players.add("73");
+		players.add("75");
+		
 
 		ArrayList<Attribute> attributes = new ArrayList<Attribute>();
-
-		// number of team mates minus opponents in area
-		attributes.add(new Attribute(ATTRIBUTE_TEAMMATE_RATE_IN_AREA));
+		
+		// number of team mates 
+		attributes.add(new Attribute(ATTRIBUTE_TEAMMATE_IN_AREA));
+		
+		attributes.add(new Attribute(ATTRIBUTE_OPPPOSITE_IN_AREA));
 
 		// player pass success rate
-		attributes.add(new Attribute(ATTRIBUTE_PLAYER_PASS_SUCCESS_RATE));
-
+		attributes.add(new Attribute(ATTRIBUTE_PLAYER_PASS_SUCCESS));
+		
+		attributes.add(new Attribute(ATTRIBUTE_PLAYER_PASS_MISSED));
+		
+		attributes.add(new Attribute(ATTRIBUTE_PLAYER_BALLCONTACT));
+		
+		attributes.add(new Attribute(ATTRIBUTE_lAST_PLAYER_ID,players));
+		
+		attributes.add(new Attribute(ATTRIBUTE_CURRENT_PLAYER_ID,players));
+		
+		// distance to nearest friendly player
+		attributes.add(new Attribute(ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER));
+		
+		attributes.add(new Attribute(ATTRIBUTE_CURRENT_PLAYER_X));
+		
+		attributes.add(new Attribute(ATTRIBUTE_CURRENT_PLAYER_Y));
+		
+		attributes.add(new Attribute(ATTRIBUTE_CURRENT_PLAYER_DISTANCE));
+		
 		// field area
 		ArrayList<String> areas = new ArrayList<String>();
 		areas.add(Utils.FIELD_AREA_OWN_TEAM);
@@ -58,8 +107,7 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 		areas.add(Utils.FIELD_AREA_OPPONENTS);
 		attributes.add(new Attribute(ATTRIBUTE_AREA, areas));
 
-		// distance to nearest friendly player
-		attributes.add(new Attribute(ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER));
+		
 
 		/*
 		 * classes
@@ -105,27 +153,56 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 
 	public void setAttributes(int numberOfTeammatesInArea,
 			int numberOfOpponentsInArea, int playerPassesSuccessful,
-			int playerPassesMissed, int xPosition, int distanceNearestPlayer) {
+			int playerPassesMissed, int ballContact,int lastPlayerId, int curentPlayerId,int distanceNearestPlayer,int xPosition,int currentX,int currentY,int playerDistance) {
 		createEmptyInstance();
-
+		
 		currentInstance.setValue(
-				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_TEAMMATE_RATE_IN_AREA),
-				numberOfTeammatesInArea - numberOfOpponentsInArea);
-
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_TEAMMATE_IN_AREA),
+				numberOfTeammatesInArea );
+		currentInstance.setValue(
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_OPPPOSITE_IN_AREA),
+				numberOfOpponentsInArea );
+		
 		int playerPassSuccessRate = (int) (((float) playerPassesSuccessful / ((float) playerPassesSuccessful + (float) playerPassesMissed)) * 100);
 		currentInstance.setValue(
-				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_PLAYER_PASS_SUCCESS_RATE),
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_PLAYER_PASS_SUCCESS),
 				playerPassSuccessRate);
+		currentInstance.setValue(
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_PLAYER_PASS_MISSED),
+				0);
+		
+		currentInstance.setValue(
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_PLAYER_BALLCONTACT),
+				ballContact);
+		
+		currentInstance.setValue(
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_lAST_PLAYER_ID),
+				lastPlayerId);
+		
+		currentInstance.setValue(
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_ID),
+				curentPlayerId);
+		
+		currentInstance.setValue(
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER),
+				distanceNearestPlayer);
 
+		currentInstance.setValue(
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_X),
+				currentX);
+		currentInstance.setValue(
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_Y),
+				currentY);
 		currentInstance.setValue(ATTRIBUTE_LIST.indexOf(ATTRIBUTE_AREA),
 				Utils.getFieldArea(xPosition, true)); // TODO set opponentSide
 
 		currentInstance.setValue(
-				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER),
-				distanceNearestPlayer);
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_DISTANCE),
+				playerDistance);
 	}
 
 	public void setClassAttribute(String result) {
+		
 		currentInstance.setClassValue(result);
 	}
 
