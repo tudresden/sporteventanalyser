@@ -5,7 +5,7 @@ import de.core.GameInformation;
 public class PassSuccessPredictor implements Predictor {
 	public static final String TAG = "[Predictions][PassSuccessPredictor] ";
 
-	private static final int PLAYER_RADIUS = 10;
+	private static final int PLAYER_RADIUS = 20;
 
 	private Learner learner;
 	private PredictionInstance predictionInstance;
@@ -14,6 +14,7 @@ public class PassSuccessPredictor implements Predictor {
 
 	private int successfulPassesCounter = 0;
 	private int failedPassesCounter = 0;
+	private Utils utils=new Utils();
 
 	public PassSuccessPredictor(Learner learner) {
 		this.learner = learner;
@@ -50,16 +51,26 @@ public class PassSuccessPredictor implements Predictor {
 
 		// update instance
 		((PassSuccessPredictionInstance) predictionInstance)
-				.setAttributes(gameInformation
-						.getTeammatesInArea(PLAYER_RADIUS), gameInformation
-						.getOpponentsInArea(PLAYER_RADIUS), gameInformation
-						.getPlayerPassesSuccessful(idOfLastPlayerWithBall),
-						gameInformation
-								.getPlayerPassesMissed(idOfLastPlayerWithBall),
-						gameInformation.getCurrentBallPossessionPlayer()
-								.getPositionX(), (int) gameInformation
-								.getDistanceOfNearestTeammate());
+				.setAttributes(gameInformation.getTeammatesInArea(PLAYER_RADIUS), 
+						gameInformation.getOpponentsInArea(PLAYER_RADIUS), 
+						gameInformation.getPlayerPassesSuccessful(idOfLastPlayerWithBall),
+						gameInformation.getPlayerPassesMissed(idOfLastPlayerWithBall),
+						gameInformation.getPlayerBallContacts(idOfLastPlayerWithBall),
+						idOfLastPlayerWithBall,
+						gameInformation.getCurrentBallPossessionPlayer().getId(),
+						gameInformation.getCurrentBallPossessionPlayer().getPositionX(),
+						gameInformation.getCurrentBallPossessionPlayer().getPositionX(), 
+						gameInformation.getCurrentBallPossessionPlayer().getPositionY(), 
+						(int) gameInformation.getDistanceOfNearestTeammate(),
+						Math.round(gameInformation.getPlayerDistance(idOfLastPlayerWithBall)));
 
+		
+		
+		
+		
+		
+		
+		
 		// pass occurred
 		if (idOfCurrentPlayerWithBall != idOfLastPlayerWithBall
 				&& idOfLastPlayerWithBall != -1) {
@@ -71,7 +82,9 @@ public class PassSuccessPredictor implements Predictor {
 			System.out.println(TAG + "No pass occured.");
 			predict(gameInformation);
 		}
+		
 
+		
 		idOfLastPlayerWithBall = gameInformation
 				.getCurrentBallPossessionPlayer().getId();
 
@@ -89,10 +102,47 @@ public class PassSuccessPredictor implements Predictor {
 				: PassSuccessPredictionInstance.PREDICTION_PASS_FAILS;
 
 		// count result for comparison with prediction accuracy
-		if (result.equals(PassSuccessPredictionInstance.PREDICTION_PASS_FAILS))
+		if (result.equals(PassSuccessPredictionInstance.PREDICTION_PASS_FAILS)){
 			failedPassesCounter++;
-		else
+			utils.logInt(new Integer[]{
+					gameInformation.getTeammatesInArea(PLAYER_RADIUS), 
+					gameInformation.getOpponentsInArea(PLAYER_RADIUS),
+					gameInformation.getPlayerPassesSuccessful(idOfLastPlayerWithBall),
+					gameInformation.getPlayerPassesMissed(idOfLastPlayerWithBall), 
+					gameInformation.getPlayerBallContacts(idOfLastPlayerWithBall),
+					idOfLastPlayerWithBall,
+					gameInformation.getCurrentBallPossessionPlayer().getId(),
+					(int) gameInformation.getDistanceOfNearestTeammate(),
+					gameInformation.getCurrentBallPossessionPlayer().getPositionX(),
+					gameInformation.getCurrentBallPossessionPlayer().getPositionY(),
+					
+					gameInformation.getCurrentGameTime(),
+					Math.round(gameInformation.getPlayerDistance(idOfLastPlayerWithBall)),
+					(int)gameInformation.getPlayerLastPassTimestamp(idOfLastPlayerWithBall),
+					0
+			});
+		}else{
 			successfulPassesCounter++;
+			utils.logInt(new Integer[]{
+					gameInformation.getTeammatesInArea(PLAYER_RADIUS), 
+					gameInformation.getOpponentsInArea(PLAYER_RADIUS),
+					gameInformation.getPlayerPassesSuccessful(idOfLastPlayerWithBall),
+					gameInformation.getPlayerPassesMissed(idOfLastPlayerWithBall), 
+					gameInformation.getPlayerBallContacts(idOfLastPlayerWithBall),
+					idOfLastPlayerWithBall,
+					gameInformation.getCurrentBallPossessionPlayer().getId(),
+					(int) gameInformation.getDistanceOfNearestTeammate(),
+					gameInformation.getCurrentBallPossessionPlayer().getPositionX(),
+					gameInformation.getCurrentBallPossessionPlayer().getPositionY(),
+					
+					gameInformation.getCurrentGameTime(),
+					Math.round(gameInformation.getPlayerDistance(idOfLastPlayerWithBall)),
+					(int)gameInformation.getPlayerLastPassTimestamp(idOfLastPlayerWithBall),
+					1
+			});
+		}
+			
+			
 
 		System.out.println(TAG + "event occured: " + result);
 
