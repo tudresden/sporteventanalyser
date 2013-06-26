@@ -116,7 +116,7 @@ public class PassSuccessPredictor implements Predictor {
 					gameInformation.getCurrentBallPossessionPlayer().getPositionX(),
 					gameInformation.getCurrentBallPossessionPlayer().getPositionY(),
 					
-					gameInformation.getCurrentGameTime(),
+					(int) gameInformation.getCurrentGameTime(),
 					Math.round(gameInformation.getPlayerDistance(idOfLastPlayerWithBall)),
 					(int)gameInformation.getPlayerLastPassTimestamp(idOfLastPlayerWithBall),
 					0
@@ -135,7 +135,7 @@ public class PassSuccessPredictor implements Predictor {
 					gameInformation.getCurrentBallPossessionPlayer().getPositionX(),
 					gameInformation.getCurrentBallPossessionPlayer().getPositionY(),
 					
-					gameInformation.getCurrentGameTime(),
+					(int)gameInformation.getCurrentGameTime(),
 					Math.round(gameInformation.getPlayerDistance(idOfLastPlayerWithBall)),
 					(int)gameInformation.getPlayerLastPassTimestamp(idOfLastPlayerWithBall),
 					1
