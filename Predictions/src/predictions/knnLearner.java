@@ -9,7 +9,6 @@ public class knnLearner extends Learner {
 
 	public static final String TAG = "[Predictions][KnnLearner] ";
 
-	private Instances accumulatedInstances;
 	private LinearNNSearch knn;
 
 	@Override
