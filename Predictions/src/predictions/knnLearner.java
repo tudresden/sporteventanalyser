@@ -43,9 +43,10 @@ public class knnLearner extends Learner {
 				String neighborClass = neighbor.stringValue(neighbor
 						.classIndex());
 
-				System.out.println(TAG + (neighborIndex + 1) + ". "
-						+ neighborClass + " (distance: "
-						+ distances[neighborIndex] + ")");
+				if (Utils.DEBUGGING)
+					System.out.println(TAG + (neighborIndex + 1) + ". "
+							+ neighborClass + " (distance: "
+							+ distances[neighborIndex] + ")");
 
 				if (neighborIndex == 0 && result.equals(neighborClass))
 					numberSamplesCorrect++;
@@ -54,8 +55,9 @@ public class knnLearner extends Learner {
 
 		} catch (Exception e) {
 			// e.printStackTrace();
-			System.out.println(TAG + "no neighbors found in "
-					+ accumulatedInstances.size() + " instances");
+			if (Utils.DEBUGGING)
+				System.out.println(TAG + "no neighbors found in "
+						+ accumulatedInstances.size() + " instances");
 
 		}
 
@@ -87,13 +89,15 @@ public class knnLearner extends Learner {
 				String neighborClass = neighbor.stringValue(neighbor
 						.classIndex());
 
-				System.out.println(TAG + (neighborIndex + 1) + ". "
-						+ neighborClass + " (distance: "
-						+ distances[neighborIndex] + ")");
+				if (Utils.DEBUGGING)
+					System.out.println(TAG + (neighborIndex + 1) + ". "
+							+ neighborClass + " (distance: "
+							+ distances[neighborIndex] + ")");
 			}
 		} catch (Exception e) {
 			// e.printStackTrace();
-			System.out.println(TAG + "no neighbors found");
+			if (Utils.DEBUGGING)
+				System.out.println(TAG + "no neighbors found");
 		}
 
 		printAccuracy(TAG);

@@ -8,6 +8,8 @@ import weka.core.Instance;
 
 public class Utils {
 
+	public static final boolean DEBUGGING = false;
+	
 	public static final String FIELD_AREA_OWN_TEAM = "FIELD_AREA_OWN_TEAM";
 	public static final String FIELD_AREA_MIDDLE = "FIELD_AREA_MIDDLE";
 	public static final String FIELD_AREA_OPPONENTS = "FIELD_AREA_OPPONENTS";
