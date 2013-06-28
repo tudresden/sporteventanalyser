@@ -1,5 +1,6 @@
 package predictions;
 
+import weka.core.Instances;
 import moa.classifiers.Classifier;
 import moa.classifiers.trees.HoeffdingTree;
 import moa.core.InstancesHeader;
@@ -17,6 +18,9 @@ public class HoeffdingTreeLearner extends Learner {
 		learner = new HoeffdingTree();
 		learner.setModelContext(instanceHeader);
 		learner.prepareForUse();
+		
+		accumulatedInstances = new Instances(instanceHeader);
+
 	}
 
 	@Override
@@ -42,6 +46,9 @@ public class HoeffdingTreeLearner extends Learner {
 		/*
 		 * train
 		 */
+		
+		if (Utils.ARFF_WRITING_MODE)
+			accumulatedInstances.add(trainingInstance.getInstanceCopy());
 
 		learner.trainOnInstance(trainingInstance.getInstanceCopy());
 

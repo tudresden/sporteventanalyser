@@ -1,11 +1,13 @@
 package predictions;
 
+import weka.core.Instances;
 import moa.core.InstancesHeader;
 
 public abstract class Learner {
 	protected int numberSamplesCorrect = 0;
 	protected int numberSamples = 0;
 	protected InstancesHeader instanceHeader;
+	protected Instances accumulatedInstances;
 
 	protected abstract void init(InstancesHeader instanceHeader);
 
@@ -23,5 +25,9 @@ public abstract class Learner {
 		} else
 			System.out.println(tag + numberSamples + " instances, " + "n/a"
 					+ "% accuracy");
+	}
+
+	protected Instances getAccumulatedInstances() {
+		return accumulatedInstances;
 	}
 }

@@ -42,6 +42,8 @@ public class IbkLearner extends Learner {
 			e.printStackTrace();
 		}
 
+		accumulatedInstances = new Instances(instanceHeader);
+
 	}
 
 	@Override
@@ -88,6 +90,9 @@ public class IbkLearner extends Learner {
 		/*
 		 * train
 		 */
+
+		if (Utils.ARFF_WRITING_MODE)
+			accumulatedInstances.add(trainingInstance.getInstanceCopy());
 
 		try {
 			ibk.updateClassifier(trainingInstance.getInstanceCopy());

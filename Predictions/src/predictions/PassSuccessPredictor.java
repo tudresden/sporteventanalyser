@@ -14,7 +14,8 @@ public class PassSuccessPredictor implements Predictor {
 
 	private int successfulPassesCounter = 0;
 	private int failedPassesCounter = 0;
-	private Utils utils = new Utils();
+
+	private boolean arffCreated = false;
 
 	public PassSuccessPredictor(Learner learner) {
 		this.learner = learner;
@@ -36,6 +37,15 @@ public class PassSuccessPredictor implements Predictor {
 	public void update(GameInformation gameInformation) {
 		System.out.println(TAG + " - - - pass success prediction update with "
 				+ learner.getClass().getName() + " - - - ");
+
+		// TODO create ARFF file at the very end
+		if (Utils.ARFF_WRITING_MODE && !arffCreated)
+			if (learner.getAccumulatedInstances().size() == 100) {
+				arffCreated = true;
+				Utils.createArffFileFromInstances(learner
+						.getAccumulatedInstances(), this.getClass().getName()
+						+ "_" + predictionInstance.getClass().getName());
+			}
 
 		if (gameInformation.getCurrentBallPossessionPlayer() == null) {
 			if (Utils.DEBUGGING)
@@ -60,9 +70,11 @@ public class PassSuccessPredictor implements Predictor {
 								.getPlayerPassesMissed(idOfLastPlayerWithBall),
 						gameInformation
 								.getPlayerBallContacts(idOfLastPlayerWithBall),
-						idOfLastPlayerWithBall, gameInformation
-								.getCurrentBallPossessionPlayer().getId(),
-						gameInformation.getCurrentBallPossessionPlayer()
+						"" + idOfLastPlayerWithBall, ""
+								+ gameInformation
+										.getCurrentBallPossessionPlayer()
+										.getId(), gameInformation
+								.getCurrentBallPossessionPlayer()
 								.getPositionX(), gameInformation
 								.getCurrentBallPossessionPlayer()
 								.getPositionX(), gameInformation
@@ -103,54 +115,54 @@ public class PassSuccessPredictor implements Predictor {
 		// count result for comparison with prediction accuracy
 		if (result.equals(PassSuccessPredictionInstance.PREDICTION_PASS_FAILS)) {
 			failedPassesCounter++;
-			utils.logInt(new Integer[] {
-					gameInformation.getTeammatesInArea(PLAYER_RADIUS),
-					gameInformation.getOpponentsInArea(PLAYER_RADIUS),
-					gameInformation
-							.getPlayerPassesSuccessful(idOfLastPlayerWithBall),
-					gameInformation
-							.getPlayerPassesMissed(idOfLastPlayerWithBall),
-					gameInformation
-							.getPlayerBallContacts(idOfLastPlayerWithBall),
-					idOfLastPlayerWithBall,
-					gameInformation.getCurrentBallPossessionPlayer().getId(),
-					(int) gameInformation.getDistanceOfNearestTeammate(),
-					gameInformation.getCurrentBallPossessionPlayer()
-							.getPositionX(),
-					gameInformation.getCurrentBallPossessionPlayer()
-							.getPositionY(),
-
-					(int) gameInformation.getCurrentGameTime(),
-					Math.round(gameInformation
-							.getPlayerDistance(idOfLastPlayerWithBall)),
-					(int) gameInformation
-							.getPlayerLastPassTimestamp(idOfLastPlayerWithBall),
-					0 });
+			// utils.logInt(new Integer[] {
+			// gameInformation.getTeammatesInArea(PLAYER_RADIUS),
+			// gameInformation.getOpponentsInArea(PLAYER_RADIUS),
+			// gameInformation
+			// .getPlayerPassesSuccessful(idOfLastPlayerWithBall),
+			// gameInformation
+			// .getPlayerPassesMissed(idOfLastPlayerWithBall),
+			// gameInformation
+			// .getPlayerBallContacts(idOfLastPlayerWithBall),
+			// idOfLastPlayerWithBall,
+			// gameInformation.getCurrentBallPossessionPlayer().getId(),
+			// (int) gameInformation.getDistanceOfNearestTeammate(),
+			// gameInformation.getCurrentBallPossessionPlayer()
+			// .getPositionX(),
+			// gameInformation.getCurrentBallPossessionPlayer()
+			// .getPositionY(),
+			//
+			// (int) gameInformation.getCurrentGameTime(),
+			// Math.round(gameInformation
+			// .getPlayerDistance(idOfLastPlayerWithBall)),
+			// (int) gameInformation
+			// .getPlayerLastPassTimestamp(idOfLastPlayerWithBall),
+			// 0 });
 		} else {
 			successfulPassesCounter++;
-			utils.logInt(new Integer[] {
-					gameInformation.getTeammatesInArea(PLAYER_RADIUS),
-					gameInformation.getOpponentsInArea(PLAYER_RADIUS),
-					gameInformation
-							.getPlayerPassesSuccessful(idOfLastPlayerWithBall),
-					gameInformation
-							.getPlayerPassesMissed(idOfLastPlayerWithBall),
-					gameInformation
-							.getPlayerBallContacts(idOfLastPlayerWithBall),
-					idOfLastPlayerWithBall,
-					gameInformation.getCurrentBallPossessionPlayer().getId(),
-					(int) gameInformation.getDistanceOfNearestTeammate(),
-					gameInformation.getCurrentBallPossessionPlayer()
-							.getPositionX(),
-					gameInformation.getCurrentBallPossessionPlayer()
-							.getPositionY(),
-
-					(int) gameInformation.getCurrentGameTime(),
-					Math.round(gameInformation
-							.getPlayerDistance(idOfLastPlayerWithBall)),
-					(int) gameInformation
-							.getPlayerLastPassTimestamp(idOfLastPlayerWithBall),
-					1 });
+			// utils.logInt(new Integer[] {
+			// gameInformation.getTeammatesInArea(PLAYER_RADIUS),
+			// gameInformation.getOpponentsInArea(PLAYER_RADIUS),
+			// gameInformation
+			// .getPlayerPassesSuccessful(idOfLastPlayerWithBall),
+			// gameInformation
+			// .getPlayerPassesMissed(idOfLastPlayerWithBall),
+			// gameInformation
+			// .getPlayerBallContacts(idOfLastPlayerWithBall),
+			// idOfLastPlayerWithBall,
+			// gameInformation.getCurrentBallPossessionPlayer().getId(),
+			// (int) gameInformation.getDistanceOfNearestTeammate(),
+			// gameInformation.getCurrentBallPossessionPlayer()
+			// .getPositionX(),
+			// gameInformation.getCurrentBallPossessionPlayer()
+			// .getPositionY(),
+			//
+			// (int) gameInformation.getCurrentGameTime(),
+			// Math.round(gameInformation
+			// .getPlayerDistance(idOfLastPlayerWithBall)),
+			// (int) gameInformation
+			// .getPlayerLastPassTimestamp(idOfLastPlayerWithBall),
+			// 1 });
 		}
 
 		if (Utils.DEBUGGING)
@@ -160,6 +172,8 @@ public class PassSuccessPredictor implements Predictor {
 				.setClassAttribute(result);
 
 		learner.train(predictionInstance);
+
+		// Utils.logArff(predictionInstance.getInstance());
 
 		System.out
 				.println(TAG
