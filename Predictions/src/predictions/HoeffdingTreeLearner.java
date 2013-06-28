@@ -32,9 +32,11 @@ public class HoeffdingTreeLearner extends Learner {
 
 		if (learner.correctlyClassifies(trainingInstance.getInstance())) {
 			numberSamplesCorrect++;
-			System.out.println(TAG + "Prediction was correct.");
+			if (Utils.DEBUGGING)
+				System.out.println(TAG + "Prediction was correct.");
 		} else {
-			System.out.println(TAG + "Prediction was wrong.");
+			if (Utils.DEBUGGING)
+				System.out.println(TAG + "Prediction was wrong.");
 		}
 
 		/*
@@ -54,10 +56,11 @@ public class HoeffdingTreeLearner extends Learner {
 
 		if (predictions.length == 2) {
 			double sum = predictions[0] + predictions[1];
-			System.out.println(TAG + " prediction:  " + predictions[0] / sum
-					* 100 + "% pass will be successful");
+			if (Utils.DEBUGGING)
+				System.out.println(TAG + " prediction:  " + predictions[0]
+						/ sum * 100 + "% pass will be successful");
 
-		} else
+		} else if (Utils.DEBUGGING)
 			System.out.println("[PREDICTION] Votes: - n/a -");
 
 		printAccuracy(TAG);

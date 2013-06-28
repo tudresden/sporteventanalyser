@@ -23,10 +23,13 @@ public class Prophet {
 		listOfPredictors = new ArrayList<Predictor>();
 
 		// add predictors and the learner for the predictors
-		listOfPredictors.add(new PassSuccessPredictor(
-				new HoeffdingTreeLearner()));
+
+		// listOfPredictors.add(new PassSuccessPredictor(
+		// new HoeffdingTreeLearner()));
+
 		listOfPredictors.add(new PassSuccessPredictor(new IbkLearner()));
-		// listOfPredictors.add(new PassSuccessPredictor(new KnnLearner()));
+
+		// listOfPredictors.add(new PassSuccessPredictor(new knnLearner()));
 	}
 
 	/**
@@ -59,7 +62,7 @@ public class Prophet {
 	 * Updates predictions.
 	 */
 	public void updatePredictors() {
-		System.out.println(TAG + "Updating predictors.");
+		// System.out.println(TAG + "Updating predictors.");
 
 		for (Predictor predictor : listOfPredictors)
 			predictor.update(gameInformation);
