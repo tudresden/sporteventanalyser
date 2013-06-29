@@ -264,22 +264,57 @@ article {
   -ms-border-radius: 5pt;
   -o-border-radius: 5pt;
   border-radius: 5pt;
-  border: #859900 1pt solid;
-  background: rgba(0, 0, 0, 0.5);
+  border: #657b83 1pt solid;
+  background: rgba(7, 54, 66, 0.5);
 }
 .colored_table {
-  border-collapse: collapse;
   border-spacing: 0;
 }
-.colored_table tr:nth-child(2n+1) {
-  background: rgba(255, 255, 255, 0.1);
+.colored_table td,
+.colored_table th {
+  padding: 0 5pt 0 5pt;
 }
-.colored_table tr:nth-child(2n) {
-  background: rgba(255, 255, 255, 0.05);
+.colored_table tbody tr:nth-child(2n+1) td {
+  background: rgba(7, 54, 66, 0.3);
 }
-.colored_table tr:first-child {
-  background: rgba(255, 255, 255, 0.15);
-  font-weight: bold;
+.colored_table tbody tr:nth-child(2n) td {
+  background: rgba(0, 43, 54, 0.3);
+}
+.colored_table tbody tr.ui-selecting td {
+  color: #002b36;
+  background: rgba(238, 232, 213, 0.3);
+}
+.colored_table tbody tr.ui-selected td {
+  color: #002b36;
+  background: rgba(238, 232, 213, 0.5);
+}
+.colored_table thead tr th {
+  background: rgba(7, 54, 66, 0.5);
+}
+.radio_menu input[type="radio"] {
+  display: none;
+}
+.radio_menu label {
+  -webkit-border-radius: 5pt;
+  -moz-border-radius: 5pt;
+  -ms-border-radius: 5pt;
+  -o-border-radius: 5pt;
+  border-radius: 5pt;
+  border: #657b83 1pt solid;
+  border-radius: 5pt 5pt 0 0;
+  border-bottom: 0 hidden;
+  background: rgba(0, 43, 54, 0.3);
+  padding: 0 5pt;
+  cursor: pointer;
+}
+.radio_menu label:hover {
+  color: #002b36;
+  border-color: #657b83;
+  background: rgba(101, 123, 131, 0.3);
+}
+.radio_menu input[type="radio"]:checked + label {
+  color: #002b36;
+  background: #657b83;
 }
 html {
   background-image: url(../img/background.jpg);
@@ -306,47 +341,8 @@ video {
   -ms-border-radius: 5pt;
   -o-border-radius: 5pt;
   border-radius: 5pt;
-  border: #859900 1pt solid;
-  background: rgba(0, 0, 0, 0.5);
-}
-#perspectives_menu {
-  width: 100%;
-  padding: 0;
-  margin-bottom: 0;
-  text-align: center;
-}
-#perspectives_menu button {
-  width: 20%;
-  -webkit-border-radius: 5pt;
-  -moz-border-radius: 5pt;
-  -ms-border-radius: 5pt;
-  -o-border-radius: 5pt;
-  border-radius: 5pt;
-  border: #859900 1pt solid;
-  border: #268bd2 1pt solid;
-  background: #002b36;
-}
-#perspectives_menu button:hover {
-  width: 20%;
-  -webkit-border-radius: 5pt;
-  -moz-border-radius: 5pt;
-  -ms-border-radius: 5pt;
-  -o-border-radius: 5pt;
-  border-radius: 5pt;
-  border: #859900 1pt solid;
-  border: #268bd2 1pt solid;
-  background: #073642;
-}
-#perspectives_menu button:focus {
-  width: 20%;
-  -webkit-border-radius: 5pt;
-  -moz-border-radius: 5pt;
-  -ms-border-radius: 5pt;
-  -o-border-radius: 5pt;
-  border-radius: 5pt;
-  border: #859900 1pt solid;
-  border: #268bd2 1pt solid;
-  background: #586e75;
+  border: #657b83 1pt solid;
+  background: rgba(7, 54, 66, 0.5);
 }
 #content {
   display: table-row;
@@ -363,40 +359,107 @@ video {
   -ms-border-radius: 5pt;
   -o-border-radius: 5pt;
   border-radius: 5pt;
-  border: #859900 1pt solid;
-  background: rgba(0, 0, 0, 0.5);
+  border: #657b83 1pt solid;
+  background: rgba(7, 54, 66, 0.5);
   margin: 2pt;
-  border-collapse: collapse;
   border-spacing: 0;
   overflow: auto;
 }
-#content #right .team tr:nth-child(2n+1),
-#content #left .team tr:nth-child(2n+1) {
-  background: rgba(255, 255, 255, 0.1);
+#content #right .team td,
+#content #left .team td,
+#content #right .team th,
+#content #left .team th {
+  padding: 0 5pt 0 5pt;
 }
-#content #right .team tr:nth-child(2n),
-#content #left .team tr:nth-child(2n) {
-  background: rgba(255, 255, 255, 0.05);
+#content #right .team tbody tr:nth-child(2n+1) td,
+#content #left .team tbody tr:nth-child(2n+1) td {
+  background: rgba(7, 54, 66, 0.3);
 }
-#content #right .team tr:first-child,
-#content #left .team tr:first-child {
-  background: rgba(255, 255, 255, 0.15);
-  font-weight: bold;
+#content #right .team tbody tr:nth-child(2n) td,
+#content #left .team tbody tr:nth-child(2n) td {
+  background: rgba(0, 43, 54, 0.3);
+}
+#content #right .team tbody tr.ui-selecting td,
+#content #left .team tbody tr.ui-selecting td {
+  color: #002b36;
+  background: rgba(238, 232, 213, 0.3);
+}
+#content #right .team tbody tr.ui-selected td,
+#content #left .team tbody tr.ui-selected td {
+  color: #002b36;
+  background: rgba(238, 232, 213, 0.5);
+}
+#content #right .team thead tr th,
+#content #left .team thead tr th {
+  background: rgba(7, 54, 66, 0.5);
 }
 #content #right #playerstatsa,
 #content #left #playerstatsa,
 #content #right #playerstatsb,
 #content #left #playerstatsb {
-  margin: 2pt;
-  height: 200pt;
   -webkit-border-radius: 5pt;
   -moz-border-radius: 5pt;
   -ms-border-radius: 5pt;
   -o-border-radius: 5pt;
   border-radius: 5pt;
-  border: #859900 1pt solid;
-  background: rgba(0, 0, 0, 0.5);
+  border: #657b83 1pt solid;
+  background: rgba(7, 54, 66, 0.5);
+  margin: 2pt;
+  height: 200pt;
 }
-#content #center #field {
-  display: table-cell;
+#content #center #gametrack {
+  -webkit-border-radius: 5pt;
+  -moz-border-radius: 5pt;
+  -ms-border-radius: 5pt;
+  -o-border-radius: 5pt;
+  border-radius: 5pt;
+  border: #657b83 1pt solid;
+  background: rgba(7, 54, 66, 0.5);
+  margin-top: 2pt;
+  padding: 5pt;
+  height: 42pt;
+}
+#content #center #gametrack #image {
+  margin: 0 auto;
+}
+#content #center #gametrack #image #start,
+#content #center #gametrack #image #cur,
+#content #center #gametrack #image #mid,
+#content #center #gametrack #image #end {
+  stroke: #fdf6e3;
+  stroke-width: 1pt;
+}
+#content #center #gametrack #image #centerline {
+  stroke: #fdf6e3;
+  stroke-width: 3pt;
+}
+#content #center #perspectives_menu {
+  width: 100%;
+  padding: 0;
+  margin: 5pt 5pt 0 5pt;
+}
+#content #center #perspectives_menu input[type="radio"] {
+  display: none;
+}
+#content #center #perspectives_menu label {
+  -webkit-border-radius: 5pt;
+  -moz-border-radius: 5pt;
+  -ms-border-radius: 5pt;
+  -o-border-radius: 5pt;
+  border-radius: 5pt;
+  border: #657b83 1pt solid;
+  border-radius: 5pt 5pt 0 0;
+  border-bottom: 0 hidden;
+  background: rgba(0, 43, 54, 0.3);
+  padding: 0 5pt;
+  cursor: pointer;
+}
+#content #center #perspectives_menu label:hover {
+  color: #002b36;
+  border-color: #657b83;
+  background: rgba(101, 123, 131, 0.3);
+}
+#content #center #perspectives_menu input[type="radio"]:checked + label {
+  color: #002b36;
+  background: #657b83;
 }
