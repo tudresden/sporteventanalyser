@@ -5,35 +5,39 @@ class Drawable
 
   animate: (time) ->
 
-  follow: (target) ->
+  follow: (target, reset = false) ->
     for f in @followers
       do (f) ->
-        f.lookAt target
+        if reset
+          f.rotation.set -Math.PI/2, 0, 0
+        else
+          f.lookAt target
 
   toString: ->
     "Drawable"
 
 class Field extends Drawable
-  constructor: ->
+  constructor: (texturefile) ->
     @width = 120
     @height = 90
     geometry = new THREE.PlaneGeometry(@width, @height)
     mat_cfg = 
-      map:  new THREE.ImageUtils.loadTexture "img/Fussballfeld.svg"
+      map:  new THREE.ImageUtils.loadTexture texturefile
       side: THREE.DoubleSide
     material = new THREE.MeshLambertMaterial(mat_cfg)
     @field = new THREE.Mesh geometry, material
     @field.rotation.x = Math.PI/2
     @drawables = [@field]
     @followers = []
+
   toString: ->
     "Field"
 
 class Ball extends Drawable
-  constructor: ->
+  constructor: (texturefile) ->
     geometry = new THREE.PlaneGeometry(2, 2)
     mat_cfg =
-      map:       new THREE.ImageUtils.loadTexture "img/ball.png"
+      map:       new THREE.ImageUtils.loadTexture texturefile
       alphaTest: 0.5
     material = new THREE.MeshBasicMaterial mat_cfg
     @ball = new THREE.Mesh(geometry, material)
@@ -44,12 +48,25 @@ class Ball extends Drawable
     material = new THREE.MeshBasicMaterial mat_cfg
     @shadow = new THREE.Mesh geometry, material
     @shadow.rotation.x = -Math.PI/2
-    @shadow.position.y = 0.01
+    @shadow.position.y = 0.001
     @followers = [@ball]
     @drawables = [@ball, @shadow]
-    @ball.position.set 0, 0, 0
+    @ball.position.set 0, @ball.geometry.height/2, 0
+    @last_update = 0
+    @target_pos =
+      x: 0,
+      y: 0  # middle of the field
+    @anim_factor = 10
+
+  update: (time, data) ->
+    @target_pos = data.pos
+    @last_update = time
 
   animate: (time) ->
+    @ball.position.x = (@anim_factor * @ball.position.x + @target_pos.x )/(@anim_factor + 1)
+    @ball.position.z = (@anim_factor * @ball.position.z + @target_pos.y )/(@anim_factor + 1)
+
+    ###
     @ball.position.y = 1
     @ball.position.y += Math.abs 2 * Math.sin time/120
     
@@ -67,12 +84,19 @@ class Ball extends Drawable
 
     @shadow.scale.z = @ball.position.y
     @shadow.scale.z -= @ball.geometry.height
+    ###
+
+    @shadow.position.x = @ball.position.x
+    @shadow.position.z = @ball.position.z
+
+    s_scale = 3.0 + @ball.scale.x + @ball.position.y - @ball.geometry.height
+    @shadow.scale.set s_scale, s_scale, s_scale
 
   toString: ->
     "Ball"
 
 class Player extends Drawable
-  constructor: (@tricot_image) ->
+  constructor: (@id, @team, @tricot_image) ->
     geometry = new THREE.PlaneGeometry(4, 4)
     mat_cfg =
       map:       new THREE.ImageUtils.loadTexture @tricot_image
