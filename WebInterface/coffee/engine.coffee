@@ -14,6 +14,8 @@ class Engine
     @scene.add @amb_light
 
     @renderer = new THREE.WebGLRenderer
+    # In case you want to view this in Chrome
+    #@renderer = new THREE.CanvasRenderer
     @renderer.clearColor = @bgcolor
     @renderer.clear
     @renderer.setSize @resolution[0], @resolution[1]
@@ -21,7 +23,7 @@ class Engine
     now = new Date
     @start_time = now.getTime()
     @.add @ball
-    @mean_ball_cnt = 1000
+    @mean_ball_cnt = 30
     @mean_ball_pos =
       x: 0
       y: 0
@@ -37,16 +39,12 @@ class Engine
   render: ->
     time = (new Date).getTime() - @start_time
 
-    obj.follow(@camera.position) for obj in @obj_stack
-    obj.animate(time) for obj in @obj_stack
-
     @mean_ball_pos.x = @mean_ball_cnt * @mean_ball_pos.x + @ball.ball.position.x
     @mean_ball_pos.x /= @mean_ball_cnt + 1
     @mean_ball_pos.y = @mean_ball_cnt * @mean_ball_pos.y + @ball.ball.position.y
     @mean_ball_pos.y /= @mean_ball_cnt + 1
     @mean_ball_pos.z = @mean_ball_cnt * @mean_ball_pos.z + @ball.ball.position.z
     @mean_ball_pos.z /= @mean_ball_cnt + 1
-    console.log(@mean_ball_pos)
 
     switch @camera_mode
       when "BIRD"
@@ -63,8 +61,11 @@ class Engine
         @camera.position.y = 33 +  5 * Math.sin (time / 600)
         @camera.position.z = 50 + 25 * Math.sin (time / 2700)
         @camera.lookAt @mean_ball_pos
+    obj.follow(@camera.position, @camera_mode == "BIRD") for obj in @obj_stack
+    obj.animate(time) for obj in @obj_stack
 
     @renderer.render @scene, @camera
 
-  set_cam_mode: (mode) ->
-    @camera_mode = mode
+  select_players: (plr_ids) ->
+    ""
+
