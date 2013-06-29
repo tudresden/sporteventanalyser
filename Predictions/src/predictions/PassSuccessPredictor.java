@@ -117,11 +117,11 @@ public class PassSuccessPredictor extends Predictor {
 	protected void train(GameInformation gameInformation) {
 
 		String result = gameInformation
-				.isPlayerLastPassSuccessful(idOfLastPlayerWithBall) ? PassSuccessPredictionInstance.PREDICTION_PASS_SUCCESSFUL
-				: PassSuccessPredictionInstance.PREDICTION_PASS_FAILS;
+				.isPlayerLastPassSuccessful(idOfLastPlayerWithBall) ? PassSuccessPredictionInstance.CLASS_PASS_SUCCESSFUL
+				: PassSuccessPredictionInstance.CLASS_PASS_FAILS;
 
 		// count result for comparison with prediction accuracy
-		if (result.equals(PassSuccessPredictionInstance.PREDICTION_PASS_FAILS)) {
+		if (result.equals(PassSuccessPredictionInstance.CLASS_PASS_FAILS)) {
 			failedPassesCounter++;
 			// utils.logInt(new Integer[] {
 			// gameInformation.getTeammatesInArea(PLAYER_RADIUS),
