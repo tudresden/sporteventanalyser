@@ -1,5 +1,12 @@
 #!/bin/bash
 
+function AssertSuccess {
+  if [ $? -ne 0 ]; then
+    echo "Died at line $1";
+    exit 1;
+  fi
+}
+
 if [[ "$1" == "help" ]]; then
   echo "USAGE:"
   echo
@@ -10,11 +17,16 @@ if [[ "$1" == "help" ]]; then
 fi
 
 mkdir -p ./js
-coffee -j js/engine.js -c coffee/*.coffee || exit 1
+coffee -j js/engine.js -c coffee/*.coffee
+AssertSuccess $LINENO
 lessc --yuicompress less/style.less css/style.css
+AssertSuccess $LINENO
 
 if [[ "$1" == "all" ]] || [[ "$1" == "img" ]]; then
   cd img
-  for f in $(ls *.svg | grep -o "^[^\.]\+"); do inkscape -D -e "$f.png" -f "$f.svg"; done
+  for f in $(ls *.svg | grep -o "^[^\.]\+"); do
+    inkscape -D -e "$f.png" -f "$f.svg";
+    AssertSuccess $LINENO
+  done
   cd ..
 fi
