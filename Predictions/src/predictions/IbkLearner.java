@@ -6,6 +6,10 @@ import weka.core.Instances;
 import weka.core.SelectedTag;
 import weka.core.Tag;
 
+/**
+ * This class encapsulates the <i>IBk</i> classifier.
+ * 
+ */
 public class IbkLearner extends Learner {
 
 	public static final String TAG = "[Predictions][IbkLearner] ";
@@ -131,6 +135,13 @@ public class IbkLearner extends Learner {
 
 	}
 
+	/**
+	 * Cleans the class label.
+	 * 
+	 * @param index
+	 *            the index of the class
+	 * @return clean class label
+	 */
 	private String getClassName(int index) {
 		String unformatted = InstancesHeader.getClassLabelString(
 				instanceHeader, index);

@@ -2,13 +2,15 @@ package predictions;
 
 import de.core.GameInformation;
 
-public class PassSuccessPredictor implements Predictor {
+/**
+ * Calculates the probability of the success of the next pass.
+ * 
+ */
+public class PassSuccessPredictor extends Predictor {
+
 	public static final String TAG = "[Predictions][PassSuccessPredictor] ";
 
 	private static final int PLAYER_RADIUS = 20;
-
-	private Learner learner;
-	private PredictionInstance predictionInstance;
 
 	private int idOfLastPlayerWithBall = -1;
 
@@ -17,9 +19,14 @@ public class PassSuccessPredictor implements Predictor {
 
 	private boolean arffCreated = false;
 
+	/**
+	 * Instantiates the pass success predictor.
+	 * 
+	 * @param learner
+	 *            the classifier to use for prediction
+	 */
 	public PassSuccessPredictor(Learner learner) {
-		this.learner = learner;
-		init();
+		super(learner);
 	}
 
 	@Override
@@ -101,12 +108,13 @@ public class PassSuccessPredictor implements Predictor {
 
 	}
 
-	private void predict(GameInformation gameInformation) {
+	@Override
+	protected void predict(GameInformation gameInformation) {
 		learner.makePrediction(predictionInstance);
-
 	}
 
-	private void train(GameInformation gameInformation) {
+	@Override
+	protected void train(GameInformation gameInformation) {
 
 		String result = gameInformation
 				.isPlayerLastPassSuccessful(idOfLastPlayerWithBall) ? PassSuccessPredictionInstance.PREDICTION_PASS_SUCCESSFUL

@@ -1,17 +1,25 @@
 package predictions;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 
-import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 
+/**
+ * Utility class.
+ * 
+ */
 public class Utils {
 
+	/**
+	 * If set to <i>true</i>, more console outputs will be generated.
+	 */
 	public static final boolean DEBUGGING = false;
+
+	/**
+	 * If set to <i>true</i>, all instances will be collected and an ARFF file
+	 * will be created at the end.
+	 */
 	public static final boolean ARFF_WRITING_MODE = true;
 
 	public static final String FIELD_AREA_OWN_TEAM = "FIELD_AREA_OWN_TEAM";
@@ -20,6 +28,15 @@ public class Utils {
 
 	// private static int single = 0;
 
+	/**
+	 * Determines the current field area of a player.
+	 * 
+	 * @param x
+	 *            the vertical position on the field
+	 * @param onOpponentSide
+	 *            if current player is on the opponents side
+	 * @return
+	 */
 	public static final String getFieldArea(int x, boolean onOpponentSide) {
 		final int totalWidth = 2 * 52500;
 
@@ -38,6 +55,14 @@ public class Utils {
 
 	}
 
+	/**
+	 * Creates an ARFF file from a set of instances.
+	 * 
+	 * @param dataSet
+	 *            all collected instances
+	 * @param fileName
+	 *            the file name
+	 */
 	public static void createArffFileFromInstances(Instances dataSet,
 			String fileName) {
 		System.out.println("Creating arff file from " + dataSet.size()
