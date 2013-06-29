@@ -1,9 +1,14 @@
 package predictions;
 
+import weka.core.Instances;
 import moa.classifiers.Classifier;
 import moa.classifiers.trees.HoeffdingTree;
 import moa.core.InstancesHeader;
 
+/**
+ * This class encapsulates the <i>HoeffdingTree</i> classifier.
+ * 
+ */
 public class HoeffdingTreeLearner extends Learner {
 
 	public static final String TAG = "[Predictions][HoeffdingTreeLearner] ";
@@ -17,6 +22,9 @@ public class HoeffdingTreeLearner extends Learner {
 		learner = new HoeffdingTree();
 		learner.setModelContext(instanceHeader);
 		learner.prepareForUse();
+
+		accumulatedInstances = new Instances(instanceHeader);
+
 	}
 
 	@Override
@@ -32,14 +40,19 @@ public class HoeffdingTreeLearner extends Learner {
 
 		if (learner.correctlyClassifies(trainingInstance.getInstance())) {
 			numberSamplesCorrect++;
-			System.out.println(TAG + "Prediction was correct.");
+			if (Utils.DEBUGGING)
+				System.out.println(TAG + "Prediction was correct.");
 		} else {
-			System.out.println(TAG + "Prediction was wrong.");
+			if (Utils.DEBUGGING)
+				System.out.println(TAG + "Prediction was wrong.");
 		}
 
 		/*
 		 * train
 		 */
+
+		if (Utils.ARFF_WRITING_MODE)
+			accumulatedInstances.add(trainingInstance.getInstanceCopy());
 
 		learner.trainOnInstance(trainingInstance.getInstanceCopy());
 
@@ -54,10 +67,11 @@ public class HoeffdingTreeLearner extends Learner {
 
 		if (predictions.length == 2) {
 			double sum = predictions[0] + predictions[1];
-			System.out.println(TAG + " prediction:  " + predictions[0] / sum
-					* 100 + "% pass will be successful");
+			if (Utils.DEBUGGING)
+				System.out.println(TAG + " prediction:  " + predictions[0]
+						/ sum * 100 + "% pass will be successful");
 
-		} else
+		} else if (Utils.DEBUGGING)
 			System.out.println("[PREDICTION] Votes: - n/a -");
 
 		printAccuracy(TAG);

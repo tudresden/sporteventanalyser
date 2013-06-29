@@ -2,22 +2,31 @@ package predictions;
 
 import de.core.GameInformation;
 
-public class PassSuccessPredictor implements Predictor {
+/**
+ * Calculates the probability of the success of the next pass.
+ * 
+ */
+public class PassSuccessPredictor extends Predictor {
+
 	public static final String TAG = "[Predictions][PassSuccessPredictor] ";
 
-	private static final int PLAYER_RADIUS = 10;
-
-	private Learner learner;
-	private PredictionInstance predictionInstance;
+	private static final int PLAYER_RADIUS = 20;
 
 	private int idOfLastPlayerWithBall = -1;
 
 	private int successfulPassesCounter = 0;
 	private int failedPassesCounter = 0;
 
+	private boolean arffCreated = false;
+
+	/**
+	 * Instantiates the pass success predictor.
+	 * 
+	 * @param learner
+	 *            the classifier to use for prediction
+	 */
 	public PassSuccessPredictor(Learner learner) {
-		this.learner = learner;
-		init();
+		super(learner);
 	}
 
 	@Override
@@ -33,12 +42,22 @@ public class PassSuccessPredictor implements Predictor {
 
 	@Override
 	public void update(GameInformation gameInformation) {
-		System.out.println(TAG
-				+ " - - - UPDATE: pass success prediction - - - ");
+		System.out.println(TAG + " - - - pass success prediction update with "
+				+ learner.getClass().getName() + " - - - ");
+
+		// TODO create ARFF file at the very end
+		if (Utils.ARFF_WRITING_MODE && !arffCreated)
+			if (learner.getAccumulatedInstances().size() == 595) {
+				arffCreated = true;
+				Utils.createArffFileFromInstances(learner
+						.getAccumulatedInstances(), this.getClass().getName()
+						+ "_" + predictionInstance.getClass().getName());
+			}
 
 		if (gameInformation.getCurrentBallPossessionPlayer() == null) {
-			System.out.println(TAG
-					+ "Prediction update failed: no player has ball");
+			if (Utils.DEBUGGING)
+				System.out.println(TAG
+						+ "Prediction update failed: no player has ball");
 			return;
 		}
 
@@ -56,9 +75,21 @@ public class PassSuccessPredictor implements Predictor {
 						.getPlayerPassesSuccessful(idOfLastPlayerWithBall),
 						gameInformation
 								.getPlayerPassesMissed(idOfLastPlayerWithBall),
-						gameInformation.getCurrentBallPossessionPlayer()
-								.getPositionX(), (int) gameInformation
-								.getDistanceOfNearestTeammate());
+						gameInformation
+								.getPlayerBallContacts(idOfLastPlayerWithBall),
+						"" + idOfLastPlayerWithBall, ""
+								+ gameInformation
+										.getCurrentBallPossessionPlayer()
+										.getId(), gameInformation
+								.getCurrentBallPossessionPlayer()
+								.getPositionX(), gameInformation
+								.getCurrentBallPossessionPlayer()
+								.getPositionY(), (int) gameInformation
+								.getDistanceOfNearestTeammate(),
+						Math.round(gameInformation
+								.getPlayerDistance(idOfLastPlayerWithBall)),
+						gameInformation.isPlayerOnOwnSide(gameInformation
+								.getCurrentBallPossessionPlayer()));
 
 		// pass occurred
 		if (idOfCurrentPlayerWithBall != idOfLastPlayerWithBall
@@ -77,29 +108,80 @@ public class PassSuccessPredictor implements Predictor {
 
 	}
 
-	private void predict(GameInformation gameInformation) {
+	@Override
+	protected void predict(GameInformation gameInformation) {
 		learner.makePrediction(predictionInstance);
-
 	}
 
-	private void train(GameInformation gameInformation) {
+	@Override
+	protected void train(GameInformation gameInformation) {
 
 		String result = gameInformation
-				.isPlayerLastPassSuccessful(idOfLastPlayerWithBall) ? PassSuccessPredictionInstance.PREDICTION_PASS_SUCCESSFUL
-				: PassSuccessPredictionInstance.PREDICTION_PASS_FAILS;
+				.isPlayerLastPassSuccessful(idOfLastPlayerWithBall) ? PassSuccessPredictionInstance.CLASS_PASS_SUCCESSFUL
+				: PassSuccessPredictionInstance.CLASS_PASS_FAILS;
 
 		// count result for comparison with prediction accuracy
-		if (result.equals(PassSuccessPredictionInstance.PREDICTION_PASS_FAILS))
+		if (result.equals(PassSuccessPredictionInstance.CLASS_PASS_FAILS)) {
 			failedPassesCounter++;
-		else
+			// utils.logInt(new Integer[] {
+			// gameInformation.getTeammatesInArea(PLAYER_RADIUS),
+			// gameInformation.getOpponentsInArea(PLAYER_RADIUS),
+			// gameInformation
+			// .getPlayerPassesSuccessful(idOfLastPlayerWithBall),
+			// gameInformation
+			// .getPlayerPassesMissed(idOfLastPlayerWithBall),
+			// gameInformation
+			// .getPlayerBallContacts(idOfLastPlayerWithBall),
+			// idOfLastPlayerWithBall,
+			// gameInformation.getCurrentBallPossessionPlayer().getId(),
+			// (int) gameInformation.getDistanceOfNearestTeammate(),
+			// gameInformation.getCurrentBallPossessionPlayer()
+			// .getPositionX(),
+			// gameInformation.getCurrentBallPossessionPlayer()
+			// .getPositionY(),
+			//
+			// (int) gameInformation.getCurrentGameTime(),
+			// Math.round(gameInformation
+			// .getPlayerDistance(idOfLastPlayerWithBall)),
+			// (int) gameInformation
+			// .getPlayerLastPassTimestamp(idOfLastPlayerWithBall),
+			// 0 });
+		} else {
 			successfulPassesCounter++;
+			// utils.logInt(new Integer[] {
+			// gameInformation.getTeammatesInArea(PLAYER_RADIUS),
+			// gameInformation.getOpponentsInArea(PLAYER_RADIUS),
+			// gameInformation
+			// .getPlayerPassesSuccessful(idOfLastPlayerWithBall),
+			// gameInformation
+			// .getPlayerPassesMissed(idOfLastPlayerWithBall),
+			// gameInformation
+			// .getPlayerBallContacts(idOfLastPlayerWithBall),
+			// idOfLastPlayerWithBall,
+			// gameInformation.getCurrentBallPossessionPlayer().getId(),
+			// (int) gameInformation.getDistanceOfNearestTeammate(),
+			// gameInformation.getCurrentBallPossessionPlayer()
+			// .getPositionX(),
+			// gameInformation.getCurrentBallPossessionPlayer()
+			// .getPositionY(),
+			//
+			// (int) gameInformation.getCurrentGameTime(),
+			// Math.round(gameInformation
+			// .getPlayerDistance(idOfLastPlayerWithBall)),
+			// (int) gameInformation
+			// .getPlayerLastPassTimestamp(idOfLastPlayerWithBall),
+			// 1 });
+		}
 
-		System.out.println(TAG + "event occured: " + result);
+		if (Utils.DEBUGGING)
+			System.out.println(TAG + "event occured: " + result);
 
 		((PassSuccessPredictionInstance) predictionInstance)
 				.setClassAttribute(result);
 
 		learner.train(predictionInstance);
+
+		// Utils.logArff(predictionInstance.getInstance());
 
 		System.out
 				.println(TAG
