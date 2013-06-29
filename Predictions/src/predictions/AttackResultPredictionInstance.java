@@ -11,18 +11,14 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- * Encapsulates an instance for training and pass success prediction.
+ * Encapsulates an instance for training and attack result prediction.
  * 
  */
-public class PassSuccessPredictionInstance extends PredictionInstance {
+public class AttackResultPredictionInstance extends PredictionInstance {
 
-	public static final String CLASS_PASS_SUCCESSFUL = "CLASS_PASS_SUCCESSFUL";
-	public static final String CLASS_PASS_FAILS = "CLASS_PASS_FAILS";
-
-	// public static final String ATTRIBUTE_TEAMMATE_RATE_IN_AREA =
-	// "ATTRIBUTE_TEAMMATE_RATE_IN_AREA";
-	// public static final String ATTRIBUTE_PLAYER_PASS_SUCCESS_RATE =
-	// "ATTRIBUTE_PLAYER_PASS_SUCCESS_RATE";
+	public static final String CLASS_BALL_LOSS = "CLASS_BALL_LOSS";
+	public static final String CLASS_SHOT_ON_GOAL = "CLASS_SHOT_ON_GOAL";
+	public static final String CLASS_BALL_OUT_OF_BOUNDS = "CLASS_BALL_OUT_OF_BOUNDS";
 
 	private static final String ATTRIBUTE_TEAMMATE_IN_AREA = "ATTRIBUTE_TEAMMATE_IN_AREA";
 	private static final String ATTRIBUTE_OPPPOSITE_IN_AREA = "ATTRIBUTE_OPPPOSITE_IN_AREA";
@@ -36,6 +32,7 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 	private static final String ATTRIBUTE_CURRENT_PLAYER_Y = "ATTRIBUTE_CURRENT_PLAYER_Y";
 	private static final String ATTRIBUTE_CURRENT_PLAYER_DISTANCE = "ATTRIBUTE_CURRENT_PLAYER_DISTANCE";
 	private static final String ATTRIBUTE_AREA = "ATTRIBUTE_AREA";
+	private static final String ATTRIBUTE_PASS_COUNT = "ATTRIBUTE_PASS_COUNT";
 
 	public static final String ATTRIBUTE_CLASS = "class";
 
@@ -47,7 +44,7 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 					ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER,
 					ATTRIBUTE_CURRENT_PLAYER_X, ATTRIBUTE_CURRENT_PLAYER_Y,
 					ATTRIBUTE_CURRENT_PLAYER_DISTANCE, ATTRIBUTE_AREA,
-					ATTRIBUTE_CLASS });
+					ATTRIBUTE_PASS_COUNT, ATTRIBUTE_CLASS });
 
 	private InstancesHeader instanceHeader;
 	private Instance currentInstance;
@@ -56,7 +53,7 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 	/**
 	 * Instantiates the prediction instance and initializes it.
 	 */
-	public PassSuccessPredictionInstance() {
+	public AttackResultPredictionInstance() {
 		super();
 	}
 
@@ -116,14 +113,17 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 		areas.add(Utils.FIELD_AREA_OPPONENTS);
 		attributes.add(new Attribute(ATTRIBUTE_AREA, areas));
 
+		attributes.add(new Attribute(ATTRIBUTE_PASS_COUNT));
+
 		/*
 		 * classes
 		 */
 
-		// pass successful or fail
+		// result of attack
 		ArrayList<String> classLabels = new ArrayList<String>();
-		classLabels.add(CLASS_PASS_SUCCESSFUL);
-		classLabels.add(CLASS_PASS_FAILS);
+		classLabels.add(CLASS_BALL_LOSS);
+		classLabels.add(CLASS_BALL_OUT_OF_BOUNDS);
+		classLabels.add(CLASS_SHOT_ON_GOAL);
 		attributes.add(new Attribute(ATTRIBUTE_CLASS, classLabels));
 
 		/*
@@ -173,12 +173,14 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 	 * @param currentY
 	 * @param playerDistance
 	 * @param playerOnOwnSide
+	 * @param passCounter
 	 */
 	public void setAttributes(int numberOfTeammatesInArea,
 			int numberOfOpponentsInArea, int playerPassesSuccessful,
 			int playerPassesMissed, int ballContact, String lastPlayerId,
 			String curentPlayerId, int distanceNearestPlayer, int currentX,
-			int currentY, int playerDistance, boolean playerOnOwnSide) {
+			int currentY, int playerDistance, boolean playerOnOwnSide,
+			int passCounter) {
 		createEmptyInstance();
 
 		currentInstance.setValue(
@@ -226,6 +228,9 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 		currentInstance.setValue(
 				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_DISTANCE),
 				playerDistance);
+
+		currentInstance.setValue(ATTRIBUTE_LIST.indexOf(ATTRIBUTE_PASS_COUNT),
+				passCounter);
 	}
 
 	/**
