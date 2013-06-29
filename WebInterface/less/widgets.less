@@ -1,0 +1,62 @@
+@generous_margin: 2pt;
+
+.bordered(@radius: 5pt) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  -ms-border-radius: @radius;
+  -o-border-radius: @radius;
+  border-radius: @radius;
+  border: @base00 1pt solid;
+}
+
+.infobox {
+  .bordered;
+  background: fade(@background, 50%);
+}
+
+.colored_table {
+  td, th {
+    padding: 0 5pt 0 5pt;
+  }
+  tbody tr:nth-child(2n+1) td{
+    background: fade(@base02, 30%);
+  }
+  tbody tr:nth-child(2n) td{
+    background: fade(@base03, 30%);
+  }
+  tbody tr.ui-selecting td {
+    color: @base03;
+    background: fade(@base2, 30%);
+  }
+  tbody tr.ui-selected td {
+    color: @base03;
+    background: fade(@base2, 50%);
+  }
+  thead tr th {
+    background: fade(@base02, 50%);
+  }
+  border-spacing: 0;
+}
+
+.radio_menu {
+  input[type="radio"] {
+    display: none;
+  }
+  label {
+    .bordered;
+    border-radius: 5pt 5pt 0 0;
+    border-bottom: 0 hidden;
+    background: fade(@base03, 30%);
+    padding: 0 5pt;
+    cursor: pointer;
+  }
+  label:hover {
+    color: @base03;
+    border-color: @base00;
+    background: fade(@base00, 30%);
+  }
+  input[type="radio"]:checked + label {
+    color: @base03;
+    background: @base00;
+  }
+}
