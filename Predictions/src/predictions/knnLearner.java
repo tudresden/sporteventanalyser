@@ -5,6 +5,10 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.neighboursearch.LinearNNSearch;
 
+/**
+ * This class encapsulates the <i>LinearNNSearch</i> classifier.
+ * 
+ */
 public class knnLearner extends Learner {
 
 	public static final String TAG = "[Predictions][KnnLearner] ";

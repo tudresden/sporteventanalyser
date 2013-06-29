@@ -5,6 +5,10 @@ import moa.classifiers.Classifier;
 import moa.classifiers.trees.HoeffdingTree;
 import moa.core.InstancesHeader;
 
+/**
+ * This class encapsulates the <i>HoeffdingTree</i> classifier.
+ * 
+ */
 public class HoeffdingTreeLearner extends Learner {
 
 	public static final String TAG = "[Predictions][HoeffdingTreeLearner] ";
@@ -18,7 +22,7 @@ public class HoeffdingTreeLearner extends Learner {
 		learner = new HoeffdingTree();
 		learner.setModelContext(instanceHeader);
 		learner.prepareForUse();
-		
+
 		accumulatedInstances = new Instances(instanceHeader);
 
 	}
@@ -46,7 +50,7 @@ public class HoeffdingTreeLearner extends Learner {
 		/*
 		 * train
 		 */
-		
+
 		if (Utils.ARFF_WRITING_MODE)
 			accumulatedInstances.add(trainingInstance.getInstanceCopy());
 

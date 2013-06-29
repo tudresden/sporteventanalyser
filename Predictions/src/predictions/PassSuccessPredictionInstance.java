@@ -9,8 +9,11 @@ import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.ProtectedProperties;
 
+/**
+ * Encapsulates an instance for training and pass success prediction.
+ * 
+ */
 public class PassSuccessPredictionInstance extends PredictionInstance {
 
 	public static final String PREDICTION_PASS_SUCCESSFUL = "PREDICTION_PASS_SUCCESSFUL";
@@ -50,8 +53,11 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 	private Instance currentInstance;
 	ArrayList<String> players;
 
+	/**
+	 * Instantiates the prediction instance and initializes it.
+	 */
 	public PassSuccessPredictionInstance() {
-		init();
+		super();
 	}
 
 	@Override
@@ -152,6 +158,22 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 		return (Instance) currentInstance.copy();
 	}
 
+	/**
+	 * Sets the attributes of the instance. No class is set.
+	 * 
+	 * @param numberOfTeammatesInArea
+	 * @param numberOfOpponentsInArea
+	 * @param playerPassesSuccessful
+	 * @param playerPassesMissed
+	 * @param ballContact
+	 * @param lastPlayerId
+	 * @param curentPlayerId
+	 * @param distanceNearestPlayer
+	 * @param currentX
+	 * @param currentY
+	 * @param playerDistance
+	 * @param playerOnOwnSide
+	 */
 	public void setAttributes(int numberOfTeammatesInArea,
 			int numberOfOpponentsInArea, int playerPassesSuccessful,
 			int playerPassesMissed, int ballContact, String lastPlayerId,
@@ -206,6 +228,12 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 				playerDistance);
 	}
 
+	/**
+	 * Sets the class attribute.
+	 * 
+	 * @param result
+	 *            the class
+	 */
 	public void setClassAttribute(String result) {
 		currentInstance.setClassValue(result);
 	}
