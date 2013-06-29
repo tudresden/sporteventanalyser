@@ -7,6 +7,7 @@
   <!-- External -->
   <!-- <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script> -->
   <script src="js/ext/jquery-1.9.1.min.js"></script>
+  <script src="js/ext/jquery-ui.min.js"></script>
   
   <!-- External (used by Mobilis) -->
   <script src="js/ext/strophe.min.js"></script>
@@ -22,7 +23,7 @@
   <script src="js/sporteventanalyser.js"></script>
   <script src="js/sporteventanalyser.pubsub.js"></script>
   
-  <script src="js/three.min.js"></script>
+  <script src="js/ext/three.min.js"></script>
   <script src="js/field.js"></script>
   <script src="js/engine.js"></script>
   <script src="js/main.js"></script>
@@ -37,54 +38,58 @@
       <div id="left">
         <div class="team">
           <table id="team_a">
-            <tr>
-              <td><input type="checkbox" name="selectteama"/><label><span>Team A</span></label></td>
-              <td>Stats</td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" name="selectplayera1"/><label><span>Dummy</span></label></td>
-              <td>4%</td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" name="selectplayera2"/><label><span>Pacman</span></label></td>
-              <td>50%</td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" name="selectplayera3"/><label><span>Sonic</label></td>
-              <td>55%</td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" name="selectplayera1"/><label><span>Dummy</span></label></td>
-              <td>4%</td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" name="selectplayera2"/><label><span>Pacman</span></label></td>
-              <td>50%</td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" name="selectplayera3"/><label><span>Sonic</label></td>
-              <td>55%</td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" name="selectplayera1"/><label><span>Dummy</span></label></td>
-              <td>4%</td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" name="selectplayera2"/><label><span>Pacman</span></label></td>
-              <td>50%</td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" name="selectplayera3"/><label><span>Sonic</label></td>
-              <td>55%</td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" name="selectplayera1"/><label><span>Dummy</span></label></td>
-              <td>4%</td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" name="selectplayera2"/><label><span>Pacman</span></label></td>
-              <td>50%</td>
-            </tr>
+            <thead>
+              <tr>
+                <th>Team A</th>
+                <th>Stats</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Dummy</td>
+                <td>4%</td>
+              </tr>
+              <tr>
+                <td>Pacman</td>
+                <td>50%</td>
+              </tr>
+              <tr>
+                <td>Sonic</td>
+                <td>55%</td>
+              </tr>
+              <tr>
+                <td>Dummy</td>
+                <td>4%</td>
+              </tr>
+              <tr>
+                <td>Pacman</td>
+                <td>50%</td>
+              </tr>
+              <tr>
+                <td>Sonic</td>
+                <td>55%</td>
+              </tr>
+              <tr>
+                <td>Dummy</td>
+                <td>4%</td>
+              </tr>
+              <tr>
+                <td>Pacman</td>
+                <td>50%</td>
+              </tr>
+              <tr>
+                <td>Sonic</td>
+                <td>55%</td>
+              </tr>
+              <tr>
+                <td>Dummy</td>
+                <td>4%</td>
+              </tr>
+              <tr>
+                <td>Pacman</td>
+                <td>50%</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       <div id="playerstatsa">
@@ -96,69 +101,79 @@
         <h1><span id="title_team_A">Team A</span> <span id="goals_team_a">0</span>:<span id="goals_team_b">0</span> <span id="title_team_B">Team B</span></h1>
         <p id="time">0:00:00</p>
       </div>
-      <div>
-        <video />
+      <div class="tab_menu" id="perspectives_menu">
+        <input name="perspectives_menu" type="radio" id="KEEPERA" /><label for="KEEPERA">A</label>
+        <input name="perspectives_menu" type="radio" checked="checked" id="BIRD" /><label for="BIRD">top</label>
+        <input name="perspectives_menu" type="radio" id="TAUMEL" /><label for="TAUMEL">swing</label>
+        <input name="perspectives_menu" type="radio" id="KEEPERB" /><label for="KEEPERB">B</label>
       </div>
       <div id="field">
-        <ul id="perspectives_menu">
-          <li><button id="KEEPERA">&lt;</button</li>
-          <li><button id="BIRD">^</button</li>
-          <li><button id="TAUMEL">~</button</li>
-          <li><button id="KEEPERB">&gt;</button</li>
-        </ul>
+      </div>
+      <div id="gametrack">
+        <svg id="image" xmlns="http://www.w3.org/2000/svg" version="1.1" width="640" height="42">
+          <line id="centerline" x1="0" y1="21" x2="640" y2="21" />
+          <line id="start" x1="0" y1="16" x2="0" y2="26" />
+          <line id="mid" x1="320" y1="16" x2="320" y2="26" />
+          <line id="cur" x1="0" y1="10" x2="0" y2="32" />
+          <line id="end" x1="640" y1="16" x2="640" y2="26" />
+        </svg>
       </div>
     </div>
     <div id="right">
       <div class="team">
         <table id="team_b">
-          <tr>
-            <td><input type="checkbox" name="selectteamb"/><label><span>Team B</span></label></td>
-            <td>Stats</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" name="selectplayerb1"/><label><span>Super Mario</span></label></td>
-            <td>2%</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" name="selectplayerb2"/><label><span>Zelda</span></td>
-            <td>6%</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" name="selectplayerb1"/><label><span>Super Mario</span></label></td>
-            <td>2%</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" name="selectplayerb2"/><label><span>Zelda</span></td>
-            <td>6%</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" name="selectplayerb1"/><label><span>Super Mario</span></label></td>
-            <td>2%</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" name="selectplayerb2"/><label><span>Zelda</span></td>
-            <td>6%</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" name="selectplayerb1"/><label><span>Super Mario</span></label></td>
-            <td>2%</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" name="selectplayerb2"/><label><span>Zelda</span></td>
-            <td>6%</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" name="selectplayerb1"/><label><span>Super Mario</span></label></td>
-            <td>2%</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" name="selectplayerb2"/><label><span>Zelda</span></td>
-            <td>6%</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" name="selectplayerb1"/><label><span>Super Mario</span></label></td>
-            <td>2%</td>
-          </tr>
+          <thead>
+            <tr>
+              <th>Team B</th>
+              <th>Stats</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="1">
+              <td>Super Mario</td>
+              <td>2%</td>
+            </tr>
+            <tr id="2">
+              <td>Zelda</td>
+              <td>6%</td>
+            </tr>
+            <tr id="3">
+              <td>Super Mario</td>
+              <td>2%</td>
+            </tr>
+            <tr id="4">
+              <td>Zelda</td>
+              <td>6%</td>
+            </tr>
+            <tr id="5">
+              <td>Super Mario</td>
+              <td>2%</td>
+            </tr>
+            <tr id="6">
+              <td>Zelda</td>
+              <td>6%</td>
+            </tr>
+            <tr>
+              <td>Super Mario</td>
+              <td>2%</td>
+            </tr>
+            <tr>
+              <td>Zelda</td>
+              <td>6%</td>
+            </tr>
+            <tr>
+              <td>Super Mario</td>
+              <td>2%</td>
+            </tr>
+            <tr>
+              <td>Zelda</td>
+              <td>6%</td>
+            </tr>
+            <tr>
+              <td>Super Mario</td>
+              <td>2%</td>
+            </tr>
+          </tbody>
         </table>
       </div>
       <div id="playerstatsb">
@@ -166,6 +181,6 @@
       </div>
     </div>
   </article>
-  <footer>SEA (c) copyright tu-dresden</footer>
+  <footer>SEA &copy; copyright tu-dresden</footer>
 </body>
 </html>
