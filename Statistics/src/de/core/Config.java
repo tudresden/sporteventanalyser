@@ -6,7 +6,12 @@ public class Config
 {
 	private ConcurrentHashMap<Integer, Entity> entityList;
 
+	public final static double TIMEFACTOR = Math.pow(10, 9); // picoseconds to milliseconds
+
 	public final static float BALLPOSSESSIONTHRESHOLD = 1000f; // 1000mm = 1m
+
+	public final static long GAMESTARTTIMESTAMP = 10753295594424116L;
+	public final static long DATAPUSHINTERVAL = 3000; // in ms
 
 	public static final int GAMEFIELDMINX = -50;
 	public static final int GAMEFIELDMAXX = 52489;
@@ -17,9 +22,6 @@ public class Config
 	public static final int GOALONEMAXX = 29899;
 	public static final int GOALTWOMINX = 22560;
 	public static final int GOALTWOMAXX = 29880;
-
-	public final static long GAMESTARTTIMESTAMP = 10753295594424116L;
-	public final static double TIMEFACTOR = Math.pow(10, 12); // pico seconds
 
 	public final static int[] PLAYERIDS = { 47, 49, 19, 53, 23, 57, 59, 63, 65, 67, 69, 71, 73, 75 };
 	public final static int[] PLAYERSENSORIDS = { 47, 16, 49, 88, 19, 52, 53, 54, 23, 24, 57, 58, 59, 28, 63, 64, 65, 66, 67, 68, 69, 38, 71, 40, 73, 74, 75, 44 };
