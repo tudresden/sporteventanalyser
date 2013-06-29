@@ -12,7 +12,7 @@ import weka.core.converters.ArffSaver;
 public class Utils {
 
 	public static final boolean DEBUGGING = false;
-	public static final boolean ARFF_WRITING_MODE = false;
+	public static final boolean ARFF_WRITING_MODE = true;
 
 	public static final String FIELD_AREA_OWN_TEAM = "FIELD_AREA_OWN_TEAM";
 	public static final String FIELD_AREA_MIDDLE = "FIELD_AREA_MIDDLE";
@@ -22,8 +22,6 @@ public class Utils {
 
 	public static final String getFieldArea(int x, boolean onOpponentSide) {
 		final int totalWidth = 2 * 52500;
-
-		// TODO determine boolean onOpponentSide
 
 		// left field side
 		if (x < totalWidth / 3 - totalWidth / 2) {
