@@ -40,7 +40,7 @@ public class PassSuccessPredictor implements Predictor {
 
 		// TODO create ARFF file at the very end
 		if (Utils.ARFF_WRITING_MODE && !arffCreated)
-			if (learner.getAccumulatedInstances().size() == 100) {
+			if (learner.getAccumulatedInstances().size() == 595) {
 				arffCreated = true;
 				Utils.createArffFileFromInstances(learner
 						.getAccumulatedInstances(), this.getClass().getName()
@@ -77,12 +77,12 @@ public class PassSuccessPredictor implements Predictor {
 								.getCurrentBallPossessionPlayer()
 								.getPositionX(), gameInformation
 								.getCurrentBallPossessionPlayer()
-								.getPositionX(), gameInformation
-								.getCurrentBallPossessionPlayer()
 								.getPositionY(), (int) gameInformation
 								.getDistanceOfNearestTeammate(),
 						Math.round(gameInformation
-								.getPlayerDistance(idOfLastPlayerWithBall)));
+								.getPlayerDistance(idOfLastPlayerWithBall)),
+						gameInformation.isPlayerOnOwnSide(gameInformation
+								.getCurrentBallPossessionPlayer()));
 
 		// pass occurred
 		if (idOfCurrentPlayerWithBall != idOfLastPlayerWithBall

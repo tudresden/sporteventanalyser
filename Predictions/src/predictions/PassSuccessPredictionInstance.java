@@ -155,8 +155,8 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 	public void setAttributes(int numberOfTeammatesInArea,
 			int numberOfOpponentsInArea, int playerPassesSuccessful,
 			int playerPassesMissed, int ballContact, String lastPlayerId,
-			String curentPlayerId, int distanceNearestPlayer, int xPosition,
-			int currentX, int currentY, int playerDistance) {
+			String curentPlayerId, int distanceNearestPlayer, int currentX,
+			int currentY, int playerDistance, boolean playerOnOwnSide) {
 		createEmptyInstance();
 
 		currentInstance.setValue(
@@ -199,7 +199,7 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_Y), currentY);
 
 		currentInstance.setValue(ATTRIBUTE_LIST.indexOf(ATTRIBUTE_AREA),
-				Utils.getFieldArea(xPosition, true)); // TODO set opponentSide
+				Utils.getFieldArea(currentX, !playerOnOwnSide));
 
 		currentInstance.setValue(
 				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_DISTANCE),
