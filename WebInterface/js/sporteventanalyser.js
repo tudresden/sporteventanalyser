@@ -28,57 +28,51 @@ var sea = {
 			// sea.addHandlers();
 			onSuccess && onSuccess();
 		});
-	}
+  }
 }
+var sea_default_setup = function() {
+  sea.connect("seaclient@sea/Client", "sea", "mobilis@sea", function() {
+    // Do something special here!
 
-$(function() {
-	$("#playerstatsa").click(function(event) {
-		sea.connect("seaclient@sea/Client", "sea", "mobilis@sea", function() {
-			// Do something special here!
+    // var cT = Mobilis.utils.getUnixTime();
+    // var i = 0;
 
-			// var cT = Mobilis.utils.getUnixTime();
-			// var i = 0;
+    sea.getGameMappings(function(Mappings) {
+      var gameField = Mappings.GameFieldSize;
+      var goals = Mappings.Goals;
+      var playerMappings = Mappings.PlayerMappings;
+      console.log("Gamefield parameters:");
+      console.log("Min-X: " + gameField.GameFieldMinX + " Max-X: " + gameField.GameFieldMaxX);
+      console.log("Min-Y: " + gameField.GameFieldMinY + " Max-Y: " + gameField.GameFieldMaxY);
+      console.log("-------------------------------------------------");
+      console.log("Goal 1 parameters:");
+      console.log("Min-X: " + goals[0].GoalMinX + " Max-X: " + goals[0].GoalMaxX);
+      console.log("Goal 2 parameters:");
+      console.log("Min-X: " + goals[1].GoalMinX + " Max-X: " + goals[1].GoalMaxX);
+      console.log("-------------------------------------------------");
+      $.each(playerMappings, function(i, v) {
+        console.log("Player: " + v.PlayerName + " (ID: " + v.PlayerID + ", Team: " + v.TeamName + ")");
+      });
+    }, function() {
+      // TODO: Remove this sample function
+      console.log("Timed out!");
+    });
 
-			sea.getGameMappings(function(Mappings) {
-				var gameField = Mappings.GameFieldSize;
-				var goals = Mappings.Goals;
-				var playerMappings = Mappings.PlayerMappings;
-				console.log("Gamefield parameters:");
-				console.log("Min-X: " + gameField.GameFieldMinX + " Max-X: " + gameField.GameFieldMaxX);
-				console.log("Min-Y: " + gameField.GameFieldMinY + " Max-Y: " + gameField.GameFieldMaxY);
-				console.log("-------------------------------------------------");
-				console.log("Goal 1 parameters:");
-				console.log("Min-X: " + goals[0].GoalMinX + " Max-X: " + goals[0].GoalMaxX);
-				console.log("Goal 2 parameters:");
-				console.log("Min-X: " + goals[1].GoalMinX + " Max-X: " + goals[1].GoalMaxX);
-				console.log("-------------------------------------------------");
-				$.each(playerMappings, function(i, v) {
-					console.log("Player: " + v.PlayerName + " (ID: " + v.PlayerID + ", Team: " + v.TeamName + ")");
-				});
-			}, function() {
-				// TODO: Remove this sample function
-				console.log("Timed out!");
-			});
-
-			sea.pubsub.subscribeStatistic();
-			
-			sea.pubsub.addCurrentPositionDataHandler(function(item) {
-				// i++;
-				// if (i % 100 == 0) {
-					// console.log((Mobilis.utils.getUnixTime() - cT) + " ms");
-					// console.log(item);
-				// }
-			});
-			sea.pubsub.addCurrentPlayerDataHandler(function(item) {
-				// if (i % 10 == 0) {
-					// console.log(item);
-				// }
-			});
-			sea.pubsub.addCurrentTeamDataHandler(function(item) {
-				// if (i % 10 == 0) {
-					// console.log(item);
-				// }
-			});
-		});
-	});
-});
+    sea.pubsub.subscribeStatistic();
+    
+    sea.pubsub.addCurrentPositionDataHandler(function(item) {
+      console.log(item);
+    });
+    sea.pubsub.addCurrentPlayerDataHandler(function(item) {
+      // if (i % 10 == 0) {
+        // console.log(item);
+      // }
+    });
+    sea.pubsub.addCurrentTeamDataHandler(function(item) {
+      // if (i % 10 == 0) {
+        // console.log(item);
+      // }
+    });
+  });
+  return sea;
+}
