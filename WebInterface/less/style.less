@@ -1,37 +1,7 @@
 @import "reset";
 @import "palette";
 @import "layout";
-
-// Makros
-
-.bordered(@radius: 5pt) {
-  -webkit-border-radius: @radius;
-  -moz-border-radius: @radius;
-  -ms-border-radius: @radius;
-  -o-border-radius: @radius;
-  border-radius: @radius;
-  border: @green 1pt solid;
-}
-
-.infobox {
-  .bordered;
-  background: rgba(0,0,0,.5);
-}
-
-.colored_table {
-  tr:nth-child(2n+1) {
-    background: rgba(255, 255, 255, 0.1);
-  }
-  tr:nth-child(2n) {
-    background: rgba(255, 255, 255, 0.05);
-  }
-  tr:first-child {
-    background: rgba(255, 255, 255, 0.15);
-    font-weight: bold;
-  }
-  border-collapse: collapse;
-  border-spacing: 0;
-}
+@import "widgets";
 
 // Styles
 
@@ -62,30 +32,6 @@ video {
   .infobox;
 }
 
-#perspectives_menu {
-  width: 100%;
-  padding: 0;
-  margin-bottom: 0;
-  text-align: center;
-  button {
-    width: 20%;
-    .bordered;
-    border: @blue 1pt solid;
-    background: @base03;
-  }
-  button:hover {
-    width: 20%;
-    .bordered;
-    border: @blue 1pt solid;
-    background: @base02;
-  }
-  button:focus {
-    width: 20%;
-    .bordered;
-    border: @blue 1pt solid;
-    background: @base01;
-  }
-}
 
 #content {
   display: table-row;
@@ -96,20 +42,42 @@ video {
     }
     .team {
       .infobox;
-      margin: 2pt;
+      margin: @generous_margin;
       .colored_table;
       overflow: auto;
     }
     #playerstatsa, #playerstatsb {
-      margin: 2pt;
-      height: 200pt;
       .infobox;
+      margin: @generous_margin;
+      height: 200pt;
     }
   }
 
   #center {
+    #gametrack {
+      .infobox;
+      margin-top: @generous_margin;
+      padding: 5pt;
+      height: 42pt;
+      #image {
+        margin: 0 auto;
+        #start, #cur, #mid, #end {
+          stroke: @bright;
+          stroke-width: 1pt;
+        }
+        #centerline {
+          stroke: @bright;
+          stroke-width: 3pt;
+        }
+      }
+    }
+    #perspectives_menu {
+      .radio_menu;
+      width: 100%;
+      padding: 0;
+      margin: 5pt 5pt 0 5pt;
+    }
     #field {
-      display: table-cell;
     }
   }
 }
