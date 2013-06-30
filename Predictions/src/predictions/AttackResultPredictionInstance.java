@@ -9,6 +9,7 @@ import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.experiment.AveragingResultProducer;
 
 /**
  * Encapsulates an instance for training and attack result prediction.
@@ -33,6 +34,7 @@ public class AttackResultPredictionInstance extends PredictionInstance {
 	private static final String ATTRIBUTE_CURRENT_PLAYER_DISTANCE = "ATTRIBUTE_CURRENT_PLAYER_DISTANCE";
 	private static final String ATTRIBUTE_AREA = "ATTRIBUTE_AREA";
 	private static final String ATTRIBUTE_PASS_COUNT = "ATTRIBUTE_PASS_COUNT";
+	private static final String ATTRIBUTE_AVERAGE_VELOCITY = "ATTRIBUTE_AVERAGE_VELOCITY";
 
 	public static final String ATTRIBUTE_CLASS = "class";
 
@@ -44,7 +46,8 @@ public class AttackResultPredictionInstance extends PredictionInstance {
 					ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER,
 					ATTRIBUTE_CURRENT_PLAYER_X, ATTRIBUTE_CURRENT_PLAYER_Y,
 					ATTRIBUTE_CURRENT_PLAYER_DISTANCE, ATTRIBUTE_AREA,
-					ATTRIBUTE_PASS_COUNT, ATTRIBUTE_CLASS });
+					ATTRIBUTE_PASS_COUNT, ATTRIBUTE_AVERAGE_VELOCITY,
+					ATTRIBUTE_CLASS });
 
 	private InstancesHeader instanceHeader;
 	private Instance currentInstance;
@@ -115,6 +118,8 @@ public class AttackResultPredictionInstance extends PredictionInstance {
 
 		attributes.add(new Attribute(ATTRIBUTE_PASS_COUNT));
 
+		attributes.add(new Attribute(ATTRIBUTE_AVERAGE_VELOCITY));
+
 		/*
 		 * classes
 		 */
@@ -174,13 +179,14 @@ public class AttackResultPredictionInstance extends PredictionInstance {
 	 * @param playerDistance
 	 * @param playerOnOwnSide
 	 * @param passCounter
+	 * @param averageVelocity
 	 */
 	public void setAttributes(int numberOfTeammatesInArea,
 			int numberOfOpponentsInArea, int playerPassesSuccessful,
 			int playerPassesMissed, int ballContact, String lastPlayerId,
 			String curentPlayerId, int distanceNearestPlayer, int currentX,
 			int currentY, int playerDistance, boolean playerOnOwnSide,
-			int passCounter) {
+			int passCounter, int averageVelocity) {
 		createEmptyInstance();
 
 		currentInstance.setValue(
@@ -231,6 +237,10 @@ public class AttackResultPredictionInstance extends PredictionInstance {
 
 		currentInstance.setValue(ATTRIBUTE_LIST.indexOf(ATTRIBUTE_PASS_COUNT),
 				passCounter);
+
+		currentInstance.setValue(
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_AVERAGE_VELOCITY),
+				averageVelocity);
 	}
 
 	/**
