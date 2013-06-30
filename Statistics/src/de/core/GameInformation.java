@@ -819,7 +819,7 @@ public class GameInformation implements UpdateListener
 					/* send data update to the visualization project */
 					if (getStatisticsFacade() != null)
 					{
-						getStatisticsFacade().setBallContacs(nearestPlayer.getId(), nearestPlayer.getBallContacts());
+						getStatisticsFacade().setBallContacts(nearestPlayer.getId(), nearestPlayer.getBallContacts());
 					}
 
 					System.out.println("Ballkontakte: " + nearestPlayer.getBallContacts());

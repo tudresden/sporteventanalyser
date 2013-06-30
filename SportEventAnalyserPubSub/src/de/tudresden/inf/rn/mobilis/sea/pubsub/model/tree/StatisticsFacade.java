@@ -255,7 +255,7 @@ public class StatisticsFacade implements ICurrentPositionData,
 	}
 
 	@Override
-	public synchronized void setBallContacs(int id, int ballContacts) {
+	public synchronized void setBallContacts(int id, int ballContacts) {
 		synchronized (currentPlayerDataMutex) {
 			PlayerStatistic playerStatistic = statistics.getCurrentPlayerData()
 					.getPlayerStatistic(id);
