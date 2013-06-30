@@ -103,7 +103,7 @@ public interface ICurrentPlayerData {
 	 * @param ballContacts
 	 *            the number of ball contacts of this player
 	 */
-	public void setBallContacs(int id, int ballContacts);
+	public void setBallContacts(int id, int ballContacts);
 
 	/**
 	 * Set the total amount of time on which this player had possession of the
