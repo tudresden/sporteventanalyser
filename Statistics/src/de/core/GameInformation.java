@@ -15,16 +15,6 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.StatisticsFacade;
 
 public class GameInformation implements UpdateListener
 {
-	private long currentGameTime = 0;
-	/**
-	 * ball id
-	 */
-	private int currentActiveBallId = 0;
-
-	/**
-	 * ball for counter
-	 */
-	private int currentBallAcc = 1;
 	/**
 	 * Team A vorerst ohne Torwart - TEAM GELB!
 	 */
@@ -34,7 +24,65 @@ public class GameInformation implements UpdateListener
 	 */
 	private int[] b = { 63, 65, 67, 69, 71, 73, 75 };
 
+	private Config config;
+	/**
+	 * ball id
+	 */
+	private int currentActiveBallId = 0;
+	/**
+	 * ball for counter
+	 */
+	private int currentBallAcc = 1;
+
+	private long currentGameTime = 0;
+	private Player currentPlayer = null;
+
+	/**
+	 * false for no interruption, true for interruption
+	 */
+	private boolean gameInterruption = false;
+
+	/**
+	 * The timestamp of the last game interruption begin.
+	 */
+	private long gameInterruptionBegin = 0;
+
+	/**
+	 * The timestamp of the last game interruption end.
+	 */
+	private long gameInterruptionEnd = 0;
+
+	/**
+	 * false for half 1, true for half 2
+	 */
+	private boolean halftime = false;
+
+	/**
+	 * The timestamp of the last ball that was lost to the other team.
+	 */
+	private long lastBallLossTimeStamp = 0;
+
+	/**
+	 * The timestamp of the last ball that was outside the game field.
+	 */
+	private long lastBallOutsideTimeStamp = 0;
+	/**
+	 * The timestamp of the last ball possession.
+	 */
 	private long lastBallPossessionTimeStamp = 0;
+	/**
+	 * The timestamp of the last pushed of statistics data.
+	 */
+	private long lastPushedStatistics = 0;
+	/**
+	 * The timestamp of the last shot on goal.
+	 */
+	private long lastShotOnGoalTimeStamp = 0;
+
+	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private Prophet prophet;
+	private StatisticsFacade statisticsFacade;
+
 	/**
 	 * Difference of timestamps for counter.
 	 */
@@ -45,41 +93,11 @@ public class GameInformation implements UpdateListener
 	 */
 	private long timeBall = 0;
 
-	/**
-	 * The timestamp of the last pushed of statistics data.
-	 */
-	private long lastPushedStatistics = 0;
-
-	/**
-	 * false for half 1, true for half 2
-	 */
-	private boolean halftime = false;
-	/**
-	 * false for no interruption, true for interruption
-	 */
-	private boolean gameinterruption = false;
-	private Config config;
-	private Player currentPlayer = null;
-
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private StatisticsFacade statisticsFacade;
-	private Prophet prophet;
-
 	public GameInformation(StatisticsFacade statisticsFacade)
 	{
 		this.statisticsFacade = statisticsFacade;
 		this.prophet = new Prophet(this);
 		config = new Config();
-	}
-
-	private StatisticsFacade getStatisticsFacade()
-	{
-		return statisticsFacade;
-	}
-
-	private Prophet getProphet()
-	{
-		return prophet;
 	}
 
 	/**
@@ -118,7 +136,7 @@ public class GameInformation implements UpdateListener
 		}
 
 		// ball-Beschleunigung >= 80m/s≤?
-		if (!gameinterruption && currentBallAcc == 1 && ball.getAvgAcceleration() >= 80000000)
+		if (!gameInterruption && currentBallAcc == 1 && ball.getAvgAcceleration() >= 80000000)
 		{
 			currentBallAcc = 0;
 			timeBall = ball.getTimeStamp(); // setLastBallTime
@@ -150,13 +168,74 @@ public class GameInformation implements UpdateListener
 	}
 
 	/**
-	 * Returns the current relative game time in seconds.
+	 * Returns the current relative game time in milliseconds.
 	 * 
 	 * @return The game time.
 	 */
 	public long getCurrentGameTime()
 	{
 		return currentGameTime;
+	}
+
+	/**
+	 * Returns the distance to the next opponent of the player at the ball.
+	 * 
+	 * @return The distance in millimeters or -1 if there is no player at the ball.
+	 */
+	public float getDistanceOfNearestOpponent()
+	{
+		return getDistanceOfNextNearestPlayer(true);
+	}
+
+	/**
+	 * Returns the distance to the next teammate of the player at the ball.
+	 * 
+	 * @return The distance in millimeters or -1 if there is no player at the ball.
+	 */
+	public float getDistanceOfNearestTeammate()
+	{
+		return getDistanceOfNextNearestPlayer(false);
+	}
+
+	/**
+	 * Returns the distance to the next player of the player at the ball.
+	 * 
+	 * @return The distance in millimeters or -1 if there is no player at the ball.
+	 */
+	public float getDistanceOfNextNearestPlayer(boolean oppositeTeam)
+	{
+		Player activePlayer = (Player) getCurrentBallPossessionPlayer();
+
+		/* break if no player owns the ball */
+		if (activePlayer == null)
+		{
+			return -1;
+		}
+
+		final int[] ids = Config.PLAYERIDS;
+		float nearestDistance = Float.MAX_VALUE;
+		float distance = 0;
+
+		Player player = null;
+
+		for (int i = ids.length - 1; i >= 0; i--)
+		{
+			player = (Player) getEntityFromId(ids[i]);
+
+			if (player.equals(activePlayer) || (oppositeTeam && player.getTeam().equals(activePlayer.getTeam()) || (!oppositeTeam && !player.getTeam().equals(activePlayer.getTeam()))))
+			{
+				continue;
+			}
+
+			distance = Utils.getDistanceBetweenTwoPlayer(player, activePlayer);
+
+			if (distance < nearestDistance)
+			{
+				nearestDistance = distance;
+			}
+		}
+
+		return nearestDistance;
 	}
 
 	/**
@@ -177,6 +256,56 @@ public class GameInformation implements UpdateListener
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get the game interruption begin timestamp.
+	 * 
+	 * @return The relative game time in milliseconds
+	 */
+	public long getInterruptionBegin()
+	{
+		return gameInterruptionBegin;
+	}
+
+	/**
+	 * Get the game interruption end timestamp.
+	 * 
+	 * @return The relative game time in milliseconds
+	 */
+	public long getInterruptionEnd()
+	{
+		return gameInterruptionEnd;
+	}
+
+	/**
+	 * Get the relative game time in milliseconds of the last ball that was lost to the other team.
+	 * 
+	 * @return The relative game time in milliseconds.
+	 */
+	public long getLastBallLossTimeStamp()
+	{
+		return lastBallLossTimeStamp;
+	}
+
+	/**
+	 * Get the relative game time in milliseconds of the ball that is not within the game field.
+	 * 
+	 * @return The game time in milliseconds.
+	 */
+	public long getLastBallOutsideTimeStamp()
+	{
+		return lastBallOutsideTimeStamp;
+	}
+
+	public long getLastPushedStatistics()
+	{
+		return lastPushedStatistics;
+	}
+
+	public long getLastShotOnGoalTimeStamp()
+	{
+		return lastShotOnGoalTimeStamp;
 	}
 
 	/**
@@ -212,6 +341,48 @@ public class GameInformation implements UpdateListener
 			}
 		}
 		return nearestPlayer;
+	}
+
+	/**
+	 * Returns the number of oppenents in a area.
+	 * 
+	 * @param meter
+	 *            Radius for area
+	 * @return The number of oppenents in a area in m.
+	 */
+	public int getOpponentsInArea(int meter)
+	{
+		Ball activeBall = (Ball) getEntityFromId(getActiveBallId());
+		Player activePlayer = (Player) getCurrentBallPossessionPlayer();
+		int numberOfOpponents = 0;
+		if (activePlayer != null && activeBall != null && activePlayer.getTeam().equals("GELB"))
+		{
+			// Opponents-Array
+			for (int i = 0; i < b.length; i++)
+			{
+				Player player = (Player) getEntityFromId(b[i]);
+				if ((Utils.getNearestSensor(player.getSensors(), activeBall)) <= meter * 1000)
+				{
+					numberOfOpponents += 1;
+				}
+			}
+		}
+		else if (activePlayer != null && activeBall != null && activePlayer.getTeam().equals("ROT"))
+		{
+			for (int s = 0; s < a.length; s++)
+			{
+				Player player = (Player) getEntityFromId(a[s]);
+				if ((Utils.getNearestSensor(player.getSensors(), activeBall)) <= meter * 1000)
+				{
+					numberOfOpponents += 1;
+				}
+			}
+		}
+		else
+		{
+			return -1;
+		}
+		return numberOfOpponents - 1;
 	}
 
 	/**
@@ -322,7 +493,50 @@ public class GameInformation implements UpdateListener
 		return -1;
 	}
 
-	// TODO: Verbessern
+	/**
+	 * Returns the running direction of a given player.
+	 * 
+	 * @param id
+	 *            ID of player-object
+	 * @return Array consists of two values x,y for running direction of a player or {-1,-1} if there no direction already.
+	 */
+	public int[] getPlayerRunningDirection(int id)
+	{
+		// TODO: verbessern
+
+		int[] array = new int[] { -1, -1 };
+		Entity entity = getEntityFromId(id);
+		Player player;
+		int newX;
+		int newY;
+		int oldX;
+		int oldY;
+		if (entity != null && entity instanceof Player)
+		{
+			player = (Player) entity;
+			newX = player.getPositionX();
+			newY = player.getPositionY();
+			oldX = player.getOldPositionX();
+			oldY = player.getOldPositionY();
+			if (oldX != 0 && oldY != 0 && newX != 0 && newY != 0)
+			{
+				array[0] = newX - oldX;
+				array[1] = newY - oldY;
+			}
+		}
+		return array;
+	}
+
+	private Prophet getProphet()
+	{
+		return prophet;
+	}
+
+	private StatisticsFacade getStatisticsFacade()
+	{
+		return statisticsFacade;
+	}
+
 	/**
 	 * Get ballPossession percentage of a given team.
 	 * 
@@ -332,6 +546,8 @@ public class GameInformation implements UpdateListener
 	 */
 	public long getTeamBallPossession(int[] teamkuerzel)
 	{
+		// TODO: Verbessern
+
 		long possessionTime = 0;
 		long possessionTime2 = 0;
 
@@ -383,6 +599,47 @@ public class GameInformation implements UpdateListener
 	}
 
 	/**
+	 * Returns the number of teammates in a area.
+	 * 
+	 * @param meter
+	 *            Radius for area
+	 * @return The number of teammates in a area in m.
+	 */
+	public int getTeammatesInArea(int meter)
+	{
+		Ball activeBall = (Ball) getEntityFromId(getActiveBallId());
+		Player activePlayer = (Player) getCurrentBallPossessionPlayer();
+		int numberOfTeammates = 0;
+		if (activePlayer != null && activeBall != null && activePlayer.getTeam().equals("GELB"))
+		{
+			for (int i = 0; i < a.length; i++)
+			{
+				Player player = (Player) getEntityFromId(a[i]);
+				if ((Utils.getNearestSensor(player.getSensors(), activeBall)) <= (meter * 1000))
+				{
+					numberOfTeammates += 1;
+				}
+			}
+		}
+		else if (activePlayer != null && activeBall != null && activePlayer.getTeam().equals("ROT"))
+		{
+			for (int s = 0; s < b.length; s++)
+			{
+				Player player = (Player) getEntityFromId(b[s]);
+				if ((Utils.getNearestSensor(player.getSensors(), activeBall)) <= (meter * 1000))
+				{
+					numberOfTeammates += 1;
+				}
+			}
+		}
+		else
+		{
+			return -1;
+		}
+		return numberOfTeammates - 1;
+	}
+
+	/**
 	 * Returns the teampassquote for a given team.
 	 * 
 	 * @param teamkuerzel
@@ -428,172 +685,85 @@ public class GameInformation implements UpdateListener
 		return false;
 	}
 
-	/**
-	 * Returns the number of teammates in a area.
-	 * 
-	 * @param meter
-	 *            Radius for area
-	 * @return The number of teammates in a area in m.
-	 */
-	public int getTeammatesInArea(int meter)
+	public boolean isPlayerOnOwnSide(Player player)
 	{
-		Ball activeBall = (Ball) getEntityFromId(getActiveBallId());
-		Player activePlayer = (Player) getCurrentBallPossessionPlayer();
-		int numberOfTeammates = 0;
-		if (activePlayer != null && activeBall != null && activePlayer.getTeam().equals("GELB"))
+		if (halftime == false)
 		{
-			for (int i = 0; i < a.length; i++)
+			if (player.getPositionY() >= 0 && player.getTeam().equals("ROT"))
 			{
-				Player player = (Player) getEntityFromId(a[i]);
-				if ((Utils.getNearestSensor(player.getSensors(), activeBall)) <= (meter * 1000))
-				{
-					numberOfTeammates += 1;
-				}
+				return true;
 			}
-		}
-		else if (activePlayer != null && activeBall != null && activePlayer.getTeam().equals("ROT"))
-		{
-			for (int s = 0; s < b.length; s++)
+			if (player.getPositionY() < 0 && player.getTeam().equals("GELB"))
 			{
-				Player player = (Player) getEntityFromId(b[s]);
-				if ((Utils.getNearestSensor(player.getSensors(), activeBall)) <= (meter * 1000))
-				{
-					numberOfTeammates += 1;
-				}
+				return true;
 			}
 		}
 		else
 		{
-			return -1;
+			if (player.getPositionY() < 0 && player.getTeam().equals("ROT"))
+			{
+				return true;
+			}
+			if (player.getPositionY() >= 0 && player.getTeam().equals("GELB"))
+			{
+				return true;
+			}
 		}
-		return numberOfTeammates - 1;
+		return false;
 	}
 
 	/**
-	 * Returns the number of oppenents in a area.
+	 * Set the relative game time in milliseconds.
 	 * 
-	 * @param meter
-	 *            Radius for area
-	 * @return The number of oppenents in a area in m.
+	 * @params currentGameTime The game time.
 	 */
-	public int getOpponentsInArea(int meter)
+	private void setCurrentGameTime(long currentGameTime)
 	{
-		Ball activeBall = (Ball) getEntityFromId(getActiveBallId());
-		Player activePlayer = (Player) getCurrentBallPossessionPlayer();
-		int numberOfOpponents = 0;
-		if (activePlayer != null && activeBall != null && activePlayer.getTeam().equals("GELB"))
-		{
-			// Opponents-Array
-			for (int i = 0; i < b.length; i++)
-			{
-				Player player = (Player) getEntityFromId(b[i]);
-				if ((Utils.getNearestSensor(player.getSensors(), activeBall)) <= meter * 1000)
-				{
-					numberOfOpponents += 1;
-				}
-			}
-		}
-		else if (activePlayer != null && activeBall != null && activePlayer.getTeam().equals("ROT"))
-		{
-			for (int s = 0; s < a.length; s++)
-			{
-				Player player = (Player) getEntityFromId(a[s]);
-				if ((Utils.getNearestSensor(player.getSensors(), activeBall)) <= meter * 1000)
-				{
-					numberOfOpponents += 1;
-				}
-			}
-		}
-		else
-		{
-			return -1;
-		}
-		return numberOfOpponents - 1;
+		this.currentGameTime = currentGameTime;
 	}
 
 	/**
-	 * Returns the distance of nearest teammate to the player with the ball.
+	 * Set the game interruption begin timestamp.
 	 * 
-	 * @return The distance of nearest teammate in mm or -1 if the player-object does not exists.
+	 * @param timestamp
+	 *            timestamp in picoseconds
 	 */
-	public float getDistanceOfNearestTeammate()
+	public void setInterruptionBegin(long timestamp)
 	{
-		Player activePlayer = (Player) getCurrentBallPossessionPlayer();
-		float nearestTeammateDistance = Float.MAX_VALUE;
-		if (activePlayer != null && activePlayer.getTeam().equals("GELB"))
-		{
-			for (int i = 0; i < a.length; i++)
-			{
-				Player player = (Player) getEntityFromId(a[i]);
-				float distance = Utils.getDistanceBetweenTwoPlayer(player, activePlayer);
-				if (distance < nearestTeammateDistance && !player.equals(activePlayer))
-				{
-					nearestTeammateDistance = distance;
-				}
-			}
-		}
-		else if (activePlayer != null && activePlayer.getTeam().equals("ROT"))
-		{
-			for (int s = 0; s < b.length; s++)
-			{
-				Player player = (Player) getEntityFromId(b[s]);
-				float distance = Utils.getDistanceBetweenTwoPlayer(player, activePlayer);
-				if (distance < nearestTeammateDistance && !player.equals(activePlayer))
-				{
-					nearestTeammateDistance = distance;
-				}
-			}
-		}
-		else
-		{
-			return -1;
-		}
-		return nearestTeammateDistance;
+		this.gameInterruptionBegin = Utils.convertTimeToOffset(timestamp);
+		gameInterruption = true;
 	}
 
 	/**
-	 * Returns the distance of nearest opponent to the player with the ball.
+	 * Set the game interruption end timestamp.
 	 * 
-	 * @return The distance of nearest opponent in mm or -1 if the player-object does not exists.
+	 * @param timestamp
+	 *            timestamp in picoseconds
 	 */
-	public float getDistanceOfNearestOpponent()
+	public void setInterruptionEnd(long timestamp)
 	{
-		Player activePlayer = (Player) getCurrentBallPossessionPlayer();
-		float nearestOpponentDistance = Float.MAX_VALUE;
-		if (activePlayer != null && activePlayer.getTeam().equals("GELB"))
-		{
-			for (int i = 0; i < b.length; i++)
-			{
-				Player player = (Player) getEntityFromId(b[i]);
-				float distance = Utils.getDistanceBetweenTwoPlayer(player, activePlayer);
-				if (distance < nearestOpponentDistance && !player.equals(activePlayer))
-				{
-					nearestOpponentDistance = distance;
-				}
-			}
-		}
-		else if (activePlayer != null && activePlayer.getTeam().equals("ROT"))
-		{
-			for (int s = 0; s < a.length; s++)
-			{
-				Player player = (Player) getEntityFromId(a[s]);
-				float distance = Utils.getDistanceBetweenTwoPlayer(player, activePlayer);
-				if (distance < nearestOpponentDistance && !player.equals(activePlayer))
-				{
-					nearestOpponentDistance = distance;
-				}
-			}
-		}
-		else
-		{
-			return -1;
-		}
-		return nearestOpponentDistance;
+		this.gameInterruptionEnd = Utils.convertTimeToOffset(timestamp);
+		gameInterruption = false;
 	}
 
-	public long getLastPushedStatistics()
+	/**
+	 * Set the relative game time in milliseconds of the last ball that was lost to the other team.
+	 * 
+	 * @params milliseconds The relative game time in milliseconds.
+	 */
+	public void setLastBallLossTimeStamp(long milliseconds)
 	{
-		return lastPushedStatistics;
+		this.lastBallLossTimeStamp = milliseconds;
+	}
+
+	/**
+	 * Set the relative game time in milliseconds of the ball that is not within the game field.
+	 * 
+	 * @params milliseconds The relative game time in milliseconds.
+	 */
+	public void setLastBallOutsideTimeStamp(long milliseconds)
+	{
+		this.lastBallOutsideTimeStamp = milliseconds;
 	}
 
 	public void setLastPushedStatistics(long lastPushedStatistics)
@@ -601,47 +771,9 @@ public class GameInformation implements UpdateListener
 		this.lastPushedStatistics = lastPushedStatistics;
 	}
 
-	// TODO: verbessern
-	/**
-	 * Returns the running direction of a given player.
-	 * 
-	 * @param id
-	 *            ID of player-object
-	 * @return Array consists of two values x,y for running direction of a player or {-1,-1} if there no direction already.
-	 */
-	public int[] getPlayerRunningDirection(int id)
+	public void setLastShotOnGoalTimeStamp(long lastShotOnGoalTimeStamp)
 	{
-		int[] array = new int[] { -1, -1 };
-		Entity entity = getEntityFromId(id);
-		Player player;
-		int newX;
-		int newY;
-		int oldX;
-		int oldY;
-		if (entity != null && entity instanceof Player)
-		{
-			player = (Player) entity;
-			newX = player.getPositionX();
-			newY = player.getPositionY();
-			oldX = player.getOldPositionX();
-			oldY = player.getOldPositionY();
-			if (oldX != 0 && oldY != 0 && newX != 0 && newY != 0)
-			{
-				array[0] = newX - oldX;
-				array[1] = newY - oldY;
-			}
-		}
-		return array;
-	}
-
-	/**
-	 * Set the relative game time in seconds.
-	 * 
-	 * @params currentGameTime The game time.
-	 */
-	private void setCurrentGameTime(long currentGameTime)
-	{
-		this.currentGameTime = currentGameTime;
+		this.lastShotOnGoalTimeStamp = lastShotOnGoalTimeStamp;
 	}
 
 	/**
@@ -683,7 +815,6 @@ public class GameInformation implements UpdateListener
 		}
 	}
 
-	// TODO: Jon: Schauen ob er wirklich aufs Tor geht
 	/**
 	 * Calculates if the <code>Ball</code> moves towards the goals
 	 * 
@@ -700,6 +831,8 @@ public class GameInformation implements UpdateListener
 	 */
 	public void shotOnGoal(Ball ball, final int oldPosX, final int oldPosY, final int newPosX, final int newPosY)
 	{
+		// TODO: Jon: Schauen ob er wirklich aufs Tor geht
+
 		final int vecX = newPosX - oldPosX;
 		final int vecY = newPosY - oldPosY;
 
@@ -717,36 +850,6 @@ public class GameInformation implements UpdateListener
 		{
 			System.out.println("TORSCHUSS AUF TOR2");
 		}
-	}
-
-	/**
-	  
-	  */
-	public boolean isPlayerOnOwnSide(Player player)
-	{
-		if (halftime == false)
-		{
-			if (player.getPositionY() >= 0 && player.getTeam().equals("ROT"))
-			{
-				return true;
-			}
-			if (player.getPositionY() < 0 && player.getTeam().equals("GELB"))
-			{
-				return true;
-			}
-		}
-		else
-		{
-			if (player.getPositionY() < 0 && player.getTeam().equals("ROT"))
-			{
-				return true;
-			}
-			if (player.getPositionY() >= 0 && player.getTeam().equals("GELB"))
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public void update(EventBean[] newData, EventBean[] oldData)
@@ -769,6 +872,7 @@ public class GameInformation implements UpdateListener
 				{
 					logger.log(Level.INFO, "Spielzeit: {0} - Ball ID {1} auﬂerhalb des Spielfeldes!", new Object[] { time, ball.getId() });
 					currentActiveBallId = 0;
+					setLastBallOutsideTimeStamp(getCurrentGameTime());
 				}
 
 				// ball not within game field
@@ -809,7 +913,8 @@ public class GameInformation implements UpdateListener
 					System.out.println("Laufstrecke: " + nearestPlayer.getTotalDistance() / 1000 + "m");
 					System.out.println("Teammitglieder in 20m Umkreis: " + getTeammatesInArea(20));
 					System.out.println("Gegenspieler in 20m Umkreis: " + getOpponentsInArea(20));
-					System.out.println("N‰hester Mitspieler " + getDistanceOfNearestTeammate() / 1000 + "m");
+					System.out.println("N‰chster Mitspieler " + getDistanceOfNearestTeammate() / 1000 + "m");
+					System.out.println("N‰chster Gegenspieler " + getDistanceOfNearestOpponent() / 1000 + "m");
 					System.out.println("Team A Ballbesitz: " + getTeamPassQuote(a) + "%");
 					System.out.println("Team B Ballbesitz: " + getTeamPassQuote(b) + "%");
 					System.out.println("Player 49 - Richtungsvektor: " + Arrays.toString(getPlayerRunningDirection(49)));
@@ -834,11 +939,19 @@ public class GameInformation implements UpdateListener
 						System.out.println(nearestPlayer.getName() + " " + nearestPlayer.getBallPossessionTime());
 					}
 
-					// Function for Passes
+					/* Calculate Passes */
 					setPasses(lastPlayer, nearestPlayer);
+
+					/* Send Pass statistic if available */
 					if (getStatisticsFacade() != null)
 					{
-						getStatisticsFacade().setPassesMade(lastPlayer.getId(), lastPlayer.getMissedPasses()+lastPlayer.getSuccessfulPasses());
+						getStatisticsFacade().setPassesMade(lastPlayer.getId(), lastPlayer.getMissedPasses() + lastPlayer.getSuccessfulPasses());
+					}
+
+					/* Set timestamp of team-ball-loss */
+					if (lastPlayer != null && !nearestPlayer.getTeam().equals(lastPlayer.getTeam()))
+					{
+						setLastBallLossTimeStamp(getCurrentGameTime());
 					}
 
 					currentPlayer = nearestPlayer;
