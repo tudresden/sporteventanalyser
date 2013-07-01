@@ -31,158 +31,171 @@ import de.tudresden.inf.rn.mobilis.server.services.sea.service.proxy.impl.SEADis
 import de.tudresden.inf.rn.mobilis.xmpp.beans.XMPPBean;
 import de.tudresden.inf.rn.mobilis.xmpp.server.BeanProviderAdapter;
 
-public class SportEventAnalyserService extends MobilisService {
+public class SportEventAnalyserService extends MobilisService
+{
 
 	private Main statistic;
 
 	private Mappings mappings;
 	private SportEventAnalyserPubSub seaPubSub;
 
-	public SportEventAnalyserService() {
-		new Thread() {
-			public void run() {
+	public SportEventAnalyserService()
+	{
+		new Thread()
+		{
+			public void run()
+			{
 				Object o = new Object();
-				synchronized (o) {
-					try {
+				synchronized (o)
+				{
+					try
+					{
 						o.wait();
-					} catch (InterruptedException e) {
+					}
+					catch (InterruptedException e)
+					{
 						// Ignore (just -nogui --keep-alive)
 					}
 				}
 			}
 		}.start();
-		
-		
 
 		mappings = new Mappings();
 
-		try {
+		try
+		{
 			loadPlayerConfig();
-		} catch (ParserConfigurationException | SAXException | IOException e) {
+		}
+		catch (ParserConfigurationException | SAXException | IOException e)
+		{
 			e.printStackTrace();
 		}
 	}
 
-	private void loadPlayerConfig() throws ParserConfigurationException,
-			SAXException, IOException {
-		SAXParserFactory.newInstance().newSAXParser()
-				.parse(getClass().getResource("../../../../../../../../../META-INF/playerConfig.xml").getPath(), new DefaultHandler() {
+	private void loadPlayerConfig() throws ParserConfigurationException, SAXException, IOException
+	{
+		SAXParserFactory.newInstance().newSAXParser().parse(getClass().getResource("../../../../../../../../../META-INF/playerConfig.xml").getPath(), new DefaultHandler()
+		{
 
-					private Mapping mapping;
+			private Mapping mapping;
 
-					private boolean xID, xName, xTeam;
+			private boolean xID, xName, xTeam;
 
-					public void startElement(String uri, String localName,
-							String qName, Attributes attributes)
-							throws SAXException {
-						if (qName.equals("player")) {
-							mapping = new Mapping();
-						} else if (qName.equals("id"))
-							xID = true;	
-						else if (qName.equals("name"))
-							xName = true;
-						else if (qName.equals("team"))
-							xTeam = true;
-					}
+			public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
+			{
+				if (qName.equals("player"))
+				{
+					mapping = new Mapping();
+				}
+				else if (qName.equals("id"))
+					xID = true;
+				else if (qName.equals("name"))
+					xName = true;
+				else if (qName.equals("team"))
+					xTeam = true;
+			}
 
-					public void endElement(String uri, String localName,
-							String qName) throws SAXException {
-						if (qName.equals("player"))
-							mappings.getPlayerMappings().add(mapping);
-					}
+			public void endElement(String uri, String localName, String qName) throws SAXException
+			{
+				if (qName.equals("player"))
+					mappings.getPlayerMappings().add(mapping);
+			}
 
-					public void characters(char ch[], int start, int length)
-							throws SAXException {
-						if (xID) {
-							mapping.setPlayerID(Integer.valueOf(new String(ch, start, length)));
-							xID = false;
-						} else if (xName) {
-							mapping.setPlayerName(new String(ch, start, length));
-							xName = false;
-						} else if (xTeam) {
-							mapping.setTeamName(new String(ch, start, length));
-							xTeam = false;
-						}
-					}
-				});
+			public void characters(char ch[], int start, int length) throws SAXException
+			{
+				if (xID)
+				{
+					mapping.setPlayerID(Integer.valueOf(new String(ch, start, length)));
+					xID = false;
+				}
+				else if (xName)
+				{
+					mapping.setPlayerName(new String(ch, start, length));
+					xName = false;
+				}
+				else if (xTeam)
+				{
+					mapping.setTeamName(new String(ch, start, length));
+					xTeam = false;
+				}
+			}
+		});
 	}
 
 	@Override
-	protected void registerPacketListener() {
-		getAgent().getConnection().addPacketListener(
-				new IQListener(new SEADispatcher(new SportEventAnalyserProxy(
-						new SEADistributer(getAgent().getConnection())),
-						mappings)), new PacketTypeFilter(IQ.class));
+	protected void registerPacketListener()
+	{
+		getAgent().getConnection().addPacketListener(new IQListener(new SEADispatcher(new SportEventAnalyserProxy(new SEADistributer(getAgent().getConnection())), mappings)), new PacketTypeFilter(IQ.class));
 
-		
 		// PubSub
-				 seaPubSub = new SportEventAnalyserPubSub(getAgent().getConnection());
-						
-				// Initialize statistic
-				statistic = new Main(seaPubSub.getStatistics());
-		
-		for (Mapping mapping : mappings.getPlayerMappings()) {
-			//TODO: Remove Sysout
+		seaPubSub = new SportEventAnalyserPubSub(getAgent().getConnection());
+
+		// Initialize statistic
+		statistic = new Main(seaPubSub.getStatistics());
+
+		for (Mapping mapping : mappings.getPlayerMappings())
+		{
+			// TODO: Remove Sysout
 			System.out.println("Player: " + mapping.getPlayerName() + " (ID: " + mapping.getPlayerID() + ", Team: " + mapping.getTeamName() + ")");
 			seaPubSub.getStatistics().registerPlayer(mapping.getPlayerID());
 		}
 
 		// Jingle
-		SportEventAnalyserJingle seaJingle = new SportEventAnalyserJingle(
-				getAgent().getConnection());
-		seaJingle.setReceptionListener(Event.PAYLOAD_TYPE,
-				new ReceptionListener() {
+		SportEventAnalyserJingle seaJingle = new SportEventAnalyserJingle(getAgent().getConnection());
+		seaJingle.setReceptionListener(Event.PAYLOAD_TYPE, new ReceptionListener()
+		{
 
-					private boolean first = true;
-					private long cT;
-					private int c = 0;
+			private boolean first = true;
+			private long cT;
+			private int c = 0;
 
-					@Override
-					public void handle(Raw item) {
-						if (first) {
-							cT = System.currentTimeMillis();
-							first = false;
-						}
-						Event event = (Event) item;
-						statistic.sendEvent(event);
-						// System.out.println(event.getSender() + ", "
-						// + event.getTimestamp() + ", "
-						// + event.getAcceleration());
-						seaPubSub.getStatistics().setPositionOfPlayer(event.getSender(), event.getPositionX(), event.getPositionY(), event.getVelocityX(), event.getVelocityY());
-						seaPubSub.getStatistics().setBallContacs(event.getSender(), statistic.getGameInformation().getPlayerBallContacts(event.getSender()));
-//						c++;
-//						if (c % 100000 == 0)
-//							System.out.println("Received " + c + " Events in "
-//									+ (System.currentTimeMillis() - cT) + "ms");
-					}
+			@Override
+			public void handle(Raw item)
+			{
+				if (first)
+				{
+					cT = System.currentTimeMillis();
+					first = false;
+				}
+				Event event = (Event) item;
+				statistic.sendEvent(event);
 
-				});
-		seaJingle.setReceptionListener(InterruptionBegin.PAYLOAD_TYPE,
-				new ReceptionListener() {
+				// c++;
+				// if (c % 100000 == 0)
+				// System.out.println("Received " + c + " Events in "
+				// + (System.currentTimeMillis() - cT) + "ms");
+			}
 
-					@Override
-					public void handle(Raw item) {
-						InterruptionBegin interruptionBegin = (InterruptionBegin) item;
-						System.out.println("Interruption begins: "
-								+ interruptionBegin.getBegin());
-					}
+		});
+		seaJingle.setReceptionListener(InterruptionBegin.PAYLOAD_TYPE, new ReceptionListener()
+		{
 
-				});
-		seaJingle.setReceptionListener(InterruptionEnd.PAYLOAD_TYPE,
-				new ReceptionListener() {
+			@Override
+			public void handle(Raw item)
+			{
+				InterruptionBegin interruptionBegin = (InterruptionBegin) item;
+				statistic.setInterruptionBegin(interruptionBegin.getBegin());
+				System.out.println("Interruption begins: " + interruptionBegin.getBegin());
+			}
 
-					@Override
-					public void handle(Raw item) {
-						InterruptionEnd interruptionEnd = (InterruptionEnd) item;
-						System.out.println("Interruption ends: "
-								+ interruptionEnd.getEnd());
-					}
+		});
+		seaJingle.setReceptionListener(InterruptionEnd.PAYLOAD_TYPE, new ReceptionListener()
+		{
 
-				});
+			@Override
+			public void handle(Raw item)
+			{
+				InterruptionEnd interruptionEnd = (InterruptionEnd) item;
+				statistic.setInterruptionBegin(interruptionEnd.getEnd());
+				System.out.println("Interruption ends: " + interruptionEnd.getEnd());
+			}
+
+		});
 	}
 
 	@Override
-	public void startup(MobilisAgent agent) throws Exception {
+	public void startup(MobilisAgent agent) throws Exception
+	{
 		super.startup(agent);
 
 		registerXMPPExtensions();
@@ -191,7 +204,8 @@ public class SportEventAnalyserService extends MobilisService {
 	/**
 	 * Register all XMBBBeans labeled as XMPP extensions
 	 */
-	public void registerXMPPExtensions() {
+	public void registerXMPPExtensions()
+	{
 		// Events
 		registerXMPPBean(new MappingRequest());
 	}
@@ -202,7 +216,8 @@ public class SportEventAnalyserService extends MobilisService {
 	 * @param prototype
 	 *            a basic instance of the XMPPBean
 	 */
-	private void registerXMPPBean(XMPPBean prototype) {
+	private void registerXMPPBean(XMPPBean prototype)
+	{
 		// add XMPPBean to service provider to enable it in XMPP
 		(new BeanProviderAdapter(prototype)).addToProviderManager();
 	}
