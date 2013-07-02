@@ -58,21 +58,22 @@ var sea_default_setup = function() {
       console.log("Timed out!");
     });
 
-    sea.pubsub.subscribeStatistic();
+    //sea.pubsub.subscribeStatistic();
     
-    sea.pubsub.addCurrentPositionDataHandler(function(item) {
+    /*sea.pubsub.addCurrentPositionDataHandler(function(item) {
       console.log(item);
-    });
-    sea.pubsub.addCurrentPlayerDataHandler(function(item) {
+    });*/
+    /*sea.pubsub.addCurrentPlayerDataHandler(function(item) {
+      // if (i % 10 == 0) {
+        // console.log(item);
+      // }
+    });*/
+    /*sea.pubsub.addCurrentTeamDataHandler(function(item) {
       // if (i % 10 == 0) {
         // console.log(item);
       // }
     });
-    sea.pubsub.addCurrentTeamDataHandler(function(item) {
-      // if (i % 10 == 0) {
-        // console.log(item);
-      // }
-    });
+    */
   });
   return sea;
 }
