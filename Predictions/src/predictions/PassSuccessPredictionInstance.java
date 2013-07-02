@@ -221,7 +221,7 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_Y), currentY);
 
 		currentInstance.setValue(ATTRIBUTE_LIST.indexOf(ATTRIBUTE_AREA),
-				Utils.getFieldArea(currentX, !playerOnOwnSide));
+				Utils.getFieldArea(currentY, !playerOnOwnSide));
 
 		currentInstance.setValue(
 				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_DISTANCE),

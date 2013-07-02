@@ -42,12 +42,13 @@ public class PassSuccessPredictor extends Predictor {
 
 	@Override
 	public void update(GameInformation gameInformation) {
+
 		System.out.println(TAG + " - - - pass success prediction update with "
 				+ learner.getClass().getName() + " - - - ");
 
 		// TODO create ARFF file at the very end
 		if (Utils.ARFF_WRITING_MODE && !arffCreated)
-			if (learner.getAccumulatedInstances().size() == 595) {
+			if (learner.getAccumulatedInstances().size() == 760) {
 				arffCreated = true;
 				Utils.createArffFileFromInstances(learner
 						.getAccumulatedInstances(), this.getClass().getName()
@@ -80,13 +81,12 @@ public class PassSuccessPredictor extends Predictor {
 						"" + idOfLastPlayerWithBall, ""
 								+ gameInformation
 										.getCurrentBallPossessionPlayer()
-										.getId(), gameInformation
-								.getCurrentBallPossessionPlayer()
+										.getId(), (int) gameInformation
+								.getDistanceOfNearestTeammate(),
+						gameInformation.getCurrentBallPossessionPlayer()
 								.getPositionX(), gameInformation
 								.getCurrentBallPossessionPlayer()
-								.getPositionY(), (int) gameInformation
-								.getDistanceOfNearestTeammate(),
-						Math.round(gameInformation
+								.getPositionY(), Math.round(gameInformation
 								.getPlayerDistance(idOfLastPlayerWithBall)),
 						gameInformation.isPlayerOnOwnSide(gameInformation
 								.getCurrentBallPossessionPlayer()));
@@ -99,8 +99,7 @@ public class PassSuccessPredictor extends Predictor {
 		}
 		// no pass occurred
 		else {
-			
-			
+
 			System.out.println(TAG + "No pass occured.");
 			predict(gameInformation);
 		}
