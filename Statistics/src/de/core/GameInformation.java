@@ -1,6 +1,8 @@
 package de.core;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,7 +48,7 @@ public class GameInformation implements UpdateListener
 	/**
 	 * false for half 1, true for half 2
 	 */
-	private boolean halftime = false;
+	private boolean halftime = false; // TODO @Tommy: wann wird das ding umgestellt?
 
 	/**
 	 * The timestamp of the last ball that was lost to the other team.
@@ -903,18 +905,46 @@ public class GameInformation implements UpdateListener
 					}
 
 					System.out.println("==================================================");
-					logger.log(Level.INFO, "Spielzeit: {0}", new Object[] { time });
-					logger.log(Level.INFO, "Team: {0}", new Object[] { nearestPlayer.getTeam() });
-					logger.log(Level.INFO, "Name des Spielers am Ball: {0}", new Object[] { nearestPlayer.getName() });
-					logger.log(Level.INFO, "Laufstrecke: {0}m", new Object[] { nearestPlayer.getTotalDistance() / 1000 });
-					logger.log(Level.INFO, "Teammitglieder in 20m Umkreis: {0}", new Object[] { getTeammatesInArea(20) });
-					logger.log(Level.INFO, "Gegenspieler in 20m Umkreis: {0}", new Object[] { getOpponentsInArea(20) });
-					logger.log(Level.INFO, "Nächster Mitspieler: {0}m", new Object[] { getDistanceOfNearestTeammate() / 1000 });
-					logger.log(Level.INFO, "Nächster Gegenspieler: {0}m", new Object[] { getDistanceOfNearestOpponent() / 1000 });
-					logger.log(Level.INFO, "Team A Passquote: {0}%", new Object[] { getTeamPassQuote(Team.GELB) });
-					logger.log(Level.INFO, "Team B Passquote: {0}%", new Object[] { getTeamPassQuote(Team.ROT) });
-					logger.log(Level.INFO, "Richtungsvektor: {0}", new Object[] { Arrays.toString(getPlayerRunningDirection(nearestPlayer)) });
-					logger.log(Level.INFO, "Ballkontakte: {0}", new Object[] { nearestPlayer.getBallContacts() });
+					String message = "";
+					List<Object> params = new ArrayList<Object>();
+
+					message += "\nSpielzeit: {0}";
+					params.add(time);
+
+					message += "\nTeam: {1}";
+					params.add(nearestPlayer.getTeam());
+
+					message += "\nName des Spielers am Ball: {2}";
+					params.add(nearestPlayer.getName());
+
+					message += "\nLaufstrecke: {3}";
+					params.add(nearestPlayer.getTotalDistance() / 1000);
+
+					message += "\nTeammitglieder in 20m Umkreis: {4}";
+					params.add(getTeammatesInArea(20));
+
+					message += "\nGegenspieler in 20m Umkreis: {5}";
+					params.add(getOpponentsInArea(20));
+
+					message += "\nNächster Mitspieler: {6}m";
+					params.add(getDistanceOfNearestTeammate() / 1000);
+
+					message += "\nNächster Gegenspieler: {7}m";
+					params.add(getDistanceOfNearestOpponent() / 1000);
+
+					message += "\nTeam A Passquote: {8}%";
+					params.add(getTeamPassQuote(Team.GELB));
+
+					message += "\nTeam B Passquote: {9}%";
+					params.add(getTeamPassQuote(Team.ROT));
+
+					message += "\nRichtungsvektor: {10}";
+					params.add(Arrays.toString(getPlayerRunningDirection(nearestPlayer)));
+
+					message += "\nBallkontakte: {11}";
+					params.add(nearestPlayer.getBallContacts());
+
+					logger.log(Level.INFO, message, params.toArray());
 
 					if (lastBallPossessionTimeStamp != 0 && lastPlayer != null)
 					{
