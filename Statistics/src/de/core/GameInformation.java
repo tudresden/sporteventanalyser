@@ -902,7 +902,7 @@ public class GameInformation implements UpdateListener
 						getStatisticsFacade().setBallContacs(nearestPlayer.getId(), nearestPlayer.getBallContacts());
 					}
 
-					logger.log(Level.INFO, "--------------", new Object[] {});
+					System.out.println("==================================================");
 					logger.log(Level.INFO, "Spielzeit: {0}", new Object[] { time });
 					logger.log(Level.INFO, "Team: {0}", new Object[] { nearestPlayer.getTeam() });
 					logger.log(Level.INFO, "Name des Spielers am Ball: {0}", new Object[] { nearestPlayer.getName() });
