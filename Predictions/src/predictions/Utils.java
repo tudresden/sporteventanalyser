@@ -31,21 +31,21 @@ public class Utils {
 	/**
 	 * Determines the current field area of a player.
 	 * 
-	 * @param x
+	 * @param y
 	 *            the vertical position on the field
 	 * @param onOpponentSide
 	 *            if current player is on the opponents side
 	 * @return
 	 */
-	public static final String getFieldArea(int x, boolean onOpponentSide) {
-		final int totalWidth = 2 * 52500;
+	public static final String getFieldArea(int y, boolean onOpponentSide) {
+		final int totalHeight = 2 * 33940;
 
-		// left field side
-		if (x < totalWidth / 3 - totalWidth / 2) {
+		// top field side
+		if (y > 10000) {
 			return onOpponentSide ? FIELD_AREA_OPPONENTS : FIELD_AREA_OWN_TEAM;
 		}
-		// right field side
-		else if (x > 2 * totalWidth / 3 - totalWidth / 2) {
+		// bottom field side
+		else if (y < -10000) {
 			return onOpponentSide ? FIELD_AREA_OPPONENTS : FIELD_AREA_OWN_TEAM;
 		}
 		// middle of field
