@@ -89,6 +89,8 @@ public class GameInformation implements UpdateListener
 		this.statisticsFacade = statisticsFacade;
 		this.prophet = new Prophet(this);
 		config = new Config();
+
+		logger.setLevel(Level.INFO);
 	}
 
 	/**
@@ -457,37 +459,15 @@ public class GameInformation implements UpdateListener
 	}
 
 	/**
-	 * Returns the running direction of a given player.
+	 * Returns the movement direction of a given player.
 	 * 
-	 * @param id
-	 *            ID of player-object
-	 * @return Array consists of two values x,y for running direction of a player or {-1,-1} if there no direction already.
+	 * @param player
+	 *            player object
+	 * @return Array consists of two values [x, y] which means the movement direction of the player.
 	 */
-	public int[] getPlayerRunningDirection(int id)
+	public int[] getPlayerRunningDirection(Player player)
 	{
-		// TODO: verbessern
-
-		int[] array = new int[] { -1, -1 };
-		Entity entity = getEntityFromId(id);
-		Player player;
-		int newX;
-		int newY;
-		int oldX;
-		int oldY;
-		if (entity != null && entity instanceof Player)
-		{
-			player = (Player) entity;
-			newX = player.getPositionX();
-			newY = player.getPositionY();
-			oldX = player.getOldPositionX();
-			oldY = player.getOldPositionY();
-			if (oldX != 0 && oldY != 0 && newX != 0 && newY != 0)
-			{
-				array[0] = newX - oldX;
-				array[1] = newY - oldY;
-			}
-		}
-		return array;
+		return new int[] { player.getPositionX() - player.getOldPositionX(), player.getPositionY() - player.getOldPositionY() };
 	}
 
 	/**
@@ -922,24 +902,19 @@ public class GameInformation implements UpdateListener
 						getStatisticsFacade().setBallContacs(nearestPlayer.getId(), nearestPlayer.getBallContacts());
 					}
 
-					System.out.println("--------------");
-					// print game time
-					System.out.println("Spielzeit: " + time);
-					System.out.println("Team: " + nearestPlayer.getTeam());
-					System.out.println("Name des Spielers am Ball: " + nearestPlayer.getName());
-					System.out.println("Laufstrecke: " + nearestPlayer.getTotalDistance() / 1000 + "m");
-					System.out.println("Teammitglieder in 20m Umkreis: " + getTeammatesInArea(20));
-					System.out.println("Gegenspieler in 20m Umkreis: " + getOpponentsInArea(20));
-					System.out.println("Nächster Mitspieler " + getDistanceOfNearestTeammate() / 1000 + "m");
-					System.out.println("Nächster Gegenspieler " + getDistanceOfNearestOpponent() / 1000 + "m");
-					System.out.println("Team A Passquote: " + getTeamPassQuote(Team.GELB) + "%");
-					System.out.println("Team B Passquote: " + getTeamPassQuote(Team.ROT) + "%");
-
-					System.out.println("Player 49 - Richtungsvektor: " + Arrays.toString(getPlayerRunningDirection(49)));
-
-					System.out.println("Ballkontakte: " + nearestPlayer.getBallContacts());
-					// System.out.println(getTeamContacts(a));
-					// System.out.println(getTeamContacts(b));
+					logger.log(Level.INFO, "--------------", new Object[] {});
+					logger.log(Level.INFO, "Spielzeit: {0}", new Object[] { time });
+					logger.log(Level.INFO, "Team: {0}", new Object[] { nearestPlayer.getTeam() });
+					logger.log(Level.INFO, "Name des Spielers am Ball: {0}", new Object[] { nearestPlayer.getName() });
+					logger.log(Level.INFO, "Laufstrecke: {0}m", new Object[] { nearestPlayer.getTotalDistance() / 1000 });
+					logger.log(Level.INFO, "Teammitglieder in 20m Umkreis: {0}", new Object[] { getTeammatesInArea(20) });
+					logger.log(Level.INFO, "Gegenspieler in 20m Umkreis: {0}", new Object[] { getOpponentsInArea(20) });
+					logger.log(Level.INFO, "Nächster Mitspieler: {0}m", new Object[] { getDistanceOfNearestTeammate() / 1000 });
+					logger.log(Level.INFO, "Nächster Gegenspieler: {0}m", new Object[] { getDistanceOfNearestOpponent() / 1000 });
+					logger.log(Level.INFO, "Team A Passquote: {0}%", new Object[] { getTeamPassQuote(Team.GELB) });
+					logger.log(Level.INFO, "Team B Passquote: {0}%", new Object[] { getTeamPassQuote(Team.ROT) });
+					logger.log(Level.INFO, "Richtungsvektor: {0}", new Object[] { Arrays.toString(getPlayerRunningDirection(nearestPlayer)) });
+					logger.log(Level.INFO, "Ballkontakte: {0}", new Object[] { nearestPlayer.getBallContacts() });
 
 					if (lastBallPossessionTimeStamp != 0 && lastPlayer != null)
 					{
