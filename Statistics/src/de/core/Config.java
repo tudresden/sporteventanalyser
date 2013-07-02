@@ -11,7 +11,7 @@ public class Config
 	public final static float BALLPOSSESSIONTHRESHOLD = 1000f; // 1000mm = 1m
 
 	public final static long GAMESTARTTIMESTAMP = 10753295594424116L;
-	public final static long DATAPUSHINTERVAL = 3000; // in ms
+	public final static long DATAPUSHINTERVAL = 1000; // in ms
 
 	public static final int GAMEFIELDMINX = -50;
 	public static final int GAMEFIELDMAXX = 52489;
