@@ -12,7 +12,7 @@ import de.tudresden.inf.rn.mobilis.sea.jingle.connection.media.impl.Event;
  */
 public class Player extends Entity
 {
-	private String team;
+	private Team team;
 
 	// neu
 	protected String name;
@@ -48,7 +48,7 @@ public class Player extends Entity
 
 	private HeatMapGrid heatmap;
 
-	public Player(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, int acc, int vel, String team)
+	public Player(int id, long timeStamp, int posX, int posY, int posZ, int velX, int velY, int velZ, int accX, int accY, int accZ, int acc, int vel, Team team)
 	{
 		super(id, timeStamp, posX, posY, posZ, velX, velY, velZ, accX, accY, accZ, acc, vel);
 		this.team = team;
@@ -56,7 +56,7 @@ public class Player extends Entity
 		Ids = new HashMap<Integer, Event>();
 	}
 
-	public Player(int id, String team, String name, int age, PlayingPosition playingPosition, int preferedFoot, int leftFootID, int rightFootID)
+	public Player(int id, Team team, String name, int age, PlayingPosition playingPosition, int preferedFoot, int leftFootID, int rightFootID)
 	{
 		this(id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, team);
 		this.name = name;
@@ -87,12 +87,12 @@ public class Player extends Entity
 	// heatmap.incrementCellValue(super.getAccelerationY(), super.getAccelerationX());
 	// }
 
-	public String getTeam()
+	public Team getTeam()
 	{
 		return team;
 	}
 
-	public void setTeam(String team)
+	public void setTeam(Team team)
 	{
 		this.team = team;
 	}

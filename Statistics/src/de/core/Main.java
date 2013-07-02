@@ -41,6 +41,16 @@ public class Main
 		esper.sendEvent(object);
 	}
 
+	public void setInterruptionBegin(long timestamp)
+	{
+		getGameInformation().setInterruptionBegin(timestamp);
+	}
+
+	public void setInterruptionEnd(long timestamp)
+	{
+		getGameInformation().setInterruptionEnd(timestamp);
+	}
+
 	public GameInformation getGameInformation()
 	{
 		return gameInformation;

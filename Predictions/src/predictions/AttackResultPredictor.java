@@ -1,5 +1,8 @@
 package predictions;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import de.core.GameInformation;
 
 /**
@@ -20,6 +23,10 @@ public class AttackResultPredictor extends Predictor {
 	private int passCounter = 0;
 
 	private boolean arffCreated = false;
+
+	private List<Integer> velocityHistory = new LinkedList<Integer>();
+	private long lastGameTime = -1;
+	private int lastBallXPosition = -1; // TODO x or y?
 
 	/**
 	 * Instantiates the attack result predictor.
@@ -67,6 +74,30 @@ public class AttackResultPredictor extends Predictor {
 			passCounter++;
 		}
 
+		// save velocity
+		if (lastGameTime == -1) {
+			lastBallXPosition = gameInformation
+					.getCurrentBallPossessionPlayer().getPositionX();
+			lastGameTime = gameInformation.getCurrentGameTime();
+		}
+
+		long currentGameTime = gameInformation.getCurrentGameTime();
+		int currentBallXPosition = gameInformation
+				.getCurrentBallPossessionPlayer().getPositionX();
+
+		int velocity = (int) (Math
+				.abs(currentBallXPosition - lastBallXPosition) / (currentGameTime
+				- lastGameTime + 1));
+		velocityHistory.add(velocity);
+		if (velocityHistory.size() > 5)
+			velocityHistory.remove(0);
+		int averageVelocity = 0;
+		for (int velocityValue : velocityHistory)
+			averageVelocity += velocityValue / velocityHistory.size();
+
+		lastBallXPosition = currentBallXPosition;
+		lastGameTime = currentGameTime;
+
 		// update instance
 		((AttackResultPredictionInstance) predictionInstance)
 				.setAttributes(gameInformation
@@ -89,13 +120,19 @@ public class AttackResultPredictor extends Predictor {
 						Math.round(gameInformation
 								.getPlayerDistance(idOfLastPlayerWithBall)),
 						gameInformation.isPlayerOnOwnSide(gameInformation
-								.getCurrentBallPossessionPlayer()), passCounter);
+								.getCurrentBallPossessionPlayer()),
+						passCounter, averageVelocity);
 
 		// class event occurred TODO check if class event occurred
 		boolean train = false;
 		if (train) {
 			train(gameInformation);
+
+			// reset tracked values
 			passCounter = 0;
+			velocityHistory.clear();
+			lastGameTime = -1;
+			lastBallXPosition = -1;
 		} else
 			predict(gameInformation);
 
