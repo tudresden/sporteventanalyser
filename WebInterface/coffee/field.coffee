@@ -1,7 +1,5 @@
 class Drawable
   constructor: ->
-    @drawables = []
-    @followers = []
 
   animate: (time) ->
 
@@ -16,8 +14,20 @@ class Drawable
   toString: ->
     "Drawable"
 
+class Moveable extends Drawable
+  constructor: ->
+
+  update: (time, data) ->
+    @target_pos.x = data.x if data.x?
+    @target_pos.y = data.y if data.y?
+    @last_update = time if time?
+
+  toString: ->
+    "Moveable"
+
 class Field extends Drawable
-  constructor: (texturefile) ->
+  constructor: (texturefile, @reality) ->
+    @ratio = @reality.width / @reality.height
     @width = 120
     @height = 90
     geometry = new THREE.PlaneGeometry(@width, @height)
@@ -33,7 +43,7 @@ class Field extends Drawable
   toString: ->
     "Field"
 
-class Ball extends Drawable
+class Ball extends Moveable
   constructor: (texturefile) ->
     geometry = new THREE.PlaneGeometry(2, 2)
     mat_cfg =
@@ -58,33 +68,9 @@ class Ball extends Drawable
       y: 0  # middle of the field
     @anim_factor = 10
 
-  update: (time, data) ->
-    @target_pos = data.pos
-    @last_update = time
-
   animate: (time) ->
     @ball.position.x = (@anim_factor * @ball.position.x + @target_pos.x )/(@anim_factor + 1)
     @ball.position.z = (@anim_factor * @ball.position.z + @target_pos.y )/(@anim_factor + 1)
-
-    ###
-    @ball.position.y = 1
-    @ball.position.y += Math.abs 2 * Math.sin time/120
-    
-    @ball.position.x = 2
-    @ball.position.x += 2 * Math.cos time/120
-
-    @shadow.position.x = @ball.position.x
-    @shadow.position.z = @ball.position.z
-
-    @shadow.scale.x = @ball.position.y
-    @shadow.scale.x -= @ball.geometry.height
-
-    @shadow.scale.y = @ball.position.y
-    @shadow.scale.y -= @ball.geometry.height
-
-    @shadow.scale.z = @ball.position.y
-    @shadow.scale.z -= @ball.geometry.height
-    ###
 
     @shadow.position.x = @ball.position.x
     @shadow.position.z = @ball.position.z
@@ -95,15 +81,16 @@ class Ball extends Drawable
   toString: ->
     "Ball"
 
-class Player extends Drawable
-  constructor: (@id, @team, @tricot_image) ->
+class Player extends Moveable
+  constructor: (@id, @name, @team, @tricot_image) ->
     geometry = new THREE.PlaneGeometry(4, 4)
     mat_cfg =
       map:       new THREE.ImageUtils.loadTexture @tricot_image
-      alphaTest: 0.5
+      transparent: true
     material = new THREE.MeshBasicMaterial mat_cfg
     @shirt = new THREE.Mesh(geometry, material)
     @shirt.position.y = @shirt.geometry.height/2
+
     geometry = new THREE.PlaneGeometry 2, 2
     mat_cfg =
       map:         new THREE.ImageUtils.loadTexture "img/shadow.png"
@@ -112,18 +99,26 @@ class Player extends Drawable
     material = new THREE.MeshBasicMaterial mat_cfg
     @shadow = new THREE.Mesh geometry, material
     @shadow.rotation.x = -Math.PI/2
-    @shadow.position.y = 0.01
+    @shadow.position.y = 0.005
+
+    geometry = new THREE.PlaneGeometry 5, 5
+    mat_cfg =
+      map:         new THREE.ImageUtils.loadTexture "img/selection.png"
+      transparent: true
+    material = new THREE.MeshBasicMaterial mat_cfg
+    @select = new THREE.Mesh geometry, material
+    @select.rotation.x = -Math.PI/2
+    @select.position.y = 0.01
+
     @followers = [@shirt]
-    @drawables = [@shirt, @shadow]
+    @drawables = [@shirt, @shadow, @select]
+
     @last_update = 0
     @target_pos =
       x: 0,
       y: 0  # middle of the field
     @anim_factor = 10
-
-  update: (time, data) ->
-    @target_pos = data.pos
-    @last_update = time
+    @selected = false
 
   animate: (time) ->
     @shirt.position.x = (@anim_factor * @shirt.position.x + @target_pos.x )/(@anim_factor + 1)
@@ -133,13 +128,24 @@ class Player extends Drawable
     @shadow.position.z = @shirt.position.z
 
     @shadow.scale.x = @shirt.position.y
-    @shadow.scale.x -= @shirt.geometry.height
-
     @shadow.scale.y = @shirt.position.y
-    @shadow.scale.y -= @shirt.geometry.height
-
     @shadow.scale.z = @shirt.position.y
+    @shadow.scale.x -= @shirt.geometry.height
+    @shadow.scale.y -= @shirt.geometry.height
     @shadow.scale.z -= @shirt.geometry.height
+
+    if @selected
+      s = 1 * (1 + 0.2 * Math.sin(0.005 * time))
+      @select.scale.set s, s, s
+      @select.rotation.z = 0.01 * time
+      @select.position.x = @shirt.position.x
+      @select.position.z = @shirt.position.z
+      @shirt.material.opacity = 1.0
+      console.log @select.rotation.y
+    else
+      @select.scale.set 0, 0, 0
+      @shirt.material.opacity = 0.5
+      console.log @shirt
 
   toString: ->
     "Player(" + @tricot_image + ")"

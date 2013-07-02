@@ -28,6 +28,26 @@ class Engine
       x: 0
       y: 0
       z: 0
+    @reality =
+      width: 120
+      height: 50
+      offx: 0
+      offy: 0
+    @field = null
+    @players = []
+
+  set_field: (@field) ->
+    @reality = @field.reality
+    @.add @field
+
+  reposition: (position) ->
+    result = {}
+    if @field
+      if position.x
+        result.x = (position.x + @reality.width/2 + @reality.offx) * @field.width / @reality.width - @field.width/2
+      if position.y
+        result.y = (position.y + @reality.height/2 + @reality.offy) * @field.height / @reality.height - @field.height/2
+    return result
 
   get_canvas: (target_div) ->
     @renderer.domElement
@@ -67,5 +87,5 @@ class Engine
     @renderer.render @scene, @camera
 
   select_players: (plr_ids) ->
-    ""
-
+    @players.forEach (v, i) ->
+      v.selected = v.id in plr_ids

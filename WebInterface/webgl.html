@@ -34,150 +34,86 @@
   <h1>Sport Event Analyzer</h1>
   </header>
   <article>
+    <div id="startbutton">
+      Start
+    </div>
+  </article>
+  <article>
     <div id="content">
       <div id="left">
         <div class="team">
           <table id="team_a">
             <thead>
               <tr>
-                <th>Team A</th>
-                <th>Stats</th>
+                <th colspan=2 class="team_a_name">Team A</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Dummy</td>
-                <td>4%</td>
-              </tr>
-              <tr>
-                <td>Pacman</td>
-                <td>50%</td>
-              </tr>
-              <tr>
-                <td>Sonic</td>
-                <td>55%</td>
-              </tr>
-              <tr>
-                <td>Dummy</td>
-                <td>4%</td>
-              </tr>
-              <tr>
-                <td>Pacman</td>
-                <td>50%</td>
-              </tr>
-              <tr>
-                <td>Sonic</td>
-                <td>55%</td>
-              </tr>
-              <tr>
-                <td>Dummy</td>
-                <td>4%</td>
-              </tr>
-              <tr>
-                <td>Pacman</td>
-                <td>50%</td>
-              </tr>
-              <tr>
-                <td>Sonic</td>
-                <td>55%</td>
-              </tr>
-              <tr>
-                <td>Dummy</td>
-                <td>4%</td>
-              </tr>
-              <tr>
-                <td>Pacman</td>
-                <td>50%</td>
-              </tr>
             </tbody>
           </table>
         </div>
-      <div id="playerstatsa">
-        Bla
+        <div id="player_a_stats">
+          <table>
+            <thead>
+            </thead>
+            <tbody>
+              <tr><td colspan=2 class="player_name"></td><td class="player_pos"></td></tr>
+              <tr><td>X</td><td>120</td></tr>
+              <tr><td>Y</td><td>120</td></tr>
+              <tr><td>Mileage</td><td class="player_runway">120 m</td></tr>
+              <tr><td colspan=2><img style="height: 60pt; width: 200pt;" src="img/diagr.svg" /></td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-    <div id="center">
-      <div id="goals">
-        <h1><span id="title_team_A">Team A</span> <span id="goals_team_a">0</span>:<span id="goals_team_b">0</span> <span id="title_team_B">Team B</span></h1>
-        <p id="time">0:00:00</p>
+      <div id="center">
+        <div id="goals">
+          <h1><span class="team_a_name">Team A</span> <span id="goals_team_a">0</span>:<span id="goals_team_b">0</span> <span class="team_b_name">Team B</span></h1>
+          <p id="time">0:00:00</p>
+        </div>
+        <div class="tab_menu" id="perspectives_menu">
+          <input name="perspectives_menu" type="radio" id="KEEPERA" /><label for="KEEPERA">A</label>
+          <input name="perspectives_menu" type="radio" checked="checked" id="BIRD" /><label for="BIRD">top</label>
+          <input name="perspectives_menu" type="radio" id="TAUMEL" /><label for="TAUMEL">swing</label>
+          <input name="perspectives_menu" type="radio" id="KEEPERB" /><label for="KEEPERB">B</label>
+        </div>
+        <div id="field">
+        </div>
+        <div id="gametrack">
+          <svg id="image" xmlns="http://www.w3.org/2000/svg" version="1.1" width="640" height="42">
+            <line id="centerline" x1="0" y1="21" x2="640" y2="21" />
+            <line id="start" x1="0" y1="16" x2="0" y2="26" />
+            <line id="mid" x1="320" y1="16" x2="320" y2="26" />
+            <line id="cur" x1="0" y1="10" x2="0" y2="32" />
+            <line id="end" x1="640" y1="16" x2="640" y2="26" />
+          </svg>
+        </div>
       </div>
-      <div class="tab_menu" id="perspectives_menu">
-        <input name="perspectives_menu" type="radio" id="KEEPERA" /><label for="KEEPERA">A</label>
-        <input name="perspectives_menu" type="radio" checked="checked" id="BIRD" /><label for="BIRD">top</label>
-        <input name="perspectives_menu" type="radio" id="TAUMEL" /><label for="TAUMEL">swing</label>
-        <input name="perspectives_menu" type="radio" id="KEEPERB" /><label for="KEEPERB">B</label>
-      </div>
-      <div id="field">
-      </div>
-      <div id="gametrack">
-        <svg id="image" xmlns="http://www.w3.org/2000/svg" version="1.1" width="640" height="42">
-          <line id="centerline" x1="0" y1="21" x2="640" y2="21" />
-          <line id="start" x1="0" y1="16" x2="0" y2="26" />
-          <line id="mid" x1="320" y1="16" x2="320" y2="26" />
-          <line id="cur" x1="0" y1="10" x2="0" y2="32" />
-          <line id="end" x1="640" y1="16" x2="640" y2="26" />
-        </svg>
-      </div>
-    </div>
-    <div id="right">
-      <div class="team">
-        <table id="team_b">
-          <thead>
-            <tr>
-              <th>Team B</th>
-              <th>Stats</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr id="1">
-              <td>Super Mario</td>
-              <td>2%</td>
-            </tr>
-            <tr id="2">
-              <td>Zelda</td>
-              <td>6%</td>
-            </tr>
-            <tr id="3">
-              <td>Super Mario</td>
-              <td>2%</td>
-            </tr>
-            <tr id="4">
-              <td>Zelda</td>
-              <td>6%</td>
-            </tr>
-            <tr id="5">
-              <td>Super Mario</td>
-              <td>2%</td>
-            </tr>
-            <tr id="6">
-              <td>Zelda</td>
-              <td>6%</td>
-            </tr>
-            <tr>
-              <td>Super Mario</td>
-              <td>2%</td>
-            </tr>
-            <tr>
-              <td>Zelda</td>
-              <td>6%</td>
-            </tr>
-            <tr>
-              <td>Super Mario</td>
-              <td>2%</td>
-            </tr>
-            <tr>
-              <td>Zelda</td>
-              <td>6%</td>
-            </tr>
-            <tr>
-              <td>Super Mario</td>
-              <td>2%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div id="playerstatsb">
-        Bla
+      <div id="right">
+        <div class="team">
+          <table id="team_b">
+            <thead>
+              <tr>
+                <th colspan=2 class="team_b_name">Team B</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+        <div id="player_b_stats">
+          <table>
+            <thead>
+            </thead>
+            <tbody>
+              <tr><td colspan=2 class="player_name"></td></tr>
+              <tr><td>X</td><td class="player_position_x">120</td></tr>
+              <tr><td>Y</td><td class="player_position_y">120</td></tr>
+              <tr><td>Mileage</td><td class="player_runway">120 m</td></tr>
+              <tr><td colspan=2><img style="height: 60pt; width: 200pt;" src="img/diagr.svg" /></td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </article>
