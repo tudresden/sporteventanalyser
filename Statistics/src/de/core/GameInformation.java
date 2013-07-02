@@ -162,7 +162,7 @@ public class GameInformation implements UpdateListener
 	 * 
 	 * @return Name of the team.
 	 */
-	public String getCurrentBallPossessionTeam()
+	public Team getCurrentBallPossessionTeam()
 	{
 		return getCurrentBallPossessionPlayer().getTeam();
 	}
@@ -222,7 +222,7 @@ public class GameInformation implements UpdateListener
 		{
 			player = (Player) getEntityFromId(ids[i]);
 
-			if (player.equals(activePlayer) || (oppositeTeam && player.getTeam().equals(activePlayer.getTeam()) || (!oppositeTeam && !player.getTeam().equals(activePlayer.getTeam()))))
+			if (player.equals(activePlayer) || (oppositeTeam && player.getTeam()==activePlayer.getTeam() || (!oppositeTeam && player.getTeam()!=activePlayer.getTeam())))
 			{
 				continue;
 			}
@@ -355,7 +355,7 @@ public class GameInformation implements UpdateListener
 		Ball activeBall = (Ball) getEntityFromId(getActiveBallId());
 		Player activePlayer = (Player) getCurrentBallPossessionPlayer();
 		int numberOfOpponents = 0;
-		if (activePlayer != null && activeBall != null && activePlayer.getTeam().equals("GELB"))
+		if (activePlayer != null && activeBall != null && activePlayer.getTeam()==Team.GELB)
 		{
 			// Opponents-Array
 			for (int i = 0; i < b.length; i++)
@@ -367,7 +367,7 @@ public class GameInformation implements UpdateListener
 				}
 			}
 		}
-		else if (activePlayer != null && activeBall != null && activePlayer.getTeam().equals("ROT"))
+		else if (activePlayer != null && activeBall != null && activePlayer.getTeam()==Team.ROT)
 		{
 			for (int s = 0; s < a.length; s++)
 			{
@@ -610,7 +610,7 @@ public class GameInformation implements UpdateListener
 		Ball activeBall = (Ball) getEntityFromId(getActiveBallId());
 		Player activePlayer = (Player) getCurrentBallPossessionPlayer();
 		int numberOfTeammates = 0;
-		if (activePlayer != null && activeBall != null && activePlayer.getTeam().equals("GELB"))
+		if (activePlayer != null && activeBall != null && activePlayer.getTeam()==Team.GELB)
 		{
 			for (int i = 0; i < a.length; i++)
 			{
@@ -621,7 +621,7 @@ public class GameInformation implements UpdateListener
 				}
 			}
 		}
-		else if (activePlayer != null && activeBall != null && activePlayer.getTeam().equals("ROT"))
+		else if (activePlayer != null && activeBall != null && activePlayer.getTeam()==Team.ROT)
 		{
 			for (int s = 0; s < b.length; s++)
 			{
@@ -689,22 +689,22 @@ public class GameInformation implements UpdateListener
 	{
 		if (halftime == false)
 		{
-			if (player.getPositionY() >= 0 && player.getTeam().equals("ROT"))
+			if (player.getPositionY() >= 0 && player.getTeam()==Team.ROT)
 			{
 				return true;
 			}
-			if (player.getPositionY() < 0 && player.getTeam().equals("GELB"))
+			if (player.getPositionY() < 0 && player.getTeam()==Team.GELB)
 			{
 				return true;
 			}
 		}
 		else
 		{
-			if (player.getPositionY() < 0 && player.getTeam().equals("ROT"))
+			if (player.getPositionY() < 0 && player.getTeam()==Team.ROT)
 			{
 				return true;
 			}
-			if (player.getPositionY() >= 0 && player.getTeam().equals("GELB"))
+			if (player.getPositionY() >= 0 && player.getTeam()==Team.GELB)
 			{
 				return true;
 			}
@@ -784,7 +784,7 @@ public class GameInformation implements UpdateListener
 	 * @param to
 	 *            pass to player
 	 */
-	private void setPasses(Player from, Player to)
+	private void setPasses(Player from, Player to, String time)
 	{
 		if (from == null || from == null)
 		{
@@ -792,7 +792,6 @@ public class GameInformation implements UpdateListener
 		}
 
 		final String name = from.getName();
-		final String time = Utils.timeToHumanReadable(getCurrentGameTime());
 
 		// pass successful
 		if (Utils.pass(from, to) == 1)
@@ -935,12 +934,10 @@ public class GameInformation implements UpdateListener
 					{
 						// Function for BallPossessionTime
 						lastPlayer.setBallPossessionTime(lastPlayer.getBallPossessionTime() + (nearestPlayer.getTimeStamp() - lastBallPossessionTimeStamp));
-						System.out.println(lastPlayer.getName() + " " + lastPlayer.getBallPossessionTime());
-						System.out.println(nearestPlayer.getName() + " " + nearestPlayer.getBallPossessionTime());
 					}
 
 					/* Calculate Passes */
-					setPasses(lastPlayer, nearestPlayer);
+					setPasses(lastPlayer, nearestPlayer, time);
 
 					/* Send Pass statistic if available */
 					if (getStatisticsFacade() != null)
@@ -949,7 +946,7 @@ public class GameInformation implements UpdateListener
 					}
 
 					/* Set timestamp of team-ball-loss */
-					if (lastPlayer != null && !nearestPlayer.getTeam().equals(lastPlayer.getTeam()))
+					if (lastPlayer != null && nearestPlayer.getTeam()!=lastPlayer.getTeam())
 					{
 						setLastBallLossTimeStamp(getCurrentGameTime());
 					}

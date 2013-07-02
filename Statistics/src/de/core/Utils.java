@@ -169,6 +169,6 @@ public class Utils
 
 	public static String timeToHumanReadable(final long milliseconds)
 	{
-		return String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(milliseconds), TimeUnit.MILLISECONDS.toSeconds(milliseconds) % 60);
+		return milliseconds/60000+" min, "+(milliseconds/1000)%60+" sec";
 	}
 }
