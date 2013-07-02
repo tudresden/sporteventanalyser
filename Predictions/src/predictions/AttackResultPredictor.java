@@ -26,7 +26,7 @@ public class AttackResultPredictor extends Predictor {
 
 	private List<Integer> velocityHistory = new LinkedList<Integer>();
 	private long lastGameTime = -1;
-	private int lastBallXPosition = -1; // TODO x or y?
+	private int lastBallYPosition = -1; // TODO x or y?
 
 	/**
 	 * Instantiates the attack result predictor.
@@ -76,7 +76,7 @@ public class AttackResultPredictor extends Predictor {
 
 		// save velocity
 		if (lastGameTime == -1) {
-			lastBallXPosition = gameInformation
+			lastBallYPosition = gameInformation
 					.getCurrentBallPossessionPlayer().getPositionX();
 			lastGameTime = gameInformation.getCurrentGameTime();
 		}
@@ -86,7 +86,7 @@ public class AttackResultPredictor extends Predictor {
 				.getCurrentBallPossessionPlayer().getPositionX();
 
 		int velocity = (int) (Math
-				.abs(currentBallXPosition - lastBallXPosition) / (currentGameTime
+				.abs(currentBallXPosition - lastBallYPosition) / (currentGameTime
 				- lastGameTime + 1));
 		velocityHistory.add(velocity);
 		if (velocityHistory.size() > 5)
@@ -95,7 +95,7 @@ public class AttackResultPredictor extends Predictor {
 		for (int velocityValue : velocityHistory)
 			averageVelocity += velocityValue / velocityHistory.size();
 
-		lastBallXPosition = currentBallXPosition;
+		lastBallYPosition = currentBallXPosition;
 		lastGameTime = currentGameTime;
 
 		// update instance
@@ -132,7 +132,7 @@ public class AttackResultPredictor extends Predictor {
 			passCounter = 0;
 			velocityHistory.clear();
 			lastGameTime = -1;
-			lastBallXPosition = -1;
+			lastBallYPosition = -1;
 		} else
 			predict(gameInformation);
 
