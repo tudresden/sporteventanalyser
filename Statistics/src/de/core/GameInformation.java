@@ -298,6 +298,15 @@ public class GameInformation implements UpdateListener
 		return lastBallOutsideTimeStamp;
 	}
 
+	
+	public long getLastBallPossessionTimeStamp() {
+		return lastBallPossessionTimeStamp;
+	}
+
+	public void setLastBallPossessionTimeStamp(long lastBallPossessionTimeStamp) {
+		this.lastBallPossessionTimeStamp = lastBallPossessionTimeStamp;
+	}
+
 	public long getLastPushedStatistics()
 	{
 		return lastPushedStatistics;
