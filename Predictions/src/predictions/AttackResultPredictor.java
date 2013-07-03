@@ -18,8 +18,6 @@ public class AttackResultPredictor extends Predictor {
 
 	private int idOfLastPlayerWithBall = -1;
 
-	private int ballLossCounter = 0;
-	private int noBallLossCounter = 0;
 	private int passCounter = 0;
 
 	private boolean arffCreated = false;
@@ -27,6 +25,13 @@ public class AttackResultPredictor extends Predictor {
 	private List<Integer> velocityHistory = new LinkedList<Integer>();
 	private long lastGameTime = -1;
 	private int lastBallYPosition = -1; // TODO x or y?
+
+	private long lastBallLossTimestamp = -1;
+	private long lastBallOutsideTimestamp = -1;
+	private long lastShotOnGoalTimestamp = -1;
+
+	private int ballLossCounter = 0;
+	private int noBallLossCounter = 0;
 
 	/**
 	 * Instantiates the attack result predictor.
@@ -51,7 +56,7 @@ public class AttackResultPredictor extends Predictor {
 
 		// TODO create ARFF file at the very end
 		if (Utils.ARFF_WRITING_MODE && !arffCreated)
-			if (learner.getAccumulatedInstances().size() == 50) {
+			if (learner.getAccumulatedInstances().size() == 200) { // 307 instances
 				arffCreated = true;
 				Utils.createArffFileFromInstances(learner
 						.getAccumulatedInstances(), this.getClass().getName()
@@ -74,17 +79,32 @@ public class AttackResultPredictor extends Predictor {
 			passCounter++;
 		}
 
-		// save velocity
+		// init attack values
+		long currentBallLossTimestamp = gameInformation
+				.getLastBallLossTimeStamp();
+		long currentBallOutsideTimestamp = gameInformation
+				.getLastBallOutsideTimeStamp();
+		long currentShotOnGoalTimestamp = gameInformation
+				.getLastShotOnGoalTimeStamp();
+
+		if (lastBallLossTimestamp == -1) {
+			lastBallLossTimestamp = currentBallLossTimestamp;
+			lastBallOutsideTimestamp = currentBallOutsideTimestamp;
+			lastShotOnGoalTimestamp = currentShotOnGoalTimestamp;
+		}
+
+		// init velocity values
+		long currentGameTime = gameInformation.getCurrentGameTime();
+		int currentBallXPosition = gameInformation
+				.getCurrentBallPossessionPlayer().getPositionX();
+
 		if (lastGameTime == -1) {
 			lastBallYPosition = gameInformation
 					.getCurrentBallPossessionPlayer().getPositionX();
 			lastGameTime = gameInformation.getCurrentGameTime();
 		}
 
-		long currentGameTime = gameInformation.getCurrentGameTime();
-		int currentBallXPosition = gameInformation
-				.getCurrentBallPossessionPlayer().getPositionX();
-
+		// calculate velocity
 		int velocity = (int) (Math
 				.abs(currentBallXPosition - lastBallYPosition) / (currentGameTime
 				- lastGameTime + 1));
@@ -111,24 +131,30 @@ public class AttackResultPredictor extends Predictor {
 						"" + idOfLastPlayerWithBall, ""
 								+ gameInformation
 										.getCurrentBallPossessionPlayer()
-										.getId(), gameInformation
-								.getCurrentBallPossessionPlayer()
+										.getId(), (int) gameInformation
+								.getDistanceOfNearestTeammate(),
+						gameInformation.getCurrentBallPossessionPlayer()
 								.getPositionX(), gameInformation
 								.getCurrentBallPossessionPlayer()
-								.getPositionY(), (int) gameInformation
-								.getDistanceOfNearestTeammate(),
-						Math.round(gameInformation
+								.getPositionY(), Math.round(gameInformation
 								.getPlayerDistance(idOfLastPlayerWithBall)),
 						gameInformation.isPlayerOnOwnSide(gameInformation
 								.getCurrentBallPossessionPlayer()),
 						passCounter, averageVelocity);
 
-		// class event occurred TODO check if class event occurred
-		boolean train = false;
-		if (train) {
-			train(gameInformation);
+		// check if class event occurred
+		String eventClass = "";
+		if (lastBallLossTimestamp != currentBallLossTimestamp)
+			eventClass = AttackResultPredictionInstance.CLASS_BALL_LOSS;
+		else if (lastBallOutsideTimestamp != currentBallOutsideTimestamp)
+			eventClass = AttackResultPredictionInstance.CLASS_BALL_OUT_OF_BOUNDS;
+		else if (lastShotOnGoalTimestamp != currentShotOnGoalTimestamp)
+			eventClass = AttackResultPredictionInstance.CLASS_SHOT_ON_GOAL;
 
-			// reset tracked values
+		if (!eventClass.equals("")) {
+			train(gameInformation, eventClass);
+
+			// reset long tracked values
 			passCounter = 0;
 			velocityHistory.clear();
 			lastGameTime = -1;
@@ -136,8 +162,12 @@ public class AttackResultPredictor extends Predictor {
 		} else
 			predict(gameInformation);
 
-		idOfLastPlayerWithBall = gameInformation
-				.getCurrentBallPossessionPlayer().getId();
+		// save values
+		idOfLastPlayerWithBall = idOfCurrentPlayerWithBall;
+
+		lastBallLossTimestamp = currentBallLossTimestamp;
+		lastBallOutsideTimestamp = currentBallOutsideTimestamp;
+		lastShotOnGoalTimestamp = currentShotOnGoalTimestamp;
 
 	}
 
@@ -147,23 +177,21 @@ public class AttackResultPredictor extends Predictor {
 	}
 
 	@Override
-	protected void train(GameInformation gameInformation) {
-
-		// TODO determine class
-		String result = AttackResultPredictionInstance.CLASS_BALL_LOSS;
+	protected void train(GameInformation gameInformation, String classAttribute) {
 
 		// count result for comparison with prediction accuracy
-		if (result.equals(AttackResultPredictionInstance.CLASS_BALL_LOSS)) {
+		if (classAttribute
+				.equals(AttackResultPredictionInstance.CLASS_BALL_LOSS)) {
 			ballLossCounter++;
 		} else {
 			noBallLossCounter++;
 		}
 
 		if (Utils.DEBUGGING)
-			System.out.println(TAG + "event occured: " + result);
+			System.out.println(TAG + "event occured: " + classAttribute);
 
 		((AttackResultPredictionInstance) predictionInstance)
-				.setClassAttribute(result);
+				.setClassAttribute(classAttribute);
 
 		learner.train(predictionInstance);
 
