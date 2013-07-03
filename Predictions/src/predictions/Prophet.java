@@ -12,12 +12,8 @@ import de.core.GameInformation;
 public class Prophet {
 	public static final String TAG = "[Predictions][Prophet] ";
 
-	// private static final long PREDICTIONS_PERIOD_TIME = 200;
-
 	private List<Predictor> listOfPredictors;
 	private GameInformation gameInformation;
-
-	// private Timer timer;
 
 	/**
 	 * Initiates the prophet.
@@ -32,39 +28,23 @@ public class Prophet {
 
 		// add predictors and the learner for the predictors
 
+		/*
+		 * pass prediction
+		 */
+
 		// listOfPredictors.add(new PassSuccessPredictor(
 		// new HoeffdingTreeLearner()));
 
 		listOfPredictors.add(new PassSuccessPredictor(new IbkLearner()));
 
 		// listOfPredictors.add(new PassSuccessPredictor(new knnLearner()));
-	}
 
-	// /**
-	// * Start the periodic predictions.
-	// */
-	// public void start() {
-	// System.out.println(TAG + "Prophet awakened.");
-	//
-	// if (timer != null)
-	// timer.cancel();
-	//
-	// timer = new Timer();
-	//
-	// timer.schedule(new TimerTask() {
-	// public void run() {
-	// updatePredictors();
-	// }
-	// }, 0, PREDICTIONS_PERIOD_TIME);
-	// }
-	//
-	// /**
-	// * Stop the periodic predictions.
-	// */
-	// public void stop() {
-	// if (timer != null)
-	// timer.cancel();
-	// }
+		/*
+		 * attack result prediction
+		 */
+
+		// listOfPredictors.add(new AttackResultPredictor(new IbkLearner()));
+	}
 
 	/**
 	 * Updates predictions.
