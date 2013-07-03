@@ -48,7 +48,7 @@ public class PassSuccessPredictor extends Predictor {
 
 		// TODO create ARFF file at the very end
 		if (Utils.ARFF_WRITING_MODE && !arffCreated)
-			if (learner.getAccumulatedInstances().size() == 760) {
+			if (learner.getAccumulatedInstances().size() == 760) { // 763 instances
 				arffCreated = true;
 				Utils.createArffFileFromInstances(learner
 						.getAccumulatedInstances(), this.getClass().getName()
@@ -95,7 +95,7 @@ public class PassSuccessPredictor extends Predictor {
 		if (idOfCurrentPlayerWithBall != idOfLastPlayerWithBall
 				&& idOfLastPlayerWithBall != -1) {
 			System.out.println(TAG + "A pass occured.");
-			train(gameInformation);
+			train(gameInformation, "");
 		}
 		// no pass occurred
 		else {
@@ -115,7 +115,7 @@ public class PassSuccessPredictor extends Predictor {
 	}
 
 	@Override
-	protected void train(GameInformation gameInformation) {
+	protected void train(GameInformation gameInformation, String classAttribute) {
 
 		String result = gameInformation
 				.isPlayerLastPassSuccessful(idOfLastPlayerWithBall) ? PassSuccessPredictionInstance.CLASS_PASS_SUCCESSFUL

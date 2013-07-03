@@ -48,7 +48,9 @@ public abstract class Predictor {
 	 * 
 	 * @param gameInformation
 	 *            reference to the game statistics
+	 * @param classAttribute
+	 *            class name of occurred event
 	 */
-	abstract void train(GameInformation gameInformation);
+	abstract void train(GameInformation gameInformation, String classAttribute);
 
 }
