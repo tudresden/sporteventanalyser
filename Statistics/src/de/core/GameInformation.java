@@ -48,7 +48,7 @@ public class GameInformation implements UpdateListener
 	/**
 	 * false for half 1, true for half 2
 	 */
-	private boolean halftime = false; // TODO @Tommy: wann wird das ding umgestellt?
+	private boolean halftime = false;
 
 	/**
 	 * The timestamp of the last ball that was lost to the other team.
@@ -703,6 +703,11 @@ public class GameInformation implements UpdateListener
 	private void setCurrentGameTime(long currentGameTime)
 	{
 		this.currentGameTime = currentGameTime;
+
+		if (!halftime && currentGameTime > 1800000L)
+		{
+			halftime = true;
+		}
 	}
 
 	/**
@@ -844,8 +849,14 @@ public class GameInformation implements UpdateListener
 		Event event = ((Event) newData[0].getUnderlying());
 		Entity entity = getEntityFromId(event.getSender());
 
-		setCurrentGameTime(Utils.convertTimeToOffset(event.getTimestamp()));
+		final long timestamp = event.getTimestamp();
 
+		if (timestamp < Config.GAMESTARTTIMESTAMPA || timestamp > Config.GAMESTOPTIMESTAMPB || (timestamp > Config.GAMESTOPTIMESTAMPA && timestamp < Config.GAMESTARTTIMESTAMPB))
+		{
+			return;
+		}
+
+		setCurrentGameTime(Utils.convertTimeToOffset(timestamp));
 		final String time = Utils.timeToHumanReadable(getCurrentGameTime());
 
 		if (entity instanceof Ball)
@@ -992,7 +1003,7 @@ public class GameInformation implements UpdateListener
 		if (getCurrentGameTime() > getLastPushedStatistics() + Config.DATAPUSHINTERVAL)
 		{
 			setLastPushedStatistics(getCurrentGameTime());
-			getProphet().updatePredictors();
+			// getProphet().updatePredictors();
 		}
 	}
 }

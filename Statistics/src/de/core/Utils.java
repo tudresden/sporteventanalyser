@@ -1,6 +1,5 @@
 package de.core;
 
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +25,11 @@ public class Utils
 
 	public static int convertTimeToOffset(long timestamp)
 	{
-		return (int) fastFloor((timestamp - Config.GAMESTARTTIMESTAMP) / Config.TIMEFACTOR);
+		if (timestamp > Config.GAMESTARTTIMESTAMPB)
+		{
+			return (int) fastFloor((timestamp - Config.GAMESTARTTIMESTAMPB + 1800000000000000L) / Config.TIMEFACTOR);
+		}
+		return (int) fastFloor((timestamp - Config.GAMESTARTTIMESTAMPA) / Config.TIMEFACTOR);
 	}
 
 	public static long dateParseRegExp(String period)
@@ -169,6 +172,6 @@ public class Utils
 
 	public static String timeToHumanReadable(final long milliseconds)
 	{
-		return milliseconds/60000+" min, "+(milliseconds/1000)%60+" sec";
+		return milliseconds / 60000 + " min, " + (milliseconds / 1000) % 60 + " sec";
 	}
 }
