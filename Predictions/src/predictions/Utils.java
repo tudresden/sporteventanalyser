@@ -68,10 +68,17 @@ public class Utils {
 		System.out.println("Creating arff file from " + dataSet.size()
 				+ " prediction instances.");
 
+		// create unique file name
+		int fileNumber = 0;
+		String filePathString = "";
+		while (new File(filePathString = "../Predictions/prediction_logs/" + fileName + "_"
+				+ (++fileNumber) + ".arff").exists())
+			;
+
 		ArffSaver saver = new ArffSaver();
 		saver.setInstances(dataSet);
 		try {
-			saver.setFile(new File("./prediction_logs/" + fileName + ".arff"));
+			saver.setFile(new File(filePathString));
 			saver.writeBatch();
 		} catch (Throwable t) {
 			t.printStackTrace();
