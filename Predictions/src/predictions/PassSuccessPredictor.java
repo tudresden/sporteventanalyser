@@ -32,11 +32,6 @@ public class PassSuccessPredictor extends Predictor {
 	@Override
 	public void init() {
 		predictionInstance = new PassSuccessPredictionInstance();
-
-		// learner = new KnnLearner(predictionInstance.getHeader());
-		// learner = new HoeffdingTreeLearner(predictionInstance.getHeader());
-		// learner = new IbkLearner(predictionInstance.getHeader());
-
 		learner.init(predictionInstance.getHeader());
 	}
 
@@ -48,7 +43,7 @@ public class PassSuccessPredictor extends Predictor {
 
 		// TODO create ARFF file at the very end
 		if (Utils.ARFF_WRITING_MODE && !arffCreated)
-			if (learner.getAccumulatedInstances().size() == 760) { // 763 instances
+			if (learner.getAccumulatedInstances().size() == 642) { // 643instances
 				arffCreated = true;
 				Utils.createArffFileFromInstances(learner
 						.getAccumulatedInstances(), this.getClass().getName()
