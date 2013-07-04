@@ -317,8 +317,8 @@ public class Reader {
 					// following code for console output
 					eventCounter++;
 
-					if (System.currentTimeMillis() - timeOfCycleStart > 1000) {
-						//TODO: Delete this (Verursacht eh Fehler, sobald zufaelligerweise ein InterruptionBegin/End ist^^
+					if (System.currentTimeMillis() - timeOfCycleStart > 1000 && e instanceof Event) {
+						//TODO: Delete this (Wer braucht schon eine Ausgabe?)
 
 						long timeNeededInThisCycleInMS = System
 								.currentTimeMillis() - timeOfCycleStart;

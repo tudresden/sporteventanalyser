@@ -1,11 +1,16 @@
 package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree;
 
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.interfaces.ICurrentHeatMapData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.interfaces.ICurrentPlayerData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.interfaces.ICurrentPositionData;
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.interfaces.ICurrentPrognosisData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.interfaces.ICurrentTeamData;
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.AttackResultPrediction;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.BallPosition;
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.PlayerHeatMap;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.PlayerPosition;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.PlayerStatistic;
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.TeamHeatMap;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.TeamStatistic;
 
 /**
@@ -17,7 +22,8 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.TeamStatisti
  * again (until you release it by getting it again)
  */
 public class StatisticsFacade implements ICurrentPositionData,
-		ICurrentPlayerData, ICurrentTeamData {
+		ICurrentPlayerData, ICurrentTeamData, ICurrentHeatMapData,
+		ICurrentPrognosisData {
 
 	/**
 	 * The statistics model (this <code>StatisticCollection</code> will be
@@ -36,7 +42,9 @@ public class StatisticsFacade implements ICurrentPositionData,
 	 */
 	private Object currentPlayerDataMutex = new Object(),
 			currentPositionDataMutex = new Object(),
-			currentTeamDataMutex = new Object();
+			currentTeamDataMutex = new Object(),
+			currentHeatMapMutex = new Object(),
+			currentPrognosisDataMutex = new Object();
 
 	/**
 	 * This is an auxiliary mutex (used because mStatistics is communicated and
@@ -77,6 +85,18 @@ public class StatisticsFacade implements ICurrentPositionData,
 							synchronized (currentTeamDataMutex) {
 								statistics.getCurrentTeamData().copy(
 										mStatistics.getCurrentTeamData());
+							}
+
+							// Copy currentHeatMap-Node
+							synchronized (currentHeatMapMutex) {
+								statistics.getCurrentHeatMapData().copy(
+										mStatistics.getCurrentHeatMapData());
+							}
+
+							// Copy currentPrognosisData-Node
+							synchronized (currentPrognosisDataMutex) {
+								statistics.getCurrentPrognosisData().copy(
+										mStatistics.getCurrentPrognosisData());
 							}
 
 							// Notify
@@ -147,7 +167,7 @@ public class StatisticsFacade implements ICurrentPositionData,
 		// Register player: CurrentPositionData-leaf
 		synchronized (currentPlayerDataMutex) {
 			statistics.getCurrentPlayerData().registerPlayerStatistic(
-					new PlayerStatistic(id, 0, 0, 0, 0, 0, 0, 0));
+					new PlayerStatistic(id, 0, 0, 0, 0, 0, 0, 0, 0));
 		}
 	}
 
@@ -183,7 +203,7 @@ public class StatisticsFacade implements ICurrentPositionData,
 	@Override
 	public synchronized void setPlayerStatistic(int id, int passesMade,
 			int passesReceived, int tacklings, int tacklesWon, int goalsScored,
-			int ballContacts, long possessionTime) {
+			int ballContacts, long possessionTime, float totalDistance) {
 		synchronized (currentPlayerDataMutex) {
 			PlayerStatistic playerStatistic = statistics.getCurrentPlayerData()
 					.getPlayerStatistic(id);
@@ -195,6 +215,7 @@ public class StatisticsFacade implements ICurrentPositionData,
 				playerStatistic.setGoalsScored(goalsScored);
 				playerStatistic.setBallContacts(ballContacts);
 				playerStatistic.setPossessionTime(possessionTime);
+				playerStatistic.setTotalDistance(totalDistance);
 			}
 		}
 	}
@@ -277,7 +298,19 @@ public class StatisticsFacade implements ICurrentPositionData,
 	}
 
 	@Override
-	public void setBallPossession(String teamname, double ballPossession) {
+	public synchronized void setTotalDistance(int id, float totalDistance) {
+		synchronized (currentPlayerDataMutex) {
+			PlayerStatistic playerStatistic = statistics.getCurrentPlayerData()
+					.getPlayerStatistic(id);
+			if (playerStatistic != null) {
+				playerStatistic.setTotalDistance(totalDistance);
+			}
+		}
+	}
+
+	@Override
+	public synchronized void setBallPossession(String teamname,
+			double ballPossession) {
 		synchronized (currentPlayerDataMutex) {
 			TeamStatistic firstTeamStatistic = statistics.getCurrentTeamData()
 					.getTeamStatisticOfFirstTeam();
@@ -297,7 +330,8 @@ public class StatisticsFacade implements ICurrentPositionData,
 	}
 
 	@Override
-	public void setPassingAccuracy(String teamname, double passingAccuracy) {
+	public synchronized void setPassingAccuracy(String teamname,
+			double passingAccuracy) {
 		synchronized (currentPlayerDataMutex) {
 			TeamStatistic teamStatistic = statistics.getCurrentTeamData()
 					.getTeamStatistic(teamname);
@@ -306,4 +340,72 @@ public class StatisticsFacade implements ICurrentPositionData,
 			}
 		}
 	}
+
+	@Override
+	public synchronized void registerPlayerHeatMap(int id, int width, int height) {
+		synchronized (currentHeatMapMutex) {
+			statistics.getCurrentHeatMapData().registerPlayer(
+					new PlayerHeatMap(id, new int[width][height]));
+		}
+	}
+
+	@Override
+	public synchronized void registerTeamHeatMap(String firstTeamname,
+			String secondTeamname, int width, int height) {
+		synchronized (currentHeatMapMutex) {
+			statistics.getCurrentHeatMapData().registerTeams(
+					new TeamHeatMap(firstTeamname, new int[width][height]),
+					new TeamHeatMap(secondTeamname, new int[width][height]));
+		}
+	}
+
+	@Override
+	public synchronized void setValueInHeatMap(int id, int x, int y, int value) {
+		synchronized (currentHeatMapMutex) {
+			PlayerHeatMap playerHeatMap = statistics.getCurrentHeatMapData()
+					.getPlayerHeatMap(id);
+			if (playerHeatMap != null) {
+				int[][] map = playerHeatMap.getMap();
+				if (map.length > 0 && map.length > x && map[0].length > y) {
+					map[x][y] = value;
+				}
+			}
+		}
+	}
+
+	@Override
+	public synchronized void setValueInHeatMap(String teamname, int x, int y,
+			int value) {
+		synchronized (currentHeatMapMutex) {
+			TeamHeatMap teamHeatMap = statistics.getCurrentHeatMapData()
+					.getTeamHeatMap(teamname);
+			if (teamHeatMap != null) {
+				int[][] map = teamHeatMap.getMap();
+				if (map.length > 0 && map.length < x && map[0].length < y) {
+					map[x][y] = value;
+				}
+			}
+		}
+	}
+
+	@Override
+	public synchronized void setPassSuccessPrediction(double passSuccessful) {
+		synchronized (currentPrognosisDataMutex) {
+			statistics.getCurrentPrognosisData().getPassSuccessPrediction()
+					.setPassSuccessful(passSuccessful);
+		}
+	}
+
+	@Override
+	public synchronized void setAttackResultPrediction(double outOfPlay,
+			double turnOver, double shotOnGoal) {
+		synchronized (currentPrognosisDataMutex) {
+			AttackResultPrediction attackResultPrediciton = statistics
+					.getCurrentPrognosisData().getAttackResultPrediction();
+			attackResultPrediciton.setOutOfPlay(outOfPlay);
+			attackResultPrediciton.setShotOnGoal(shotOnGoal);
+			attackResultPrediciton.setTurnOver(turnOver);
+		}
+	}
+
 }

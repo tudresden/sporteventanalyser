@@ -1,8 +1,10 @@
 package de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.interfaces;
 
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.StatisticCollection;
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentHeatMapData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPlayerData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPositionData;
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPrognosisData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentTeamData;
 
 /**
@@ -42,4 +44,20 @@ public interface Visitor {
 	 *            the <code>CurrentTeamData</code> <code>Node</code>
 	 */
 	public void visit(CurrentTeamData node);
+
+	/**
+	 * Visit a <code>CurrentHeatMapData</code> <code>Node</code>
+	 * 
+	 * @param node
+	 *            the <code>CurrentHeatMapData</code> <code>Node</code>
+	 */
+	public void visit(CurrentHeatMapData node);
+
+	/**
+	 * Visit a <code>CurrentPrognosisData</code> <code>Node</code>
+	 * 
+	 * @param node
+	 *            the <code>CurrentPrognosisData</code> <code>Node</code>
+	 */
+	public void visit(CurrentPrognosisData node);
 }
