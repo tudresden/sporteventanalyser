@@ -27,9 +27,9 @@ public class Utils
 	{
 		if (timestamp > Config.GAMESTARTTIMESTAMPB)
 		{
-			return (int) fastFloor((timestamp - Config.GAMESTARTTIMESTAMPB + 1800000000000000L) / Config.TIMEFACTOR);
+			return (int) fastCeil((timestamp - Config.GAMESTARTTIMESTAMPB + 1800000000000000L) / Config.TIMEFACTOR);
 		}
-		return (int) fastFloor((timestamp - Config.GAMESTARTTIMESTAMPA) / Config.TIMEFACTOR);
+		return (int) fastCeil((timestamp - Config.GAMESTARTTIMESTAMPA) / Config.TIMEFACTOR);
 	}
 
 	public static long dateParseRegExp(String period)
@@ -53,6 +53,11 @@ public class Utils
 	public static final int fastRound(double x)
 	{
 		return (int) (x + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
+	}
+
+	public static final int fastCeil(double x)
+	{
+		return BIG_ENOUGH_INT - (int) (BIG_ENOUGH_FLOOR - x);
 	}
 
 	/**
