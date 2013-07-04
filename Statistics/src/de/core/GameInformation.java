@@ -851,10 +851,15 @@ public class GameInformation implements UpdateListener
 
 		final long timestamp = event.getTimestamp();
 
-		if (timestamp < Config.GAMESTARTTIMESTAMPA || timestamp > Config.GAMESTOPTIMESTAMPB || (timestamp > Config.GAMESTOPTIMESTAMPA && timestamp < Config.GAMESTARTTIMESTAMPB))
-		{
-			return;
-		}
+		// FIXME der zeitstämpel liegt außerhalb von GAMESTOPTIMESTAMPB
+		// INFO: Spielzeit: 59 min, 59 sec - Ball ID 8 ist aktiver Ball!
+		// timestamp: 14886329544383905
+
+		// if (timestamp < Config.GAMESTARTTIMESTAMPA || timestamp > Config.GAMESTOPTIMESTAMPB || (timestamp > Config.GAMESTOPTIMESTAMPA &&
+		// timestamp < Config.GAMESTARTTIMESTAMPB))
+		// {
+		// return;
+		// }
 
 		setCurrentGameTime(Utils.convertTimeToOffset(timestamp));
 		final String time = Utils.timeToHumanReadable(getCurrentGameTime());
@@ -955,6 +960,12 @@ public class GameInformation implements UpdateListener
 					message += "\nBallkontakte: {11}";
 					params.add(nearestPlayer.getBallContacts());
 
+					message += "\nTimestamp: {12}";
+					params.add(getCurrentGameTime());
+
+					message += "\nTimestamp: {13}";
+					params.add(timestamp);
+
 					logger.log(Level.INFO, message, params.toArray());
 
 					if (lastBallPossessionTimeStamp != 0 && lastPlayer != null)
@@ -1003,7 +1014,7 @@ public class GameInformation implements UpdateListener
 		if (getCurrentGameTime() > getLastPushedStatistics() + Config.DATAPUSHINTERVAL)
 		{
 			setLastPushedStatistics(getCurrentGameTime());
-			// getProphet().updatePredictors();
+			getProphet().updatePredictors();
 		}
 	}
 }
