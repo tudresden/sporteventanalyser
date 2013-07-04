@@ -8,8 +8,10 @@ import org.jivesoftware.smackx.pubsub.SimplePayload;
 
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.StatisticCollection;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.StatisticsFacade;
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentHeatMapData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPlayerData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPositionData;
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPrognosisData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentTeamData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.interfaces.Visitor;
 
@@ -135,6 +137,27 @@ public class GoDPublishVisitor implements Visitor {
 			// Send P-Frame
 			sendPayload(node.getNodeName(),
 					node.toPredictiveCodedXML(iStatistics.getCurrentTeamData()));
+		}
+	}
+
+	@Override
+	public void visit(CurrentHeatMapData node) {
+		// Just send HeatMap-Updates with I-Frames
+		if (cycleCounter == 0) {
+			sendPayload(node.getNodeName(), node.toXML());
+		}
+	}
+
+	@Override
+	public void visit(CurrentPrognosisData node) {
+		if (cycleCounter == 0) {
+			// Send I-Frame
+			sendPayload(node.getNodeName(), node.toXML());
+		} else {
+			// Send P-Frame
+			sendPayload(node.getNodeName(),
+					node.toPredictiveCodedXML(iStatistics
+							.getCurrentPrognosisData()));
 		}
 	}
 

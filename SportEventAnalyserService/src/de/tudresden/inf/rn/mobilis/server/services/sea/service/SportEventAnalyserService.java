@@ -126,6 +126,10 @@ public class SportEventAnalyserService extends MobilisService {
 			System.out.println("Player: " + mapping.getPlayerName() + " (ID: " + mapping.getPlayerID() + ", Team: " + mapping.getTeamName() + ")");
 			seaPubSub.getStatistics().registerPlayer(mapping.getPlayerID());
 		}
+		seaPubSub.getStatistics().setAttackResultPrediction(0.8f, 0.1f, 0.1f);
+		seaPubSub.getStatistics().setPassSuccessPrediction(0.1f);
+		seaPubSub.getStatistics().registerPlayerHeatMap(4, 50, 50);
+		seaPubSub.getStatistics().setValueInHeatMap(4, 3, 47, 99);
 
 		// Jingle
 		SportEventAnalyserJingle seaJingle = new SportEventAnalyserJingle(
@@ -148,8 +152,8 @@ public class SportEventAnalyserService extends MobilisService {
 						// System.out.println(event.getSender() + ", "
 						// + event.getTimestamp() + ", "
 						// + event.getAcceleration());
-						seaPubSub.getStatistics().setPositionOfPlayer(event.getSender(), event.getPositionX(), event.getPositionY(), event.getVelocityX(), event.getVelocityY());
-						seaPubSub.getStatistics().setBallContacs(event.getSender(), statistic.getGameInformation().getPlayerBallContacts(event.getSender()));
+						//seaPubSub.getStatistics().setPositionOfPlayer(event.getSender(), event.getPositionX(), event.getPositionY(), event.getVelocityX(), event.getVelocityY());
+						//seaPubSub.getStatistics().setBallContacs(event.getSender(), statistic.getGameInformation().getPlayerBallContacts(event.getSender()));
 //						c++;
 //						if (c % 100000 == 0)
 //							System.out.println("Received " + c + " Events in "
