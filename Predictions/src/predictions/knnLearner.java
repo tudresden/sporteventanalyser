@@ -76,7 +76,8 @@ public class knnLearner extends Learner {
 			e.printStackTrace();
 		}
 
-		printAccuracy(TAG);
+		printAccuracy(TAG + InstancesHeader.getClassNameString(instanceHeader)
+				+ " ");
 	}
 
 	@Override
@@ -103,7 +104,9 @@ public class knnLearner extends Learner {
 				System.out.println(TAG + "no neighbors found");
 		}
 
-		printAccuracy(TAG);
+		if (Utils.DEBUGGING)
+			printAccuracy(TAG
+					+ InstancesHeader.getClassNameString(instanceHeader) + " ");
 
 	}
 

@@ -20,7 +20,7 @@ public class Utils {
 	 * If set to <i>true</i>, all instances will be collected and an ARFF file
 	 * will be created at the end.
 	 */
-	public static final boolean ARFF_WRITING_MODE = true;
+	public static final boolean ARFF_WRITING_MODE = false;
 
 	public static final String FIELD_AREA_OWN_TEAM = "FIELD_AREA_OWN_TEAM";
 	public static final String FIELD_AREA_MIDDLE = "FIELD_AREA_MIDDLE";

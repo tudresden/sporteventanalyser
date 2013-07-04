@@ -52,8 +52,11 @@ public class AttackResultPredictor extends Predictor {
 
 	@Override
 	public void update(GameInformation gameInformation) {
-		System.out.println(TAG + " - - - attack result prediction update with "
-				+ learner.getClass().getName() + " - - - ");
+
+		if (Utils.DEBUGGING)
+			System.out.println(TAG
+					+ " - - - attack result prediction update with "
+					+ learner.getClass().getName() + " - - - ");
 
 		// TODO create ARFF file at the very end
 		if (Utils.ARFF_WRITING_MODE && !arffCreated)

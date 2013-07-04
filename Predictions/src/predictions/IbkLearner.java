@@ -137,7 +137,8 @@ public class IbkLearner extends Learner {
 		} catch (Exception e) {
 		}
 
-		printAccuracy(TAG);
+		printAccuracy(TAG + InstancesHeader.getClassNameString(instanceHeader)
+				+ " ");
 	}
 
 	@Override
@@ -162,7 +163,9 @@ public class IbkLearner extends Learner {
 				System.out.println(TAG + "no neighbors found");
 		}
 
-		printAccuracy(TAG);
+		if (Utils.DEBUGGING)
+			printAccuracy(TAG
+					+ InstancesHeader.getClassNameString(instanceHeader) + " ");
 
 	}
 

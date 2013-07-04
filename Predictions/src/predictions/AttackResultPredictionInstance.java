@@ -36,7 +36,7 @@ public class AttackResultPredictionInstance extends PredictionInstance {
 	private static final String ATTRIBUTE_PASS_COUNT = "ATTRIBUTE_PASS_COUNT";
 	private static final String ATTRIBUTE_AVERAGE_VELOCITY = "ATTRIBUTE_AVERAGE_VELOCITY";
 
-	public static final String ATTRIBUTE_CLASS = "class";
+	public static final String ATTRIBUTE_CLASS = "AttackResultPrediction";
 
 	private static final List<String> ATTRIBUTE_LIST = Arrays
 			.asList(new String[] { ATTRIBUTE_TEAMMATE_IN_AREA,

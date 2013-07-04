@@ -37,7 +37,7 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 	private static final String ATTRIBUTE_CURRENT_PLAYER_DISTANCE = "ATTRIBUTE_CURRENT_PLAYER_DISTANCE";
 	private static final String ATTRIBUTE_AREA = "ATTRIBUTE_AREA";
 
-	public static final String ATTRIBUTE_CLASS = "class";
+	public static final String ATTRIBUTE_CLASS = "PassSuccessPrediction";
 
 	private static final List<String> ATTRIBUTE_LIST = Arrays
 			.asList(new String[] { ATTRIBUTE_TEAMMATE_IN_AREA,
