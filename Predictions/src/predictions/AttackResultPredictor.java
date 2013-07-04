@@ -31,7 +31,8 @@ public class AttackResultPredictor extends Predictor {
 	private long lastShotOnGoalTimestamp = -1;
 
 	private int ballLossCounter = 0;
-	private int noBallLossCounter = 0;
+	private int shotOnGoalCounter = 0;
+	private int ballOutOfBoundsCounter = 0;
 
 	/**
 	 * Instantiates the attack result predictor.
@@ -56,7 +57,7 @@ public class AttackResultPredictor extends Predictor {
 
 		// TODO create ARFF file at the very end
 		if (Utils.ARFF_WRITING_MODE && !arffCreated)
-			if (learner.getAccumulatedInstances().size() == 200) { // 307 instances
+			if (learner.getAccumulatedInstances().size() == 720) { // 721instances
 				arffCreated = true;
 				Utils.createArffFileFromInstances(learner
 						.getAccumulatedInstances(), this.getClass().getName()
@@ -183,8 +184,11 @@ public class AttackResultPredictor extends Predictor {
 		if (classAttribute
 				.equals(AttackResultPredictionInstance.CLASS_BALL_LOSS)) {
 			ballLossCounter++;
+		} else if (classAttribute
+				.equals(AttackResultPredictionInstance.CLASS_BALL_OUT_OF_BOUNDS)) {
+			ballOutOfBoundsCounter++;
 		} else {
-			noBallLossCounter++;
+			shotOnGoalCounter++;
 		}
 
 		if (Utils.DEBUGGING)
@@ -197,9 +201,20 @@ public class AttackResultPredictor extends Predictor {
 
 		System.out
 				.println(TAG
-						+ "Ball loss rate = "
+						+ "Ball loss = "
 						+ ((float) ballLossCounter
-								/ ((float) ballLossCounter + (float) noBallLossCounter) * 100)
+								/ ((float) ballLossCounter
+										+ (float) shotOnGoalCounter + (float) ballOutOfBoundsCounter) * 100)
+						+ "%"
+						+ "  Ball out of bounds = "
+						+ ((float) ballOutOfBoundsCounter
+								/ ((float) ballLossCounter
+										+ (float) shotOnGoalCounter + (float) ballOutOfBoundsCounter) * 100)
+						+ "%"
+						+ "  Shot on goal = "
+						+ ((float) shotOnGoalCounter
+								/ ((float) ballLossCounter
+										+ (float) shotOnGoalCounter + (float) ballOutOfBoundsCounter) * 100)
 						+ "%");
 
 	}
