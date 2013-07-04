@@ -56,7 +56,8 @@ public class HoeffdingTreeLearner extends Learner {
 
 		learner.trainOnInstance(trainingInstance.getInstanceCopy());
 
-		printAccuracy(TAG);
+		printAccuracy(TAG + InstancesHeader.getClassNameString(instanceHeader)
+				+ " ");
 	}
 
 	@Override
@@ -74,7 +75,9 @@ public class HoeffdingTreeLearner extends Learner {
 		} else if (Utils.DEBUGGING)
 			System.out.println("[PREDICTION] Votes: - n/a -");
 
-		printAccuracy(TAG);
+		if (Utils.DEBUGGING)
+			printAccuracy(TAG
+					+ InstancesHeader.getClassNameString(instanceHeader) + " ");
 
 	}
 
