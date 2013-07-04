@@ -171,10 +171,10 @@ textarea {
 /* light is default mode, so pair with general html definition */
 .light {
   background-color: #fdf6e3;
-  color: #657b83;
+  color: #6a8365;
 }
 .light * {
-  color: #657b83;
+  color: #6a8365;
 }
 .light h1,
 .light h2,
@@ -182,22 +182,22 @@ textarea {
 .light h4,
 .light h5,
 .light h6 {
-  color: #586e75;
-  border-color: #657b83;
+  color: #5e7658;
+  border-color: #6a8365;
 }
 .light a,
 .light a:active,
 .light a:visited {
-  color: #586e75;
+  color: #5e7658;
 }
 html,
 .dark {
-  background-color: #002b36;
-  color: #839496;
+  background-color: #0d3600;
+  color: #8a9684;
 }
 html *,
 .dark * {
-  color: #839496;
+  color: #8a9684;
 }
 html h1,
 .dark h1,
@@ -211,8 +211,8 @@ html h5,
 .dark h5,
 html h6,
 .dark h6 {
-  color: #93a1a1;
-  border-color: #839496;
+  color: #99a193;
+  border-color: #8a9684;
 }
 html a,
 .dark a,
@@ -220,7 +220,7 @@ html a:active,
 .dark a:active,
 html a:visited,
 .dark a:visited {
-  color: #93a1a1;
+  color: #99a193;
 }
 html * {
   color-profile: sRGB;
@@ -231,6 +231,7 @@ li {
 }
 article {
   display: table;
+  width: 100%;
 }
 #content {
   display: table-row;
@@ -239,6 +240,7 @@ article {
 #team_b {
   height: 240pt;
   width: 100%;
+  vertical-align: top;
 }
 #team_a input,
 #team_b input {
@@ -264,32 +266,50 @@ article {
   -ms-border-radius: 5pt;
   -o-border-radius: 5pt;
   border-radius: 5pt;
-  border: #657b83 1pt solid;
-  background: rgba(7, 54, 66, 0.5);
+  border: #6a8365 1pt solid;
+  background: rgba(13, 54, 0, 0.5);
 }
 .colored_table {
   border-spacing: 0;
 }
-.colored_table td,
-.colored_table th {
+.colored_table tbody td,
+.colored_table thead th {
   padding: 0 5pt 0 5pt;
 }
 .colored_table tbody tr:nth-child(2n+1) td {
-  background: rgba(7, 54, 66, 0.3);
+  background: rgba(21, 67, 7, 0.3);
 }
 .colored_table tbody tr:nth-child(2n) td {
-  background: rgba(0, 43, 54, 0.3);
+  background: rgba(13, 54, 0, 0.3);
 }
 .colored_table tbody tr.ui-selecting td {
-  color: #002b36;
-  background: rgba(238, 232, 213, 0.3);
+  color: #0d3600;
+  background: #eee8d5;
 }
 .colored_table tbody tr.ui-selected td {
-  color: #002b36;
-  background: rgba(238, 232, 213, 0.5);
+  color: #0d3600;
+  background: #eee8d5;
 }
 .colored_table thead tr th {
-  background: rgba(7, 54, 66, 0.5);
+  background: rgba(21, 67, 7, 0.5);
+}
+.ui-button,
+.button {
+  -webkit-border-radius: 5pt;
+  -moz-border-radius: 5pt;
+  -ms-border-radius: 5pt;
+  -o-border-radius: 5pt;
+  border-radius: 5pt;
+  border: #6a8365 1pt solid;
+  background: #0d3600 url("img/gradient.png") repeat-x;
+  color: #99a193;
+  cursor: pointer;
+  overflow: hidden;
+}
+.ui-button:hover,
+.button_hover {
+  background: #154307;
+  color: #eee8d5;
 }
 .radio_menu input[type="radio"] {
   display: none;
@@ -300,21 +320,46 @@ article {
   -ms-border-radius: 5pt;
   -o-border-radius: 5pt;
   border-radius: 5pt;
-  border: #657b83 1pt solid;
+  border: #6a8365 1pt solid;
   border-radius: 5pt 5pt 0 0;
   border-bottom: 0 hidden;
-  background: rgba(0, 43, 54, 0.3);
+  background: rgba(13, 54, 0, 0.3);
   padding: 0 5pt;
   cursor: pointer;
 }
 .radio_menu label:hover {
-  color: #002b36;
-  border-color: #657b83;
-  background: rgba(101, 123, 131, 0.3);
+  border-color: #6a8365;
+  background: rgba(106, 131, 101, 0.3);
 }
 .radio_menu input[type="radio"]:checked + label {
-  color: #002b36;
-  background: #657b83;
+  color: #0d3600;
+  background: #6a8365;
+}
+#startbutton {
+  -webkit-border-radius: 5pt;
+  -moz-border-radius: 5pt;
+  -ms-border-radius: 5pt;
+  -o-border-radius: 5pt;
+  border-radius: 5pt;
+  border: #6a8365 1pt solid;
+  background: #0d3600 url("img/gradient.png") repeat-x;
+  color: #99a193;
+  cursor: pointer;
+  left: 50%;
+  top: 50%;
+  margin: -100pt -100pt;
+  padding: 50pt 50pt;
+  vertical-align: middle;
+  text-align: center;
+  position: fixed;
+  z-index: 999;
+  overflow: hidden;
+  height: 50pt;
+  width: 100pt;
+}
+#startbutton:hover {
+  background: #154307;
+  color: #eee8d5;
 }
 html {
   background-image: url(../img/background.jpg);
@@ -334,15 +379,14 @@ video {
 #goals h1 {
   font-size: 19pt;
 }
-#goals,
 #field {
   -webkit-border-radius: 5pt;
   -moz-border-radius: 5pt;
   -ms-border-radius: 5pt;
   -o-border-radius: 5pt;
   border-radius: 5pt;
-  border: #657b83 1pt solid;
-  background: rgba(7, 54, 66, 0.5);
+  border: #6a8365 1pt solid;
+  background: rgba(13, 54, 0, 0.5);
 }
 #content {
   display: table-row;
@@ -359,53 +403,102 @@ video {
   -ms-border-radius: 5pt;
   -o-border-radius: 5pt;
   border-radius: 5pt;
-  border: #657b83 1pt solid;
-  background: rgba(7, 54, 66, 0.5);
+  border: #6a8365 1pt solid;
+  background: rgba(13, 54, 0, 0.5);
   margin: 2pt;
   border-spacing: 0;
   overflow: auto;
 }
-#content #right .team td,
-#content #left .team td,
-#content #right .team th,
-#content #left .team th {
+#content #right .team tbody td,
+#content #left .team tbody td,
+#content #right .team thead th,
+#content #left .team thead th {
   padding: 0 5pt 0 5pt;
 }
 #content #right .team tbody tr:nth-child(2n+1) td,
 #content #left .team tbody tr:nth-child(2n+1) td {
-  background: rgba(7, 54, 66, 0.3);
+  background: rgba(21, 67, 7, 0.3);
 }
 #content #right .team tbody tr:nth-child(2n) td,
 #content #left .team tbody tr:nth-child(2n) td {
-  background: rgba(0, 43, 54, 0.3);
+  background: rgba(13, 54, 0, 0.3);
 }
 #content #right .team tbody tr.ui-selecting td,
 #content #left .team tbody tr.ui-selecting td {
-  color: #002b36;
-  background: rgba(238, 232, 213, 0.3);
+  color: #0d3600;
+  background: #eee8d5;
 }
 #content #right .team tbody tr.ui-selected td,
 #content #left .team tbody tr.ui-selected td {
-  color: #002b36;
-  background: rgba(238, 232, 213, 0.5);
+  color: #0d3600;
+  background: #eee8d5;
 }
 #content #right .team thead tr th,
 #content #left .team thead tr th {
-  background: rgba(7, 54, 66, 0.5);
+  background: rgba(21, 67, 7, 0.5);
 }
-#content #right #playerstatsa,
-#content #left #playerstatsa,
-#content #right #playerstatsb,
-#content #left #playerstatsb {
+#content #right #player_a_stats,
+#content #left #player_a_stats,
+#content #right #player_b_stats,
+#content #left #player_b_stats {
   -webkit-border-radius: 5pt;
   -moz-border-radius: 5pt;
   -ms-border-radius: 5pt;
   -o-border-radius: 5pt;
   border-radius: 5pt;
-  border: #657b83 1pt solid;
-  background: rgba(7, 54, 66, 0.5);
+  border: #6a8365 1pt solid;
+  background: rgba(13, 54, 0, 0.5);
   margin: 2pt;
+}
+#content #right #player_a_stats table,
+#content #left #player_a_stats table,
+#content #right #player_b_stats table,
+#content #left #player_b_stats table {
+  border-spacing: 0;
+  width: 100%;
   height: 200pt;
+}
+#content #right #player_a_stats table tbody td,
+#content #left #player_a_stats table tbody td,
+#content #right #player_b_stats table tbody td,
+#content #left #player_b_stats table tbody td,
+#content #right #player_a_stats table thead th,
+#content #left #player_a_stats table thead th,
+#content #right #player_b_stats table thead th,
+#content #left #player_b_stats table thead th {
+  padding: 0 5pt 0 5pt;
+}
+#content #right #player_a_stats table tbody tr:nth-child(2n+1) td,
+#content #left #player_a_stats table tbody tr:nth-child(2n+1) td,
+#content #right #player_b_stats table tbody tr:nth-child(2n+1) td,
+#content #left #player_b_stats table tbody tr:nth-child(2n+1) td {
+  background: rgba(21, 67, 7, 0.3);
+}
+#content #right #player_a_stats table tbody tr:nth-child(2n) td,
+#content #left #player_a_stats table tbody tr:nth-child(2n) td,
+#content #right #player_b_stats table tbody tr:nth-child(2n) td,
+#content #left #player_b_stats table tbody tr:nth-child(2n) td {
+  background: rgba(13, 54, 0, 0.3);
+}
+#content #right #player_a_stats table tbody tr.ui-selecting td,
+#content #left #player_a_stats table tbody tr.ui-selecting td,
+#content #right #player_b_stats table tbody tr.ui-selecting td,
+#content #left #player_b_stats table tbody tr.ui-selecting td {
+  color: #0d3600;
+  background: #eee8d5;
+}
+#content #right #player_a_stats table tbody tr.ui-selected td,
+#content #left #player_a_stats table tbody tr.ui-selected td,
+#content #right #player_b_stats table tbody tr.ui-selected td,
+#content #left #player_b_stats table tbody tr.ui-selected td {
+  color: #0d3600;
+  background: #eee8d5;
+}
+#content #right #player_a_stats table thead tr th,
+#content #left #player_a_stats table thead tr th,
+#content #right #player_b_stats table thead tr th,
+#content #left #player_b_stats table thead tr th {
+  background: rgba(21, 67, 7, 0.5);
 }
 #content #center #gametrack {
   -webkit-border-radius: 5pt;
@@ -413,8 +506,8 @@ video {
   -ms-border-radius: 5pt;
   -o-border-radius: 5pt;
   border-radius: 5pt;
-  border: #657b83 1pt solid;
-  background: rgba(7, 54, 66, 0.5);
+  border: #6a8365 1pt solid;
+  background: rgba(13, 54, 0, 0.5);
   margin-top: 2pt;
   padding: 5pt;
   height: 42pt;
@@ -447,19 +540,21 @@ video {
   -ms-border-radius: 5pt;
   -o-border-radius: 5pt;
   border-radius: 5pt;
-  border: #657b83 1pt solid;
+  border: #6a8365 1pt solid;
   border-radius: 5pt 5pt 0 0;
   border-bottom: 0 hidden;
-  background: rgba(0, 43, 54, 0.3);
+  background: rgba(13, 54, 0, 0.3);
   padding: 0 5pt;
   cursor: pointer;
 }
 #content #center #perspectives_menu label:hover {
-  color: #002b36;
-  border-color: #657b83;
-  background: rgba(101, 123, 131, 0.3);
+  border-color: #6a8365;
+  background: rgba(106, 131, 101, 0.3);
 }
 #content #center #perspectives_menu input[type="radio"]:checked + label {
-  color: #002b36;
-  background: #657b83;
+  color: #0d3600;
+  background: #6a8365;
+}
+.ui-selectable {
+  cursor: pointer;
 }

@@ -42,12 +42,13 @@ public class PassSuccessPredictor extends Predictor {
 
 	@Override
 	public void update(GameInformation gameInformation) {
+
 		System.out.println(TAG + " - - - pass success prediction update with "
 				+ learner.getClass().getName() + " - - - ");
 
 		// TODO create ARFF file at the very end
 		if (Utils.ARFF_WRITING_MODE && !arffCreated)
-			if (learner.getAccumulatedInstances().size() == 595) {
+			if (learner.getAccumulatedInstances().size() == 760) { // 763 instances
 				arffCreated = true;
 				Utils.createArffFileFromInstances(learner
 						.getAccumulatedInstances(), this.getClass().getName()
@@ -80,13 +81,12 @@ public class PassSuccessPredictor extends Predictor {
 						"" + idOfLastPlayerWithBall, ""
 								+ gameInformation
 										.getCurrentBallPossessionPlayer()
-										.getId(), gameInformation
-								.getCurrentBallPossessionPlayer()
+										.getId(), (int) gameInformation
+								.getDistanceOfNearestTeammate(),
+						gameInformation.getCurrentBallPossessionPlayer()
 								.getPositionX(), gameInformation
 								.getCurrentBallPossessionPlayer()
-								.getPositionY(), (int) gameInformation
-								.getDistanceOfNearestTeammate(),
-						Math.round(gameInformation
+								.getPositionY(), Math.round(gameInformation
 								.getPlayerDistance(idOfLastPlayerWithBall)),
 						gameInformation.isPlayerOnOwnSide(gameInformation
 								.getCurrentBallPossessionPlayer()));
@@ -95,10 +95,11 @@ public class PassSuccessPredictor extends Predictor {
 		if (idOfCurrentPlayerWithBall != idOfLastPlayerWithBall
 				&& idOfLastPlayerWithBall != -1) {
 			System.out.println(TAG + "A pass occured.");
-			train(gameInformation);
+			train(gameInformation, "");
 		}
 		// no pass occurred
 		else {
+
 			System.out.println(TAG + "No pass occured.");
 			predict(gameInformation);
 		}
@@ -114,7 +115,7 @@ public class PassSuccessPredictor extends Predictor {
 	}
 
 	@Override
-	protected void train(GameInformation gameInformation) {
+	protected void train(GameInformation gameInformation, String classAttribute) {
 
 		String result = gameInformation
 				.isPlayerLastPassSuccessful(idOfLastPlayerWithBall) ? PassSuccessPredictionInstance.CLASS_PASS_SUCCESSFUL
