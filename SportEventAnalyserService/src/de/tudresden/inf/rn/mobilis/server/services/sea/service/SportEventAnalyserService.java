@@ -51,8 +51,6 @@ public class SportEventAnalyserService extends MobilisService {
 				}
 			}
 		}.start();
-		
-		
 
 		mappings = new Mappings();
 
@@ -65,8 +63,12 @@ public class SportEventAnalyserService extends MobilisService {
 
 	private void loadPlayerConfig() throws ParserConfigurationException,
 			SAXException, IOException {
-		SAXParserFactory.newInstance().newSAXParser()
-				.parse(getClass().getResource("../../../../../../../../../META-INF/playerConfig.xml").getPath(), new DefaultHandler() {
+		SAXParserFactory
+				.newInstance()
+				.newSAXParser()
+				.parse(getClass().getResource(
+						"../../../../../../../../../META-INF/playerConfig.xml")
+						.getPath(), new DefaultHandler() {
 
 					private Mapping mapping;
 
@@ -78,7 +80,7 @@ public class SportEventAnalyserService extends MobilisService {
 						if (qName.equals("player")) {
 							mapping = new Mapping();
 						} else if (qName.equals("id"))
-							xID = true;	
+							xID = true;
 						else if (qName.equals("name"))
 							xName = true;
 						else if (qName.equals("team"))
@@ -94,7 +96,8 @@ public class SportEventAnalyserService extends MobilisService {
 					public void characters(char ch[], int start, int length)
 							throws SAXException {
 						if (xID) {
-							mapping.setPlayerID(Integer.valueOf(new String(ch, start, length)));
+							mapping.setPlayerID(Integer.valueOf(new String(ch,
+									start, length)));
 							xID = false;
 						} else if (xName) {
 							mapping.setPlayerName(new String(ch, start, length));
@@ -114,22 +117,19 @@ public class SportEventAnalyserService extends MobilisService {
 						new SEADistributer(getAgent().getConnection())),
 						mappings)), new PacketTypeFilter(IQ.class));
 
-		
 		// PubSub
-				 seaPubSub = new SportEventAnalyserPubSub(getAgent().getConnection());
-						
-				// Initialize statistic
-				statistic = new Main(seaPubSub.getStatistics());
-		
+		seaPubSub = new SportEventAnalyserPubSub(getAgent().getConnection());
+
+		// Initialize statistic
+		statistic = new Main(seaPubSub.getStatistics());
+
 		for (Mapping mapping : mappings.getPlayerMappings()) {
-			//TODO: Remove Sysout
-			System.out.println("Player: " + mapping.getPlayerName() + " (ID: " + mapping.getPlayerID() + ", Team: " + mapping.getTeamName() + ")");
+			// TODO: Remove Sysout
+			System.out.println("Player: " + mapping.getPlayerName() + " (ID: "
+					+ mapping.getPlayerID() + ", Team: "
+					+ mapping.getTeamName() + ")");
 			seaPubSub.getStatistics().registerPlayer(mapping.getPlayerID());
 		}
-		seaPubSub.getStatistics().setAttackResultPrediction(0.8f, 0.1f, 0.1f);
-		seaPubSub.getStatistics().setPassSuccessPrediction(0.1f);
-		seaPubSub.getStatistics().registerPlayerHeatMap(4, 50, 50);
-		seaPubSub.getStatistics().setValueInHeatMap(4, 3, 47, 99);
 
 		// Jingle
 		SportEventAnalyserJingle seaJingle = new SportEventAnalyserJingle(
@@ -137,29 +137,12 @@ public class SportEventAnalyserService extends MobilisService {
 		seaJingle.setReceptionListener(Event.PAYLOAD_TYPE,
 				new ReceptionListener() {
 
-					private boolean first = true;
-					private long cT;
-					private int c = 0;
-
 					@Override
 					public void handle(Raw item) {
-						if (first) {
-							cT = System.currentTimeMillis();
-							first = false;
-						}
 						Event event = (Event) item;
 						statistic.sendEvent(event);
-						// System.out.println(event.getSender() + ", "
-						// + event.getTimestamp() + ", "
-						// + event.getAcceleration());
-						//seaPubSub.getStatistics().setPositionOfPlayer(event.getSender(), event.getPositionX(), event.getPositionY(), event.getVelocityX(), event.getVelocityY());
-						//seaPubSub.getStatistics().setBallContacs(event.getSender(), statistic.getGameInformation().getPlayerBallContacts(event.getSender()));
-//						c++;
-//						if (c % 100000 == 0)
-//							System.out.println("Received " + c + " Events in "
-//									+ (System.currentTimeMillis() - cT) + "ms");
-					}
 
+					}
 				});
 		seaJingle.setReceptionListener(InterruptionBegin.PAYLOAD_TYPE,
 				new ReceptionListener() {
@@ -167,10 +150,11 @@ public class SportEventAnalyserService extends MobilisService {
 					@Override
 					public void handle(Raw item) {
 						InterruptionBegin interruptionBegin = (InterruptionBegin) item;
+						statistic.setInterruptionBegin(interruptionBegin
+								.getBegin());
 						System.out.println("Interruption begins: "
 								+ interruptionBegin.getBegin());
 					}
-
 				});
 		seaJingle.setReceptionListener(InterruptionEnd.PAYLOAD_TYPE,
 				new ReceptionListener() {
@@ -178,6 +162,7 @@ public class SportEventAnalyserService extends MobilisService {
 					@Override
 					public void handle(Raw item) {
 						InterruptionEnd interruptionEnd = (InterruptionEnd) item;
+						statistic.setInterruptionBegin(interruptionEnd.getEnd());
 						System.out.println("Interruption ends: "
 								+ interruptionEnd.getEnd());
 					}

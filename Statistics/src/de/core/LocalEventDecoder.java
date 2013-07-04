@@ -40,7 +40,7 @@ public class LocalEventDecoder
 				if (data != null)
 				{
 					Event event = decodeData(data);
-					if (event.getTimestamp() >= Config.GAMESTARTTIMESTAMP)
+					if (event.getTimestamp() >= Config.GAMESTARTTIMESTAMPA)
 					{
 						esper.sendEvent(event);
 					}

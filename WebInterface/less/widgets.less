@@ -15,7 +15,7 @@
 }
 
 .colored_table {
-  td, th {
+  tbody td, thead th {
     padding: 0 5pt 0 5pt;
   }
   tbody tr:nth-child(2n+1) td{
@@ -26,16 +26,30 @@
   }
   tbody tr.ui-selecting td {
     color: @base03;
-    background: fade(@base2, 30%);
+    background: @base2;
   }
   tbody tr.ui-selected td {
     color: @base03;
-    background: fade(@base2, 50%);
+    background: @base2;
   }
   thead tr th {
     background: fade(@base02, 50%);
   }
   border-spacing: 0;
+}
+
+.ui-button,
+.button {
+  .bordered;
+  background: @base03 url("img/gradient.png") repeat-x;
+  color: @base1;
+  cursor: pointer;
+  overflow: hidden;
+}
+.ui-button:hover,
+.button_hover {
+  background: @base02;
+  color: @base2;
 }
 
 .radio_menu {
@@ -51,7 +65,6 @@
     cursor: pointer;
   }
   label:hover {
-    color: @base03;
     border-color: @base00;
     background: fade(@base00, 30%);
   }
@@ -59,4 +72,23 @@
     color: @base03;
     background: @base00;
   }
+}
+
+
+#startbutton {
+  .button;
+  left: 50%;
+  top: 50%;
+  margin: -100pt -100pt;
+  padding: 50pt 50pt;
+  vertical-align: middle;
+  text-align: center;
+  position: fixed;
+  z-index: 999;
+  overflow: hidden;
+  height: 50pt;
+  width: 100pt;
+}
+#startbutton:hover {
+  .button_hover;
 }

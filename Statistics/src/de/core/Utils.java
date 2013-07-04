@@ -1,6 +1,5 @@
 package de.core;
 
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,9 +23,13 @@ public class Utils
 		return angle;
 	}
 
-	public static int convertTimeToOffset(long timeStamp)
+	public static int convertTimeToOffset(long timestamp)
 	{
-		return (int) fastFloor((timeStamp - Config.GAMESTARTTIMESTAMP) / Config.TIMEFACTOR);
+		if (timestamp > Config.GAMESTARTTIMESTAMPB)
+		{
+			return (int) fastFloor((timestamp - Config.GAMESTARTTIMESTAMPB + 1800000000000000L) / Config.TIMEFACTOR);
+		}
+		return (int) fastFloor((timestamp - Config.GAMESTARTTIMESTAMPA) / Config.TIMEFACTOR);
 	}
 
 	public static long dateParseRegExp(String period)
@@ -66,13 +69,11 @@ public class Utils
 		return Math.min(ball.distanceBetween(sensors[0].getPositionX(), sensors[0].getPositionY()), ball.distanceBetween(sensors[1].getPositionX(), sensors[1].getPositionY()));
 	}
 
-	// TODO: schöner machen
 	public static float getDistanceBetween(int posx, int posy, int posxx, int posyy)
 	{
 		double dX = posx - posxx;
 		double dY = posy - posyy;
-		float result = (float) (dX * dX + dY * dY);
-		return (float) Math.sqrt(result);
+		return (float) Math.sqrt((float) (dX * dX + dY * dY));
 	}
 
 	public static float getDistanceBetweenTwoPlayer(Player player1, Player player2)
@@ -171,6 +172,6 @@ public class Utils
 
 	public static String timeToHumanReadable(final long milliseconds)
 	{
-		return String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(milliseconds), TimeUnit.MILLISECONDS.toSeconds(milliseconds) % 60);
+		return milliseconds / 60000 + " min, " + (milliseconds / 1000) % 60 + " sec";
 	}
 }

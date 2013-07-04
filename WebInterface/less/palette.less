@@ -1,9 +1,9 @@
-@base03  : rgba(  0,  43,  54, 1.0);
-@base02  : rgba(  7,  54,  66, 1.0);
-@base01  : rgba( 88, 110, 117, 1.0);
-@base00  : rgba(101, 123, 131, 1.0);
-@base0   : rgba(131, 148, 150, 1.0);
-@base1   : rgba(147, 161, 161, 1.0);
+@base03  : rgba( 13,  54,   0, 1.0);
+@base02  : rgba( 21,  67,   7, 1.0);
+@base01  : rgba( 94, 118,  88, 1.0);
+@base00  : rgba(106, 131, 101, 1.0);
+@base0   : rgba(138, 150, 132, 1.0);
+@base1   : rgba(153, 161, 147, 1.0);
 @base2   : rgba(238, 232, 213, 1.0);
 @base3   : rgba(253, 246, 227, 1.0);
 @yellow  : rgba(181, 137,   0, 1.0);
@@ -14,7 +14,7 @@
 @blue    : rgba( 38, 139, 210, 1.0);
 @cyan    : rgba( 42, 161, 152, 1.0);
 @green   : rgba(133, 153,   0, 1.0);
-@background: @base02;
+@background: @base03;
 @bright: @base3;
 .rebase(@rebase03,@rebase02,@rebase01,@rebase00,@rebase0,@rebase1,@rebase2,@rebase3) 
 {
@@ -30,7 +30,7 @@
 }
 /* light is default mode, so pair with general html definition */
 .light { .rebase(@base3,@base2,@base1,@base0,@base00,@base01,@base02,@base03)}
-html, .dark  { .rebase(@base03,@base02,@base01,@base00,@base0,@base1,@base2,@base3)}
+html, .dark  { .rebase(@background,@base02,@base01,@base00,@base0,@base1,@base2,@base3)}
 html * {
     color-profile: sRGB;
     rendering-intent: auto;
