@@ -858,7 +858,7 @@ public class GameInformation implements UpdateListener
 
 		final long timestamp = event.getTimestamp();
 
-		// FIXME der zeitst‰mpel liegt auﬂerhalb von GAMESTOPTIMESTAMPB
+		// FIXME der zeitstempel liegt auﬂerhalb von GAMESTOPTIMESTAMPB
 		// INFO: Spielzeit: 59 min, 59 sec - Ball ID 8 ist aktiver Ball!
 		// timestamp: 14886329544383905
 
