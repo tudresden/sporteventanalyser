@@ -79,7 +79,8 @@ public class PassSuccessPredictor extends Predictor {
 								+ gameInformation
 										.getCurrentBallPossessionPlayer()
 										.getId(), (int) gameInformation
-								.getDistanceOfNearestTeammate(),
+								.getDistanceOfNearestTeammate(),(int) gameInformation
+								.getDistanceOfNearestOpponent(),
 						gameInformation.getCurrentBallPossessionPlayer()
 								.getPositionX(), gameInformation
 								.getCurrentBallPossessionPlayer()
