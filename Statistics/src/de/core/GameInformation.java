@@ -524,7 +524,7 @@ public class GameInformation implements UpdateListener
 		return prophet;
 	}
 
-	private StatisticsFacade getStatisticsFacade()
+	public StatisticsFacade getStatisticsFacade()
 	{
 		return statisticsFacade;
 	}

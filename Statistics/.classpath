@@ -7,7 +7,7 @@
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/esper-4.9.0.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.16.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SportEventAnalyserService"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/SportEventAnalyserService"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Predictions"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
