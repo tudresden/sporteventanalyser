@@ -81,7 +81,9 @@ public class knnLearner extends Learner {
 	}
 
 	@Override
-	public void makePrediction(PredictionInstance predictionInstance) {
+	public float[] makePrediction(PredictionInstance predictionInstance) {
+
+		float[] predictionsBundle = new float[3];
 
 		Instances nearestinstances;
 		try {
@@ -108,6 +110,7 @@ public class knnLearner extends Learner {
 			printAccuracy(TAG
 					+ InstancesHeader.getClassNameString(instanceHeader) + " ");
 
+		return predictionsBundle;
 	}
 
 }

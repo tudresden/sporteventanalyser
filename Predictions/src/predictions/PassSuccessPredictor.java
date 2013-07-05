@@ -109,7 +109,15 @@ public class PassSuccessPredictor extends Predictor {
 
 	@Override
 	protected void predict(GameInformation gameInformation) {
-		learner.makePrediction(predictionInstance);
+		float[] predictionsBundle = learner.makePrediction(predictionInstance);
+		System.out.println("PREDICTION" + "  pass success: "
+				+ predictionsBundle[0] + "%  pass fail: "
+				+ predictionsBundle[1] + "%");
+
+		// send to visualization
+		if (gameInformation.getStatisticsFacade() != null)
+			gameInformation.getStatisticsFacade().setPassSuccessPrediction(
+					predictionsBundle[0]);
 	}
 
 	@Override
