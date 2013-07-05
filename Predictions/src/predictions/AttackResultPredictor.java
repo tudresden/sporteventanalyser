@@ -177,7 +177,16 @@ public class AttackResultPredictor extends Predictor {
 
 	@Override
 	protected void predict(GameInformation gameInformation) {
-		learner.makePrediction(predictionInstance);
+		float[] predictionsBundle = learner.makePrediction(predictionInstance);
+		System.out.println("PREDICTION" + "  loss: " + predictionsBundle[0]
+				+ "%  out of bounds: " + predictionsBundle[1]
+				+ "%  shot on goal: " + predictionsBundle[2] + "%");
+
+		// send to visualization
+		if (gameInformation.getStatisticsFacade() != null)
+			gameInformation.getStatisticsFacade().setAttackResultPrediction(
+					predictionsBundle[1], predictionsBundle[0],
+					predictionsBundle[2]);
 	}
 
 	@Override

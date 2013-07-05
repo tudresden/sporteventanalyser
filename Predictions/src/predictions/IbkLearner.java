@@ -37,7 +37,7 @@ public class IbkLearner extends Learner {
 		ibk = new IBk(KNN);
 		// ibk.setDistanceWeighting(new SelectedTag(WEIGHT_SIMILARITY,
 		// TAGS_WEIGHTING));
-		// int newWindowSize=300;
+		// int newWindowSize = 300;
 		// ibk.setWindowSize(newWindowSize);
 
 		try {
@@ -142,7 +142,9 @@ public class IbkLearner extends Learner {
 	}
 
 	@Override
-	public void makePrediction(PredictionInstance predictionInstance) {
+	public float[] makePrediction(PredictionInstance predictionInstance) {
+
+		float[] predictionsBundle = new float[3];
 
 		try {
 			double[] distances;
@@ -150,12 +152,25 @@ public class IbkLearner extends Learner {
 			distances = ibk.distributionForInstance(predictionInstance
 					.getInstance());
 
-			float firstClassProbability = (float) (distances[0]
-					/ (distances[0] + distances[1]) * 100f);
+			if (distances.length == 2) {
+				float firstClassProbability = (float) (distances[0]
+						/ (distances[0] + distances[1]) * 100f);
 
-			if (Utils.DEBUGGING)
-				System.out.println(TAG + "prediction " + getClassName(0) + ": "
-						+ firstClassProbability + "%");
+				predictionsBundle[0] = firstClassProbability;
+				predictionsBundle[1] = 100f - firstClassProbability;
+
+			} else if (distances.length == 3) {
+				float firstClassProbability = (float) (distances[0]
+						/ (distances[0] + distances[1] + distances[2]) * 100f);
+				float secondClassProbability = (float) (distances[1]
+						/ (distances[0] + distances[1] + distances[2]) * 100f);
+				float thirdClassProbability = 100 - firstClassProbability
+						- secondClassProbability;
+
+				predictionsBundle[0] = firstClassProbability;
+				predictionsBundle[1] = secondClassProbability;
+				predictionsBundle[2] = thirdClassProbability;
+			}
 
 		} catch (Exception e) {
 			// e.printStackTrace();
@@ -167,6 +182,7 @@ public class IbkLearner extends Learner {
 			printAccuracy(TAG
 					+ InstancesHeader.getClassNameString(instanceHeader) + " ");
 
+		return predictionsBundle;
 	}
 
 	/**
