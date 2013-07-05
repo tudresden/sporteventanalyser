@@ -32,6 +32,7 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 	private static final String ATTRIBUTE_LAST_PLAYER_ID = "ATTRIBUTE_LAST_PLAYER_ID";
 	private static final String ATTRIBUTE_CURRENT_PLAYER_ID = "ATTRIBUTE_CURRENT_PLAYER_ID";
 	private static final String ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER = "ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER";
+	private static final String ATTRIBUTE_DISTANCE_TO_NEAREST_OPPONENT = "ATTRIBUTE_DISTANCE_TO_NEAREST_OPPONENT";
 	private static final String ATTRIBUTE_CURRENT_PLAYER_X = "ATTRIBUTE_CURRENT_PLAYER_X";
 	private static final String ATTRIBUTE_CURRENT_PLAYER_Y = "ATTRIBUTE_CURRENT_PLAYER_Y";
 	private static final String ATTRIBUTE_CURRENT_PLAYER_DISTANCE = "ATTRIBUTE_CURRENT_PLAYER_DISTANCE";
@@ -44,7 +45,7 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 					ATTRIBUTE_OPPPOSITE_IN_AREA, ATTRIBUTE_PLAYER_PASS_SUCCESS,
 					ATTRIBUTE_PLAYER_PASS_MISSED, ATTRIBUTE_PLAYER_BALLCONTACT,
 					ATTRIBUTE_LAST_PLAYER_ID, ATTRIBUTE_CURRENT_PLAYER_ID,
-					ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER,
+					ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER,ATTRIBUTE_DISTANCE_TO_NEAREST_OPPONENT,
 					ATTRIBUTE_CURRENT_PLAYER_X, ATTRIBUTE_CURRENT_PLAYER_Y,
 					ATTRIBUTE_CURRENT_PLAYER_DISTANCE, ATTRIBUTE_AREA,
 					ATTRIBUTE_CLASS });
@@ -66,6 +67,7 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 		/*
 		 * attributes
 		 */
+		 //Player identify with ID
 		players = new ArrayList<String>();
 		players.add("47");
 		players.add("49");
@@ -82,14 +84,13 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 		players.add("73");
 		players.add("75");
 
+		//create Attribute-ArrayList for Instances
 		ArrayList<Attribute> attributes = new ArrayList<Attribute>();
 
-		// number of team mates
 		attributes.add(new Attribute(ATTRIBUTE_TEAMMATE_IN_AREA));
 
 		attributes.add(new Attribute(ATTRIBUTE_OPPPOSITE_IN_AREA));
 
-		// player pass success rate
 		attributes.add(new Attribute(ATTRIBUTE_PLAYER_PASS_SUCCESS));
 
 		attributes.add(new Attribute(ATTRIBUTE_PLAYER_PASS_MISSED));
@@ -100,8 +101,9 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 
 		attributes.add(new Attribute(ATTRIBUTE_CURRENT_PLAYER_ID, players));
 
-		// distance to nearest friendly player
 		attributes.add(new Attribute(ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER));
+		
+		attributes.add(new Attribute(ATTRIBUTE_DISTANCE_TO_NEAREST_OPPONENT));
 
 		attributes.add(new Attribute(ATTRIBUTE_CURRENT_PLAYER_X));
 
@@ -177,7 +179,7 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 	public void setAttributes(int numberOfTeammatesInArea,
 			int numberOfOpponentsInArea, int playerPassesSuccessful,
 			int playerPassesMissed, int ballContact, String lastPlayerId,
-			String curentPlayerId, int distanceNearestPlayer, int currentX,
+			String curentPlayerId, int distanceNearestPlayer, int distanceNearestOpponent, int currentX,
 			int currentY, int playerDistance, boolean playerOnOwnSide) {
 		createEmptyInstance();
 
@@ -217,6 +219,10 @@ public class PassSuccessPredictionInstance extends PredictionInstance {
 		currentInstance.setValue(
 				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_X), currentX);
 
+		currentInstance.setValue(
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_DISTANCE_TO_NEAREST_OPPONENT),
+				distanceNearestOpponent);
+				
 		currentInstance.setValue(
 				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_Y), currentY);
 
