@@ -27,8 +27,8 @@ class Engine
       y: 0
       z: 0
     @reality =
-      width: 120
-      height: 50
+      width: FIELD_WIDTH
+      height: FIELD_HEIGHT
       offx: 0
       offy: 0
     @field = null
@@ -68,18 +68,18 @@ class Engine
 
     switch @camera_mode
       when "BIRD"
-        @camera.position.set 0, 60, 0
+        @camera.position.set 0, FIELD_WIDTH/2, 0
         @camera.rotation.set -Math.PI / 2, 0, 0
       when "KEEPERA"
-        @camera.position.set -60, 6, 0
+        @camera.position.set -FIELD_WIDTH/2, 6, 0
         @camera.lookAt @mean_ball_pos
       when "KEEPERB"
-        @camera.position.set 60, 6, 0
+        @camera.position.set FIELD_WIDTH/2, 6, 0
         @camera.lookAt @mean_ball_pos
       else
-        @camera.position.x =       5 * Math.cos (time / 1200)
-        @camera.position.y = 33 +  5 * Math.sin (time / 600)
-        @camera.position.z = 50 + 25 * Math.sin (time / 2700)
+        @camera.position.x =       5 * Math.sin (time / 600)
+        @camera.position.y = 33 +  5 * Math.cos (time / 1200)
+        @camera.position.z = FIELD_WIDTH/2 +  5 * Math.sin (time / 2700)
         @camera.lookAt @mean_ball_pos
     obj.follow(@camera.position, @camera_mode == "BIRD") for obj in @obj_stack
     obj.animate(time) for obj in @obj_stack

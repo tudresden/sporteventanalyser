@@ -7,7 +7,7 @@ class Drawable
     for f in @followers
       do (f) ->
         if reset
-          f.rotation.set -Math.PI/2, 0, 0
+          f.rotation.set -PI2, 0, 0
         else
           f.lookAt target
 
@@ -29,15 +29,15 @@ class Moveable extends Drawable
 class Field extends Drawable
   constructor: (texturefile, @reality) ->
     @ratio = @reality.width / @reality.height
-    @width = 120
-    @height = 90
+    @width = FIELD_WIDTH
+    @height = FIELD_HEIGHT
     geometry = new THREE.PlaneGeometry(@width, @height)
     mat_cfg = 
       map:  new THREE.ImageUtils.loadTexture texturefile
       side: THREE.DoubleSide
     material = new THREE.MeshLambertMaterial(mat_cfg)
     @field = new THREE.Mesh geometry, material
-    @field.rotation.set -Math.PI/2, 0, 0
+    @field.rotation.set -PI2, 0, 0
     @drawables = [@field]
     @followers = []
 
@@ -46,7 +46,7 @@ class Field extends Drawable
 
 class Ball extends Moveable
   constructor: (texturefile) ->
-    geometry = new THREE.PlaneGeometry(2, 2)
+    geometry = new THREE.PlaneGeometry(BALL_SIZE, BALL_SIZE)
     mat_cfg =
       map:       new THREE.ImageUtils.loadTexture texturefile
       alphaTest: 0.5
@@ -60,7 +60,7 @@ class Ball extends Moveable
     material = new THREE.MeshBasicMaterial mat_cfg
     @shadow = new THREE.Mesh geometry, material
     @shadow.position.y = 0.001
-    @shadow.rotation.set -Math.PI/2, 0, 0
+    @shadow.rotation.set -PI2, 0, 0
 
     @followers = [@ball]
     @drawables = [@ball, @shadow]
@@ -70,7 +70,7 @@ class Ball extends Moveable
       x: 0,
       y: 0,  # middle of the field
       z: 0
-    @anim_factor = 10
+    @anim_factor = ANIM_FACTOR
     @time = 0
 
   animate: (time) ->
@@ -91,7 +91,7 @@ class Ball extends Moveable
 
 class Player extends Moveable
   constructor: (@id, @name, @team, @tricot_image) ->
-    geometry = new THREE.PlaneGeometry(4, 4)
+    geometry = new THREE.PlaneGeometry(PLAYER_SIZE, PLAYER_SIZE)
     mat_cfg =
       map:       new THREE.ImageUtils.loadTexture @tricot_image
       transparent: true
@@ -99,7 +99,7 @@ class Player extends Moveable
     @shirt = new THREE.Mesh(geometry, material)
     @shirt.position.y = @shirt.geometry.height/2
 
-    geometry = new THREE.PlaneGeometry 2, 2
+    geometry = new THREE.PlaneGeometry PLAYER_SIZE2, PLAYER_SIZE2
     mat_cfg =
       map:         new THREE.ImageUtils.loadTexture "img/shadow.png"
       alpha:       0.5
@@ -107,15 +107,16 @@ class Player extends Moveable
     material = new THREE.MeshBasicMaterial mat_cfg
     @shadow = new THREE.Mesh geometry, material
     @shadow.position.y = 0.005
-    @shadow.rotation.set -Math.PI/2, 0, 0
+    @shadow.rotation.set -PI2, 0, 0
 
-    geometry = new THREE.PlaneGeometry 5, 5
+    geometry = new THREE.PlaneGeometry SELECT_SIZE, SELECT_SIZE
     mat_cfg =
       map:         new THREE.ImageUtils.loadTexture "img/selection.png"
       transparent: true
     material = new THREE.MeshBasicMaterial mat_cfg
     @select = new THREE.Mesh geometry, material
     @select.position.y = 0.01
+    @select.rotation.set -PI2, 0, 0
 
     @followers = [@shirt]
     @drawables = [@shirt, @shadow, @select]
@@ -124,7 +125,7 @@ class Player extends Moveable
     @target_pos =
       x: 0,
       y: 0  # middle of the field
-    @anim_factor = 10
+    @anim_factor = ANIM_FACTOR
     @time = 0
     @selected = 2
 
@@ -145,11 +146,10 @@ class Player extends Moveable
       when 1
         s = 1 + 0.2 * Math.sin(0.005 * time)
         @select.scale.set s, s, s
-        @select.rotation.y = 0.01 * time
+        @select.rotation.z = 0.01 * time
         @select.position.x = @shirt.position.x
         @select.position.z = @shirt.position.z
         @select.material.opacity = 1.0
-        @shirt.rotation.x = Math.PI/2
         @shirt.material.opacity = 1.0
       else
         @select.material.opacity = 0
