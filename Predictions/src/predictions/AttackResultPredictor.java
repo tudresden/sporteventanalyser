@@ -52,8 +52,11 @@ public class AttackResultPredictor extends Predictor {
 
 	@Override
 	public void update(GameInformation gameInformation) {
-		System.out.println(TAG + " - - - attack result prediction update with "
-				+ learner.getClass().getName() + " - - - ");
+
+		if (Utils.DEBUGGING)
+			System.out.println(TAG
+					+ " - - - attack result prediction update with "
+					+ learner.getClass().getName() + " - - - ");
 
 		// TODO create ARFF file at the very end
 		if (Utils.ARFF_WRITING_MODE && !arffCreated)
@@ -174,7 +177,16 @@ public class AttackResultPredictor extends Predictor {
 
 	@Override
 	protected void predict(GameInformation gameInformation) {
-		learner.makePrediction(predictionInstance);
+		float[] predictionsBundle = learner.makePrediction(predictionInstance);
+		System.out.println("PREDICTION" + "  loss: " + predictionsBundle[0]
+				+ "%  out of bounds: " + predictionsBundle[1]
+				+ "%  shot on goal: " + predictionsBundle[2] + "%");
+
+		// send to visualization
+		if (gameInformation.getStatisticsFacade() != null)
+			gameInformation.getStatisticsFacade().setAttackResultPrediction(
+					predictionsBundle[1], predictionsBundle[0],
+					predictionsBundle[2]);
 	}
 
 	@Override

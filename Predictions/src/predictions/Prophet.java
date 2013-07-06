@@ -34,7 +34,6 @@ public class Prophet {
 
 		// listOfPredictors.add(new PassSuccessPredictor(
 		// new HoeffdingTreeLearner()));
-
 		listOfPredictors.add(new PassSuccessPredictor(new IbkLearner()));
 
 		// listOfPredictors.add(new PassSuccessPredictor(new knnLearner()));
@@ -43,6 +42,8 @@ public class Prophet {
 		 * attack result prediction
 		 */
 
+		// listOfPredictors.add(new AttackResultPredictor(
+		// new HoeffdingTreeLearner()));
 		listOfPredictors.add(new AttackResultPredictor(new IbkLearner()));
 	}
 
