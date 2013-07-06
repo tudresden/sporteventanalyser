@@ -25,7 +25,7 @@ public class Utils
 
 	public static int convertTimeToOffset(long timestamp)
 	{
-		if (timestamp > Config.GAMESTARTTIMESTAMPB)
+		if (timestamp >= Config.GAMESTARTTIMESTAMPB)
 		{
 			return (int) fastCeil((timestamp - Config.GAMESTARTTIMESTAMPB + 1800000000000000L) / Config.TIMEFACTOR);
 		}
