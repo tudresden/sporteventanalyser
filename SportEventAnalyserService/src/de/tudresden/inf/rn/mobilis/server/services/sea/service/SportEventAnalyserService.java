@@ -145,27 +145,13 @@ public class SportEventAnalyserService extends MobilisService
 		seaJingle.setReceptionListener(Event.PAYLOAD_TYPE, new ReceptionListener()
 		{
 
-			private boolean first = true;
-			private long cT;
-			private int c = 0;
-
 			@Override
 			public void handle(Raw item)
 			{
-				if (first)
-				{
-					cT = System.currentTimeMillis();
-					first = false;
-				}
 				Event event = (Event) item;
 				statistic.sendEvent(event);
 
-				// c++;
-				// if (c % 100000 == 0)
-				// System.out.println("Received " + c + " Events in "
-				// + (System.currentTimeMillis() - cT) + "ms");
 			}
-
 		});
 		seaJingle.setReceptionListener(InterruptionBegin.PAYLOAD_TYPE, new ReceptionListener()
 		{
@@ -177,7 +163,6 @@ public class SportEventAnalyserService extends MobilisService
 				statistic.setInterruptionBegin(interruptionBegin.getBegin());
 				System.out.println("Interruption begins: " + interruptionBegin.getBegin());
 			}
-
 		});
 		seaJingle.setReceptionListener(InterruptionEnd.PAYLOAD_TYPE, new ReceptionListener()
 		{
@@ -186,7 +171,7 @@ public class SportEventAnalyserService extends MobilisService
 			public void handle(Raw item)
 			{
 				InterruptionEnd interruptionEnd = (InterruptionEnd) item;
-				statistic.setInterruptionBegin(interruptionEnd.getEnd());
+				statistic.setInterruptionEnd(interruptionEnd.getEnd());
 				System.out.println("Interruption ends: " + interruptionEnd.getEnd());
 			}
 

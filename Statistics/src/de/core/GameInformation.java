@@ -1,5 +1,6 @@
 package de.core;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +49,7 @@ public class GameInformation implements UpdateListener
 	/**
 	 * false for half 1, true for half 2
 	 */
-	private boolean halftime = false; // TODO @Tommy: wann wird das ding umgestellt?
+	private boolean halftime = false;
 
 	/**
 	 * The timestamp of the last ball that was lost to the other team.
@@ -85,6 +86,12 @@ public class GameInformation implements UpdateListener
 	 * timestamp of lastBallEvent - BESSER: letztes Ball Objekt halten - ging nur nicht bei mir o.O genauso unten
 	 */
 	private long timeBall = 0;
+
+	// new
+	private long lastHitTimeStamp = 0;
+	private Point lastHitPosition = new Point(0, 0);
+	private int lastHitPlayerID = 0;
+	private boolean lastShotOnGoalDisplayed;
 
 	public GameInformation(StatisticsFacade statisticsFacade)
 	{
@@ -517,7 +524,7 @@ public class GameInformation implements UpdateListener
 		return prophet;
 	}
 
-	private StatisticsFacade getStatisticsFacade()
+	public StatisticsFacade getStatisticsFacade()
 	{
 		return statisticsFacade;
 	}
@@ -703,6 +710,11 @@ public class GameInformation implements UpdateListener
 	private void setCurrentGameTime(long currentGameTime)
 	{
 		this.currentGameTime = currentGameTime;
+
+		if (!halftime && currentGameTime > 1800000L)
+		{
+			halftime = true;
+		}
 	}
 
 	/**
@@ -844,14 +856,28 @@ public class GameInformation implements UpdateListener
 		Event event = ((Event) newData[0].getUnderlying());
 		Entity entity = getEntityFromId(event.getSender());
 
-		setCurrentGameTime(Utils.convertTimeToOffset(event.getTimestamp()));
+		final long timestamp = event.getTimestamp();
 
+		if (timestamp < Config.GAMESTARTTIMESTAMPA || timestamp > Config.GAMESTOPTIMESTAMPB || (timestamp >= Config.GAMESTOPTIMESTAMPA && timestamp < Config.GAMESTARTTIMESTAMPB))
+		{
+			return;
+		}
+
+		setCurrentGameTime(Utils.convertTimeToOffset(timestamp));
 		final String time = Utils.timeToHumanReadable(getCurrentGameTime());
 
 		if (entity instanceof Ball)
 		{
 			Ball ball = (Ball) entity;
 			Ball activeBall = getActiveBall();
+
+			// new
+			if (!lastShotOnGoalDisplayed && lastHitPlayerID != 0 && (lastHitTimeStamp + 100000000000L) < event.getTimestamp())
+			{
+				lastShotOnGoalDisplayed = true;
+				shotOnGoal(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY());
+				lastShotOnGoalTimeStamp = lastHitTimeStamp;
+			}
 
 			// Return if ball is not within the game field.
 			if (Utils.positionWithinField(event.getPositionX(), event.getPositionY()))
@@ -895,13 +921,24 @@ public class GameInformation implements UpdateListener
 				// (see getBallHit)
 				if (getBallHit(nearestPlayer, ball))
 				{
+
+					// new
+					if (nearestPlayer.getId() != lastHitPlayerID)
+					{
+						lastHitPlayerID = nearestPlayer.getId();
+						lastHitPosition.x = ball.getPositionX();
+						lastHitPosition.y = ball.getPositionY();
+						lastHitTimeStamp = event.getTimestamp();
+						lastShotOnGoalDisplayed = false;
+					}
+
 					// update ball contacts
 					nearestPlayer.setBallContacts(nearestPlayer.getBallContacts() + 1);
 
 					/* send data update to the visualization project */
 					if (getStatisticsFacade() != null)
 					{
-						getStatisticsFacade().setBallContacs(nearestPlayer.getId(), nearestPlayer.getBallContacts());
+						getStatisticsFacade().setBallContacts(nearestPlayer.getId(), nearestPlayer.getBallContacts());
 					}
 
 					System.out.println("==================================================");

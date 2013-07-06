@@ -28,8 +28,9 @@ public abstract class Learner {
 	 * 
 	 * @param predictionInstance
 	 *            the instance to make a prediction for
+	 * @return bundle of predictions sorted by class index
 	 */
-	abstract void makePrediction(PredictionInstance predictionInstance);
+	abstract float[] makePrediction(PredictionInstance predictionInstance);
 
 	/**
 	 * Prints the current accuracy of prediction to console.

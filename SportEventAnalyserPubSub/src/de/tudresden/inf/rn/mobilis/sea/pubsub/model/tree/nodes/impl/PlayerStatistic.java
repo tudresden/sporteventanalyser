@@ -54,6 +54,11 @@ public class PlayerStatistic extends Node<PlayerStatistic> {
 	private long possessionTime;
 
 	/**
+	 * The distance this player has covered
+	 */
+	private float totalDistance;
+
+	/**
 	 * Constructor for a <code>PlayerStatistic</code>
 	 * 
 	 * @param id
@@ -73,10 +78,12 @@ public class PlayerStatistic extends Node<PlayerStatistic> {
 	 * @param possessionTime
 	 *            total amount of time on which this player had possession of
 	 *            the ball
+	 * @param totalDistance
+	 *            total distance this player has covered
 	 */
 	public PlayerStatistic(int id, int passesMade, int passesReceived,
 			int tacklings, int tacklesWon, int goalsScored, int ballContacts,
-			long possessionTime) {
+			long possessionTime, float totalDistance) {
 		this.id = id;
 		this.passesMade = passesMade;
 		this.passesReceived = passesReceived;
@@ -85,6 +92,7 @@ public class PlayerStatistic extends Node<PlayerStatistic> {
 		this.goalsScored = goalsScored;
 		this.ballContacts = ballContacts;
 		this.possessionTime = possessionTime;
+		this.totalDistance = totalDistance;
 	}
 
 	/**
@@ -242,6 +250,25 @@ public class PlayerStatistic extends Node<PlayerStatistic> {
 	}
 
 	/**
+	 * Get the total distance this player has covered
+	 * 
+	 * @return the totalDistance
+	 */
+	public float getTotalDistance() {
+		return totalDistance;
+	}
+
+	/**
+	 * Set the total distance this player has covered
+	 * 
+	 * @param totalDistance
+	 *            the totalDistance to set
+	 */
+	public void setTotalDistance(float totalDistance) {
+		this.totalDistance = totalDistance;
+	}
+
+	/**
 	 * Get the ID of this player
 	 * 
 	 * @return the id
@@ -300,6 +327,11 @@ public class PlayerStatistic extends Node<PlayerStatistic> {
 		sb.append("<possessionTime>");
 		sb.append(possessionTime);
 		sb.append("</possessionTime>");
+
+		// totalDistance
+		sb.append("<totalDistance>");
+		sb.append(totalDistance);
+		sb.append("</totalDistance>");
 
 		sb.append("</PlayerStatistic>");
 
@@ -382,6 +414,14 @@ public class PlayerStatistic extends Node<PlayerStatistic> {
 			sb.append("</possessionTime>");
 		}
 
+		// totalDistance
+		if (iNode.getTotalDistance() != this.getTotalDistance()) {
+			c = true;
+			sb.append("<totalDistance>");
+			sb.append(totalDistance);
+			sb.append("</totalDistance>");
+		}
+
 		if (c) {
 			sb.append("</PlayerStatistic>");
 
@@ -406,7 +446,8 @@ public class PlayerStatistic extends Node<PlayerStatistic> {
 	@Override
 	public PlayerStatistic clone() {
 		return new PlayerStatistic(id, passesMade, passesReceived, tacklings,
-				tacklesWon, goalsScored, ballContacts, possessionTime);
+				tacklesWon, goalsScored, ballContacts, possessionTime,
+				totalDistance);
 	}
 
 }

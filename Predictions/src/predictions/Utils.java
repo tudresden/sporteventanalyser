@@ -20,7 +20,7 @@ public class Utils {
 	 * If set to <i>true</i>, all instances will be collected and an ARFF file
 	 * will be created at the end.
 	 */
-	public static final boolean ARFF_WRITING_MODE = true;
+	public static final boolean ARFF_WRITING_MODE = false;
 
 	public static final String FIELD_AREA_OWN_TEAM = "FIELD_AREA_OWN_TEAM";
 	public static final String FIELD_AREA_MIDDLE = "FIELD_AREA_MIDDLE";
@@ -68,10 +68,17 @@ public class Utils {
 		System.out.println("Creating arff file from " + dataSet.size()
 				+ " prediction instances.");
 
+		// create unique file name
+		int fileNumber = 0;
+		String filePathString = "";
+		while (new File(filePathString = "../Predictions/prediction_logs/" + fileName + "_"
+				+ (++fileNumber) + ".arff").exists())
+			;
+
 		ArffSaver saver = new ArffSaver();
 		saver.setInstances(dataSet);
 		try {
-			saver.setFile(new File("./prediction_logs/" + fileName + ".arff"));
+			saver.setFile(new File(filePathString));
 			saver.writeBatch();
 		} catch (Throwable t) {
 			t.printStackTrace();

@@ -24,7 +24,7 @@ public class IbkLearner extends Learner {
 			new Tag(4, "WEIGHT_SIMILARITY"), new Tag(1, "WEIGHT_NONE"),
 			new Tag(2, "WEIGHT_INVERSE") };
 
-	private static final int KNN = 11;
+	private static final int KNN = 1;
 
 	private IBk ibk;
 
@@ -35,9 +35,9 @@ public class IbkLearner extends Learner {
 		this.instanceHeader = instanceHeader;
 
 		ibk = new IBk(KNN);
-		ibk.setDistanceWeighting(new SelectedTag(WEIGHT_SIMILARITY,
-				TAGS_WEIGHTING));
-		// int newWindowSize=300;
+		// ibk.setDistanceWeighting(new SelectedTag(WEIGHT_SIMILARITY,
+		// TAGS_WEIGHTING));
+		// int newWindowSize = 300;
 		// ibk.setWindowSize(newWindowSize);
 
 		try {
@@ -67,22 +67,53 @@ public class IbkLearner extends Learner {
 			distances = ibk.distributionForInstance(trainingInstance
 					.getInstance());
 
-			float firstClassProbability = (float) (distances[0]
-					/ (distances[0] + distances[1]) * 100f);
+			if (distances.length == 2) {
+				float firstClassProbability = (float) (distances[0]
+						/ (distances[0] + distances[1]) * 100f);
 
-			// prediction correct
-			if (firstClassProbability > 50f && result.equals(getClassName(0))
-					|| firstClassProbability <= 50f
-					&& result.equals(getClassName(1))) {
-				numberSamplesCorrect++;
-				if (Utils.DEBUGGING)
-					System.out.println(TAG + "Prediction was correct.");
-			}
+				// prediction correct
+				if (firstClassProbability > 50f
+						&& result.equals(getClassName(0))
+						|| firstClassProbability <= 50f
+						&& result.equals(getClassName(1))) {
+					numberSamplesCorrect++;
+					if (Utils.DEBUGGING)
+						System.out.println(TAG + "Prediction was correct.");
+				}
 
-			// prediction wrong
-			else {
-				if (Utils.DEBUGGING)
-					System.out.println(TAG + "Prediction was wrong.");
+				// prediction wrong
+				else {
+					if (Utils.DEBUGGING)
+						System.out.println(TAG + "Prediction was wrong.");
+				}
+			} else {
+				float firstClassProbability = (float) (distances[0]
+						/ (distances[0] + distances[1] + distances[2]) * 100f);
+				float secondClassProbability = (float) (distances[1]
+						/ (distances[0] + distances[1] + distances[2]) * 100f);
+				float thirdClassProbability = 100 - firstClassProbability
+						- secondClassProbability;
+
+				// prediction correct
+				if (firstClassProbability > secondClassProbability
+						&& firstClassProbability > thirdClassProbability
+						&& result.equals(getClassName(0))
+						|| secondClassProbability > firstClassProbability
+						&& secondClassProbability > thirdClassProbability
+						&& result.equals(getClassName(1))
+						|| thirdClassProbability > secondClassProbability
+						&& thirdClassProbability > firstClassProbability
+						&& result.equals(getClassName(2))) {
+					numberSamplesCorrect++;
+					if (Utils.DEBUGGING)
+						System.out.println(TAG + "Prediction was correct.");
+				}
+
+				// prediction wrong
+				else {
+					if (Utils.DEBUGGING)
+						System.out.println(TAG + "Prediction was wrong.");
+				}
 			}
 
 		} catch (Exception e1) {
@@ -106,11 +137,14 @@ public class IbkLearner extends Learner {
 		} catch (Exception e) {
 		}
 
-		printAccuracy(TAG);
+		printAccuracy(TAG + InstancesHeader.getClassNameString(instanceHeader)
+				+ " ");
 	}
 
 	@Override
-	public void makePrediction(PredictionInstance predictionInstance) {
+	public float[] makePrediction(PredictionInstance predictionInstance) {
+
+		float[] predictionsBundle = new float[3];
 
 		try {
 			double[] distances;
@@ -118,12 +152,25 @@ public class IbkLearner extends Learner {
 			distances = ibk.distributionForInstance(predictionInstance
 					.getInstance());
 
-			float firstClassProbability = (float) (distances[0]
-					/ (distances[0] + distances[1]) * 100f);
+			if (distances.length == 2) {
+				float firstClassProbability = (float) (distances[0]
+						/ (distances[0] + distances[1]) * 100f);
 
-			if (Utils.DEBUGGING)
-				System.out.println(TAG + "prediction " + getClassName(0) + ": "
-						+ firstClassProbability + "%");
+				predictionsBundle[0] = firstClassProbability;
+				predictionsBundle[1] = 100f - firstClassProbability;
+
+			} else if (distances.length == 3) {
+				float firstClassProbability = (float) (distances[0]
+						/ (distances[0] + distances[1] + distances[2]) * 100f);
+				float secondClassProbability = (float) (distances[1]
+						/ (distances[0] + distances[1] + distances[2]) * 100f);
+				float thirdClassProbability = 100 - firstClassProbability
+						- secondClassProbability;
+
+				predictionsBundle[0] = firstClassProbability;
+				predictionsBundle[1] = secondClassProbability;
+				predictionsBundle[2] = thirdClassProbability;
+			}
 
 		} catch (Exception e) {
 			// e.printStackTrace();
@@ -131,8 +178,11 @@ public class IbkLearner extends Learner {
 				System.out.println(TAG + "no neighbors found");
 		}
 
-		printAccuracy(TAG);
+		if (Utils.DEBUGGING)
+			printAccuracy(TAG
+					+ InstancesHeader.getClassNameString(instanceHeader) + " ");
 
+		return predictionsBundle;
 	}
 
 	/**

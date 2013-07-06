@@ -8,7 +8,7 @@ public interface ICurrentPlayerData {
 
 	/**
 	 * Set the statistic values of a player. The player must be registered first
-	 * ( <code>StatisticsFacade.registerPlayer(id)</code>). Otherwise nothing
+	 * (<code>StatisticsFacade.registerPlayer(id)</code>). Otherwise nothing
 	 * will be published
 	 * 
 	 * @param id
@@ -25,17 +25,16 @@ public interface ICurrentPlayerData {
 	 *            the number of goals scored by this player
 	 * @param ballContacts
 	 *            the number of ball contacts of this player
-	 * @param possessionTime
-	 *            the total amount of time on which this player had possession
-	 *            of the ball
+	 * @param totalDistance
+	 *            the total distance this player has covered
 	 */
 	public void setPlayerStatistic(int id, int passesMade, int passesReceived,
 			int tacklings, int tacklesWon, int goalsScored, int ballContacts,
-			long possessionTime);
+			long possessionTime, float totalDistance);
 
 	/**
 	 * Set the number of passes made by this player. The player must be
-	 * registered first ( <code>StatisticsFacade.registerPlayer(id)</code>).
+	 * registered first (<code>StatisticsFacade.registerPlayer(id)</code>).
 	 * Otherwise nothing will be published
 	 * 
 	 * @param id
@@ -47,7 +46,7 @@ public interface ICurrentPlayerData {
 
 	/**
 	 * Set the number of passes received by this player. The player must be
-	 * registered first ( <code>StatisticsFacade.registerPlayer(id)</code>).
+	 * registered first (<code>StatisticsFacade.registerPlayer(id)</code>).
 	 * Otherwise nothing will be published
 	 * 
 	 * @param id
@@ -59,7 +58,7 @@ public interface ICurrentPlayerData {
 
 	/**
 	 * Set the number of tacklings of this player. The player must be registered
-	 * first ( <code>StatisticsFacade.registerPlayer(id)</code>). Otherwise
+	 * first (<code>StatisticsFacade.registerPlayer(id)</code>). Otherwise
 	 * nothing will be published
 	 * 
 	 * @param id
@@ -71,7 +70,7 @@ public interface ICurrentPlayerData {
 
 	/**
 	 * Set the number of successful tacklings of this player. The player must be
-	 * registered first ( <code>StatisticsFacade.registerPlayer(id)</code>).
+	 * registered first (<code>StatisticsFacade.registerPlayer(id)</code>).
 	 * Otherwise nothing will be published
 	 * 
 	 * @param id
@@ -83,7 +82,7 @@ public interface ICurrentPlayerData {
 
 	/**
 	 * Set the number of goals scored by this player. The player must be
-	 * registered first ( <code>StatisticsFacade.registerPlayer(id)</code>).
+	 * registered first (<code>StatisticsFacade.registerPlayer(id)</code>).
 	 * Otherwise nothing will be published
 	 * 
 	 * @param id
@@ -95,7 +94,7 @@ public interface ICurrentPlayerData {
 
 	/**
 	 * Set the number of ball contacts of this player. The player must be
-	 * registered first ( <code>StatisticsFacade.registerPlayer(id)</code>).
+	 * registered first (<code>StatisticsFacade.registerPlayer(id)</code>).
 	 * Otherwise nothing will be published
 	 * 
 	 * @param id
@@ -103,7 +102,7 @@ public interface ICurrentPlayerData {
 	 * @param ballContacts
 	 *            the number of ball contacts of this player
 	 */
-	public void setBallContacs(int id, int ballContacts);
+	public void setBallContacts(int id, int ballContacts);
 
 	/**
 	 * Set the total amount of time on which this player had possession of the
@@ -119,4 +118,15 @@ public interface ICurrentPlayerData {
 	 */
 	public void setPossessionTime(int id, long possessionTime);
 
+	/**
+	 * Set the total distance this player has covered. The player must be
+	 * registered first (<code>StatisticsFacade.registerPlayer(id)</code>).
+	 * Otherwise nothing will be published
+	 * 
+	 * @param id
+	 *            the id of the player
+	 * @param totalDistance
+	 *            the total distance this player has covered
+	 */
+	public void setTotalDistance(int id, float totalDistance);
 }

@@ -10,7 +10,15 @@ public class Config
 
 	public final static float BALLPOSSESSIONTHRESHOLD = 1000f; // 1000mm = 1m
 
-	public final static long GAMESTARTTIMESTAMP = 10753295594424116L;
+	// first half 30min, 4sec
+	public final static long GAMESTARTTIMESTAMPA = 10753295594424116L;
+	// public final static long GAMESTOPTIMESTAMPA = 12557295594424116L; // from DEBS - NOT CORRECT!
+	public final static long GAMESTOPTIMESTAMPA = 12553295594424116L;
+
+	public final static long GAMESTARTTIMESTAMPB = 13086639146403495L;
+	// public final static long GAMESTOPTIMESTAMPB = 14879639146403495L; // from DEBS - NOT CORRECT!
+	public final static long GAMESTOPTIMESTAMPB = 14886639146403495L;
+
 	public final static long DATAPUSHINTERVAL = 1000; // in ms
 
 	public static final int GAMEFIELDMINX = -50;

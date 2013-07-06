@@ -3,8 +3,10 @@ package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentHeatMapData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPlayerData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPositionData;
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPrognosisData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentTeamData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.CollectionNode;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.ItemNode;
@@ -40,12 +42,24 @@ public class StatisticCollection extends CollectionNode<StatisticCollection> {
 	private CurrentTeamData currentTeamData;
 
 	/**
+	 * A <code>CurrentHeatMapData</code> statistic node
+	 */
+	private CurrentHeatMapData currentHeatMapData;
+
+	/**
+	 * A <code>CurrentPrognosisData</code> prediction node
+	 */
+	private CurrentPrognosisData currentPrognosisData;
+
+	/**
 	 * Constructor for this <code>StatisticCollection</code>
 	 */
 	public StatisticCollection() {
 		this.currentPositionData = new CurrentPositionData();
 		this.currentPlayerData = new CurrentPlayerData();
 		this.currentTeamData = new CurrentTeamData();
+		this.currentHeatMapData = new CurrentHeatMapData();
+		this.currentPrognosisData = new CurrentPrognosisData();
 	}
 
 	/**
@@ -58,12 +72,19 @@ public class StatisticCollection extends CollectionNode<StatisticCollection> {
 	 *            the original <code>CurrentPlayerData</code>
 	 * @param currentTeamData
 	 *            the original <code>CurrentTeamData</code>
+	 * @param currentHeatMapData
+	 *            the original <code>CurrentHeatMapData</code>
 	 */
 	private StatisticCollection(CurrentPositionData currentPositionData,
-			CurrentPlayerData currentPlayerData, CurrentTeamData currentTeamData) {
+			CurrentPlayerData currentPlayerData,
+			CurrentTeamData currentTeamData,
+			CurrentHeatMapData currentHeatMapData,
+			CurrentPrognosisData currentPrognosisData) {
 		this.currentPositionData = currentPositionData;
 		this.currentPlayerData = currentPlayerData;
 		this.currentTeamData = currentTeamData;
+		this.currentHeatMapData = currentHeatMapData;
+		this.currentPrognosisData = currentPrognosisData;
 	}
 
 	/**
@@ -93,6 +114,24 @@ public class StatisticCollection extends CollectionNode<StatisticCollection> {
 		return currentTeamData;
 	}
 
+	/**
+	 * Get the <code>CurrentHeatMapData</code>
+	 * 
+	 * @return the currentHeatMapData
+	 */
+	public CurrentHeatMapData getCurrentHeatMapData() {
+		return currentHeatMapData;
+	}
+
+	/**
+	 * Get the <code>CurrentPrognosisData</code>
+	 * 
+	 * @return the currentPrognosisData
+	 */
+	public CurrentPrognosisData getCurrentPrognosisData() {
+		return currentPrognosisData;
+	}
+
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
@@ -103,6 +142,10 @@ public class StatisticCollection extends CollectionNode<StatisticCollection> {
 		List<ItemNode<?>> list = new LinkedList<ItemNode<?>>();
 		list.add(currentPositionData);
 		list.add(currentPlayerData);
+		
+
+		list.add(currentPrognosisData);
+		list.add(currentHeatMapData);
 		list.add(currentTeamData);
 		return list;
 	}
@@ -122,12 +165,20 @@ public class StatisticCollection extends CollectionNode<StatisticCollection> {
 
 		// Copy CurrentTeamData
 		currentTeamData.copy(dest.getCurrentTeamData());
+
+		// Copy CurrentHeatMapData
+		currentHeatMapData.copy(dest.getCurrentHeatMapData());
+
+		// Copy CurrentPrognosisData
+		currentPrognosisData.copy(dest.getCurrentPrognosisData());
 	}
 
 	@Override
 	public StatisticCollection clone() {
 		return new StatisticCollection(this.currentPositionData.clone(),
-				this.currentPlayerData.clone(), this.currentTeamData.clone());
+				this.currentPlayerData.clone(), this.currentTeamData.clone(),
+				this.currentHeatMapData.clone(),
+				this.currentPrognosisData.clone());
 	}
 
 }
