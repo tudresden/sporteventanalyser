@@ -76,11 +76,14 @@ public class knnLearner extends Learner {
 			e.printStackTrace();
 		}
 
-		printAccuracy(TAG);
+		printAccuracy(TAG + InstancesHeader.getClassNameString(instanceHeader)
+				+ " ");
 	}
 
 	@Override
-	public void makePrediction(PredictionInstance predictionInstance) {
+	public float[] makePrediction(PredictionInstance predictionInstance) {
+
+		float[] predictionsBundle = new float[3];
 
 		Instances nearestinstances;
 		try {
@@ -103,8 +106,11 @@ public class knnLearner extends Learner {
 				System.out.println(TAG + "no neighbors found");
 		}
 
-		printAccuracy(TAG);
+		if (Utils.DEBUGGING)
+			printAccuracy(TAG
+					+ InstancesHeader.getClassNameString(instanceHeader) + " ");
 
+		return predictionsBundle;
 	}
 
 }

@@ -56,26 +56,36 @@ public class HoeffdingTreeLearner extends Learner {
 
 		learner.trainOnInstance(trainingInstance.getInstanceCopy());
 
-		printAccuracy(TAG);
+		printAccuracy(TAG + InstancesHeader.getClassNameString(instanceHeader)
+				+ " ");
 	}
 
 	@Override
-	public void makePrediction(PredictionInstance predictionInstance) {
+	public float[] makePrediction(PredictionInstance predictionInstance) {
+
+		float[] predictionsBundle = new float[3];
 
 		double[] predictions = learner.getVotesForInstance(predictionInstance
 				.getInstance());
 
 		if (predictions.length == 2) {
 			double sum = predictions[0] + predictions[1];
-			if (Utils.DEBUGGING)
-				System.out.println(TAG + " prediction:  " + predictions[0]
-						/ sum * 100 + "% pass will be successful");
+			predictionsBundle[0] = (float) (predictions[0] / sum * 100f);
+			predictionsBundle[1] = 100f - predictionsBundle[0];
 
-		} else if (Utils.DEBUGGING)
-			System.out.println("[PREDICTION] Votes: - n/a -");
+		} else if (predictions.length == 3) {
+			double sum = predictions[0] + predictions[1] + predictions[2];
+			predictionsBundle[0] = (float) (predictions[0] / sum * 100f);
+			predictionsBundle[1] = (float) (predictions[1] / sum * 100f);
+			predictionsBundle[2] = 100f - predictionsBundle[0]
+					- predictionsBundle[1];
+		}
 
-		printAccuracy(TAG);
+		if (Utils.DEBUGGING)
+			printAccuracy(TAG
+					+ InstancesHeader.getClassNameString(instanceHeader) + " ");
 
+		return predictionsBundle;
 	}
 
 }

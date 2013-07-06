@@ -38,8 +38,10 @@ public class PassSuccessPredictor extends Predictor {
 	@Override
 	public void update(GameInformation gameInformation) {
 
-		System.out.println(TAG + " - - - pass success prediction update with "
-				+ learner.getClass().getName() + " - - - ");
+		if (Utils.DEBUGGING)
+			System.out.println(TAG
+					+ " - - - pass success prediction update with "
+					+ learner.getClass().getName() + " - - - ");
 
 		// TODO create ARFF file at the very end
 		if (Utils.ARFF_WRITING_MODE && !arffCreated)
@@ -77,7 +79,8 @@ public class PassSuccessPredictor extends Predictor {
 								+ gameInformation
 										.getCurrentBallPossessionPlayer()
 										.getId(), (int) gameInformation
-								.getDistanceOfNearestTeammate(),
+								.getDistanceOfNearestTeammate(),(int) gameInformation
+								.getDistanceOfNearestOpponent(),
 						gameInformation.getCurrentBallPossessionPlayer()
 								.getPositionX(), gameInformation
 								.getCurrentBallPossessionPlayer()
@@ -89,13 +92,14 @@ public class PassSuccessPredictor extends Predictor {
 		// pass occurred
 		if (idOfCurrentPlayerWithBall != idOfLastPlayerWithBall
 				&& idOfLastPlayerWithBall != -1) {
-			System.out.println(TAG + "A pass occured.");
+			if (Utils.DEBUGGING)
+				System.out.println(TAG + "A pass occured.");
 			train(gameInformation, "");
 		}
 		// no pass occurred
 		else {
-
-			System.out.println(TAG + "No pass occured.");
+			if (Utils.DEBUGGING)
+				System.out.println(TAG + "No pass occured.");
 			predict(gameInformation);
 		}
 
@@ -106,7 +110,15 @@ public class PassSuccessPredictor extends Predictor {
 
 	@Override
 	protected void predict(GameInformation gameInformation) {
-		learner.makePrediction(predictionInstance);
+		float[] predictionsBundle = learner.makePrediction(predictionInstance);
+		System.out.println("PREDICTION" + "  pass success: "
+				+ predictionsBundle[0] + "%  pass fail: "
+				+ predictionsBundle[1] + "%");
+
+		// send to visualization
+		if (gameInformation.getStatisticsFacade() != null)
+			gameInformation.getStatisticsFacade().setPassSuccessPrediction(
+					predictionsBundle[0]);
 	}
 
 	@Override
