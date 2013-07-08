@@ -1,251 +1,234 @@
 package predictions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
-import moa.core.InstancesHeader;
-import weka.core.Attribute;
-import weka.core.DenseInstance;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.experiment.AveragingResultProducer;
+import de.core.GameInformation;
 
 /**
- * Encapsulates an instance for training and attack result prediction.
+ * Calculates the probability of a shot on goal / ball out of bounds / ball loss
+ * after the ongoing attack.
  * 
  */
-public class AttackResultPredictionInstance extends PredictionInstance {
+public class AttackResultPredictor extends Predictor {
 
-	public static final String CLASS_BALL_LOSS = "CLASS_BALL_LOSS";
-	public static final String CLASS_SHOT_ON_GOAL = "CLASS_SHOT_ON_GOAL";
-	public static final String CLASS_BALL_OUT_OF_BOUNDS = "CLASS_BALL_OUT_OF_BOUNDS";
+	public static final String TAG = "[Predictions][AttackResultPredictor] ";
 
-	private static final String ATTRIBUTE_TEAMMATE_IN_AREA = "ATTRIBUTE_TEAMMATE_IN_AREA";
-	private static final String ATTRIBUTE_OPPPOSITE_IN_AREA = "ATTRIBUTE_OPPPOSITE_IN_AREA";
-	private static final String ATTRIBUTE_PLAYER_PASS_RATE = "ATTRIBUTE_PLAYER_PASS_RATE";
-	private static final String ATTRIBUTE_PLAYER_BALLCONTACT = "ATTRIBUTE_PLAYER_BALLCONTACT";
-	private static final String ATTRIBUTE_LAST_PLAYER_ID = "ATTRIBUTE_LAST_PLAYER_ID";
-	private static final String ATTRIBUTE_CURRENT_PLAYER_ID = "ATTRIBUTE_CURRENT_PLAYER_ID";
-	private static final String ATTRIBUTE_DISTANCE_TO_NEAREST_TEAMMATE = "ATTRIBUTE_DISTANCE_TO_NEAREST_TEAMMATE";
-	private static final String ATTRIBUTE_CURRENT_PLAYER_X = "ATTRIBUTE_CURRENT_PLAYER_X";
-	private static final String ATTRIBUTE_CURRENT_PLAYER_Y = "ATTRIBUTE_CURRENT_PLAYER_Y";
-	private static final String ATTRIBUTE_CURRENT_PLAYER_DISTANCE = "ATTRIBUTE_CURRENT_PLAYER_DISTANCE";
-	private static final String ATTRIBUTE_AREA = "ATTRIBUTE_AREA";
-	private static final String ATTRIBUTE_PASS_COUNT = "ATTRIBUTE_PASS_COUNT";
-	private static final String ATTRIBUTE_AVERAGE_VELOCITY = "ATTRIBUTE_AVERAGE_VELOCITY";
+	private static final int PLAYER_RADIUS = 20;
 
-	public static final String ATTRIBUTE_CLASS = "AttackResultPrediction";
+	private int idOfLastPlayerWithBall = -1;
 
-	private static final List<String> ATTRIBUTE_LIST = Arrays
-			.asList(new String[] { ATTRIBUTE_TEAMMATE_IN_AREA,
-					ATTRIBUTE_OPPPOSITE_IN_AREA, ATTRIBUTE_PLAYER_PASS_RATE,
-					 ATTRIBUTE_PLAYER_BALLCONTACT,
-					ATTRIBUTE_LAST_PLAYER_ID, ATTRIBUTE_CURRENT_PLAYER_ID,
-					ATTRIBUTE_DISTANCE_TO_NEAREST_TEAMMATE,
-					ATTRIBUTE_CURRENT_PLAYER_X, ATTRIBUTE_CURRENT_PLAYER_Y,
-					ATTRIBUTE_CURRENT_PLAYER_DISTANCE, ATTRIBUTE_AREA,
-					ATTRIBUTE_PASS_COUNT, ATTRIBUTE_AVERAGE_VELOCITY,
-					ATTRIBUTE_CLASS });
+	private int passCounter = 0;
 
-	private InstancesHeader instanceHeader;
-	private Instance currentInstance;
-	ArrayList<String> players;
+	private boolean arffCreated = false;
+
+	private List<Integer> velocityHistory = new LinkedList<Integer>();
+	private long lastGameTime = -1;
+	private int lastBallYPosition = -1; // TODO x or y?
+
+	private long lastBallLossTimestamp = -1;
+	private long lastBallOutsideTimestamp = -1;
+	private long lastShotOnGoalTimestamp = -1;
+
+	private int ballLossCounter = 0;
+	private int shotOnGoalCounter = 0;
+	private int ballOutOfBoundsCounter = 0;
 
 	/**
-	 * Instantiates the prediction instance and initializes it.
+	 * Instantiates the attack result predictor.
+	 * 
+	 * @param learner
+	 *            the classifier to use for prediction
 	 */
-	public AttackResultPredictionInstance() {
-		super();
+	public AttackResultPredictor(Learner learner) {
+		super(learner);
 	}
 
 	@Override
 	public void init() {
-
-		/*
-		 * attributes
-		 */
-		players = new ArrayList<String>();
-		players.add("47");
-		players.add("49");
-		players.add("19");
-		players.add("53");
-		players.add("23");
-		players.add("57");
-		players.add("59");
-		players.add("63");
-		players.add("65");
-		players.add("67");
-		players.add("69");
-		players.add("71");
-		players.add("73");
-		players.add("75");
-
-		ArrayList<Attribute> attributes = new ArrayList<Attribute>();
-
-		// number of team mates
-		attributes.add(new Attribute(ATTRIBUTE_TEAMMATE_IN_AREA));
-
-		attributes.add(new Attribute(ATTRIBUTE_OPPPOSITE_IN_AREA));
-
-		// player pass success rate
-		attributes.add(new Attribute(ATTRIBUTE_PLAYER_PASS_RATE));
-
-		
-		attributes.add(new Attribute(ATTRIBUTE_PLAYER_BALLCONTACT));
-
-		attributes.add(new Attribute(ATTRIBUTE_LAST_PLAYER_ID, players));
-
-		attributes.add(new Attribute(ATTRIBUTE_CURRENT_PLAYER_ID, players));
-
-		// distance to nearest friendly player
-		attributes.add(new Attribute(ATTRIBUTE_DISTANCE_TO_NEAREST_TEAMMATE));
-
-		attributes.add(new Attribute(ATTRIBUTE_CURRENT_PLAYER_X));
-
-		attributes.add(new Attribute(ATTRIBUTE_CURRENT_PLAYER_Y));
-
-		attributes.add(new Attribute(ATTRIBUTE_CURRENT_PLAYER_DISTANCE));
-
-		// field area
-		ArrayList<String> areas = new ArrayList<String>();
-		areas.add(Utils.FIELD_AREA_OWN_TEAM);
-		areas.add(Utils.FIELD_AREA_MIDDLE);
-		areas.add(Utils.FIELD_AREA_OPPONENTS);
-		attributes.add(new Attribute(ATTRIBUTE_AREA, areas));
-
-		attributes.add(new Attribute(ATTRIBUTE_PASS_COUNT));
-
-		attributes.add(new Attribute(ATTRIBUTE_AVERAGE_VELOCITY));
-
-		/*
-		 * classes
-		 */
-
-		// result of attack
-		ArrayList<String> classLabels = new ArrayList<String>();
-		classLabels.add(CLASS_BALL_LOSS);
-		classLabels.add(CLASS_BALL_OUT_OF_BOUNDS);
-		classLabels.add(CLASS_SHOT_ON_GOAL);
-		attributes.add(new Attribute(ATTRIBUTE_CLASS, classLabels));
-
-		/*
-		 * create header for learner
-		 */
-
-		this.instanceHeader = new InstancesHeader(new Instances(this.getClass()
-				.getName(), attributes, 10));
-		this.instanceHeader
-				.setClassIndex(this.instanceHeader.numAttributes() - 1);
-
-		createEmptyInstance();
-	}
-
-	private void createEmptyInstance() {
-		currentInstance = new DenseInstance(getHeader().numAttributes());
-		currentInstance.setDataset(getHeader());
+		predictionInstance = new AttackResultPredictionInstance();
+		learner.init(predictionInstance.getHeader());
 	}
 
 	@Override
-	public InstancesHeader getHeader() {
-		return this.instanceHeader;
+	public void update(GameInformation gameInformation) {
+
+		if (Utils.DEBUGGING)
+			System.out.println(TAG
+					+ " - - - attack result prediction update with "
+					+ learner.getClass().getName() + " - - - ");
+
+		// TODO create ARFF file at the very end
+		if (Utils.ARFF_WRITING_MODE && !arffCreated)
+			if (learner.getAccumulatedInstances().size() == 720) { // 721instances
+				arffCreated = true;
+				Utils.createArffFileFromInstances(learner
+						.getAccumulatedInstances(), this.getClass().getName()
+						+ "_" + predictionInstance.getClass().getName());
+			}
+
+		if (gameInformation.getCurrentBallPossessionPlayer() == null) {
+			if (Utils.DEBUGGING)
+				System.out.println(TAG
+						+ "Prediction update failed: no player has ball");
+			return;
+		}
+
+		int idOfCurrentPlayerWithBall = gameInformation
+				.getCurrentBallPossessionPlayer().getId();
+
+		// pass occurred
+		if (idOfCurrentPlayerWithBall != idOfLastPlayerWithBall
+				&& idOfLastPlayerWithBall != -1) {
+			passCounter++;
+		}
+
+		// init attack values
+		long currentBallLossTimestamp = gameInformation
+				.getLastBallLossTimeStamp();
+		long currentBallOutsideTimestamp = gameInformation
+				.getLastBallOutsideTimeStamp();
+		long currentShotOnGoalTimestamp = gameInformation
+				.getLastShotOnGoalTimeStamp();
+
+		if (lastBallLossTimestamp == -1) {
+			lastBallLossTimestamp = currentBallLossTimestamp;
+			lastBallOutsideTimestamp = currentBallOutsideTimestamp;
+			lastShotOnGoalTimestamp = currentShotOnGoalTimestamp;
+		}
+
+		// init velocity values
+		long currentGameTime = gameInformation.getCurrentGameTime();
+		int currentBallXPosition = gameInformation
+				.getCurrentBallPossessionPlayer().getPositionX();
+
+		if (lastGameTime == -1) {
+			lastBallYPosition = gameInformation
+					.getCurrentBallPossessionPlayer().getPositionX();
+			lastGameTime = gameInformation.getCurrentGameTime();
+		}
+
+		// calculate velocity
+		int velocity = (int) (Math
+				.abs(currentBallXPosition - lastBallYPosition) / (currentGameTime
+				- lastGameTime + 1));
+		velocityHistory.add(velocity);
+		if (velocityHistory.size() > 5)
+			velocityHistory.remove(0);
+		int averageVelocity = 0;
+		for (int velocityValue : velocityHistory)
+			averageVelocity += velocityValue / velocityHistory.size();
+
+		lastBallYPosition = currentBallXPosition;
+		lastGameTime = currentGameTime;
+
+		// update instance
+		((AttackResultPredictionInstance) predictionInstance)
+				.setAttributes(gameInformation
+						.getTeammatesInArea(PLAYER_RADIUS), gameInformation
+						.getOpponentsInArea(PLAYER_RADIUS), gameInformation
+						.getPlayerPassesSuccessful(idOfLastPlayerWithBall),
+						gameInformation
+								.getPlayerPassesMissed(idOfLastPlayerWithBall),
+						gameInformation
+								.getPlayerBallContacts(idOfLastPlayerWithBall),
+						"" + idOfLastPlayerWithBall, ""
+								+ gameInformation
+										.getCurrentBallPossessionPlayer()
+										.getId(), (int) gameInformation
+								.getDistanceOfNearestTeammate(),
+						gameInformation.getCurrentBallPossessionPlayer()
+								.getPositionX(), gameInformation
+								.getCurrentBallPossessionPlayer()
+								.getPositionY(), Math.round(gameInformation
+								.getPlayerDistance(idOfLastPlayerWithBall)),
+						gameInformation.isPlayerOnOwnSide(gameInformation
+								.getCurrentBallPossessionPlayer()),
+						passCounter,(int) gameInformation.getDistanceOfNearestOpponent() ,averageVelocity);
+
+		// check if class event occurred
+		String eventClass = "";
+		if (lastBallLossTimestamp != currentBallLossTimestamp)
+			eventClass = AttackResultPredictionInstance.CLASS_BALL_LOSS;
+		else if (lastBallOutsideTimestamp != currentBallOutsideTimestamp)
+			eventClass = AttackResultPredictionInstance.CLASS_BALL_OUT_OF_BOUNDS;
+		else if (lastShotOnGoalTimestamp != currentShotOnGoalTimestamp)
+			eventClass = AttackResultPredictionInstance.CLASS_SHOT_ON_GOAL;
+
+		if (!eventClass.equals("")) {
+			train(gameInformation, eventClass);
+
+			// reset long tracked values
+			passCounter = 0;
+			velocityHistory.clear();
+			lastGameTime = -1;
+			lastBallYPosition = -1;
+		} else
+			predict(gameInformation);
+
+		// save values
+		idOfLastPlayerWithBall = idOfCurrentPlayerWithBall;
+
+		lastBallLossTimestamp = currentBallLossTimestamp;
+		lastBallOutsideTimestamp = currentBallOutsideTimestamp;
+		lastShotOnGoalTimestamp = currentShotOnGoalTimestamp;
+
 	}
 
 	@Override
-	public Instance getInstance() {
-		return currentInstance;
+	protected void predict(GameInformation gameInformation) {
+		float[] predictionsBundle = learner.makePrediction(predictionInstance);
+		System.out.println("PREDICTION" + "  loss: " + predictionsBundle[0]
+				+ "%  out of bounds: " + predictionsBundle[1]
+				+ "%  shot on goal: " + predictionsBundle[2] + "%");
+
+		// send to visualization
+		if (gameInformation.getStatisticsFacade() != null)
+			gameInformation.getStatisticsFacade().setAttackResultPrediction(
+					predictionsBundle[1], predictionsBundle[0],
+					predictionsBundle[2]);
 	}
 
 	@Override
-	public Instance getInstanceCopy() {
-		return (Instance) currentInstance.copy();
-	}
+	protected void train(GameInformation gameInformation, String classAttribute) {
 
-	/**
-	 * Sets the attributes of the instance. No class is set.
-	 * 
-	 * @param numberOfTeammatesInArea
-	 * @param numberOfOpponentsInArea
-	 * @param playerPassesSuccessful
-	 * @param playerPassesMissed
-	 * @param ballContact
-	 * @param lastPlayerId
-	 * @param curentPlayerId
-	 * @param distanceNearestPlayer
-	 * @param currentX
-	 * @param currentY
-	 * @param playerDistance
-	 * @param playerOnOwnSide
-	 * @param passCounter
-	 * @param averageVelocity
-	 */
-	public void setAttributes(int numberOfTeammatesInArea,
-			int numberOfOpponentsInArea, int playerPassesSuccessful,
-			int playerPassesMissed, int ballContact, String lastPlayerId,
-			String curentPlayerId, int distanceNearestPlayer, int currentX,
-			int currentY, int playerDistance, boolean playerOnOwnSide,
-			int passCounter, int averageVelocity) {
-		createEmptyInstance();
+		// count result for comparison with prediction accuracy
+		if (classAttribute
+				.equals(AttackResultPredictionInstance.CLASS_BALL_LOSS)) {
+			ballLossCounter++;
+		} else if (classAttribute
+				.equals(AttackResultPredictionInstance.CLASS_BALL_OUT_OF_BOUNDS)) {
+			ballOutOfBoundsCounter++;
+		} else {
+			shotOnGoalCounter++;
+		}
 
-		currentInstance.setValue(
-				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_TEAMMATE_IN_AREA),
-				numberOfTeammatesInArea);
-		currentInstance.setValue(
-				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_OPPPOSITE_IN_AREA),
-				numberOfOpponentsInArea);
+		if (Utils.DEBUGGING)
+			System.out.println(TAG + "event occured: " + classAttribute);
 
-		int playerPassSuccessRate = (int) (((float) playerPassesSuccessful / ((float) playerPassesSuccessful + (float) playerPassesMissed)) * 100);
-		currentInstance.setValue(
-				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_PLAYER_PASS_RATE),
-				playerPassSuccessRate);
+		((AttackResultPredictionInstance) predictionInstance)
+				.setClassAttribute(classAttribute);
 
-		currentInstance.setValue(
-				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_PLAYER_BALLCONTACT),
-				ballContact);
+		learner.train(predictionInstance);
 
-		if (players.contains(lastPlayerId))
-			currentInstance.setValue(
-					ATTRIBUTE_LIST.indexOf(ATTRIBUTE_LAST_PLAYER_ID),
-					lastPlayerId);
+		System.out
+				.println(TAG
+						+ "Ball loss = "
+						+ ((float) ballLossCounter
+								/ ((float) ballLossCounter
+										+ (float) shotOnGoalCounter + (float) ballOutOfBoundsCounter) * 100)
+						+ "%"
+						+ "  Ball out of bounds = "
+						+ ((float) ballOutOfBoundsCounter
+								/ ((float) ballLossCounter
+										+ (float) shotOnGoalCounter + (float) ballOutOfBoundsCounter) * 100)
+						+ "%"
+						+ "  Shot on goal = "
+						+ ((float) shotOnGoalCounter
+								/ ((float) ballLossCounter
+										+ (float) shotOnGoalCounter + (float) ballOutOfBoundsCounter) * 100)
+						+ "%");
 
-		if (players.contains(curentPlayerId))
-			currentInstance.setValue(
-					ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_ID),
-					curentPlayerId);
-
-		currentInstance.setValue(
-				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_DISTANCE_TO_NEAREST_TEAMMATE),
-				distanceNearestPlayer);
-
-		currentInstance.setValue(
-				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_X), currentX);
-
-		currentInstance.setValue(
-				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_Y), currentY);
-
-		currentInstance.setValue(ATTRIBUTE_LIST.indexOf(ATTRIBUTE_AREA),
-				Utils.getFieldArea(currentX, !playerOnOwnSide));
-
-		currentInstance.setValue(
-				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_DISTANCE),
-				playerDistance);
-
-		currentInstance.setValue(ATTRIBUTE_LIST.indexOf(ATTRIBUTE_PASS_COUNT),
-				passCounter);
-
-		currentInstance.setValue(
-				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_AVERAGE_VELOCITY),
-				averageVelocity);
-	}
-
-	/**
-	 * Sets the class attribute.
-	 * 
-	 * @param result
-	 *            the class
-	 */
-	public void setClassAttribute(String result) {
-		currentInstance.setClassValue(result);
 	}
 
 }
