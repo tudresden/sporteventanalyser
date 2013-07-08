@@ -23,30 +23,30 @@ public class AttackResultPredictionInstance extends PredictionInstance {
 
 	private static final String ATTRIBUTE_TEAMMATE_IN_AREA = "ATTRIBUTE_TEAMMATE_IN_AREA";
 	private static final String ATTRIBUTE_OPPPOSITE_IN_AREA = "ATTRIBUTE_OPPPOSITE_IN_AREA";
-	private static final String ATTRIBUTE_PLAYER_PASS_SUCCESS = "ATTRIBUTE_PLAYER_PASS_SUCCESS";
-	private static final String ATTRIBUTE_PLAYER_PASS_MISSED = "ATTRIBUTE_PLAYER_PASS_MISSED";
+	private static final String ATTRIBUTE_PLAYER_PASS_RATE = "ATTRIBUTE_PLAYER_PASS_RATE";
 	private static final String ATTRIBUTE_PLAYER_BALLCONTACT = "ATTRIBUTE_PLAYER_BALLCONTACT";
 	private static final String ATTRIBUTE_LAST_PLAYER_ID = "ATTRIBUTE_LAST_PLAYER_ID";
 	private static final String ATTRIBUTE_CURRENT_PLAYER_ID = "ATTRIBUTE_CURRENT_PLAYER_ID";
-	private static final String ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER = "ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER";
+	private static final String ATTRIBUTE_DISTANCE_TO_NEAREST_TEAMMATE = "ATTRIBUTE_DISTANCE_TO_NEAREST_TEAMMATE";
 	private static final String ATTRIBUTE_CURRENT_PLAYER_X = "ATTRIBUTE_CURRENT_PLAYER_X";
 	private static final String ATTRIBUTE_CURRENT_PLAYER_Y = "ATTRIBUTE_CURRENT_PLAYER_Y";
 	private static final String ATTRIBUTE_CURRENT_PLAYER_DISTANCE = "ATTRIBUTE_CURRENT_PLAYER_DISTANCE";
 	private static final String ATTRIBUTE_AREA = "ATTRIBUTE_AREA";
 	private static final String ATTRIBUTE_PASS_COUNT = "ATTRIBUTE_PASS_COUNT";
 	private static final String ATTRIBUTE_AVERAGE_VELOCITY = "ATTRIBUTE_AVERAGE_VELOCITY";
-
+	private static final String ATTRIBUTE_DISTANCE_TO_NEAREST_OPPONENT = "ATTRIBUTE_DISTANCE_TO_NEAREST_OPPONENT";
+	
 	public static final String ATTRIBUTE_CLASS = "AttackResultPrediction";
 
 	private static final List<String> ATTRIBUTE_LIST = Arrays
 			.asList(new String[] { ATTRIBUTE_TEAMMATE_IN_AREA,
-					ATTRIBUTE_OPPPOSITE_IN_AREA, ATTRIBUTE_PLAYER_PASS_SUCCESS,
-					ATTRIBUTE_PLAYER_PASS_MISSED, ATTRIBUTE_PLAYER_BALLCONTACT,
+					ATTRIBUTE_OPPPOSITE_IN_AREA, ATTRIBUTE_PLAYER_PASS_RATE,
+					 ATTRIBUTE_PLAYER_BALLCONTACT,
 					ATTRIBUTE_LAST_PLAYER_ID, ATTRIBUTE_CURRENT_PLAYER_ID,
-					ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER,
+					ATTRIBUTE_DISTANCE_TO_NEAREST_TEAMMATE,
 					ATTRIBUTE_CURRENT_PLAYER_X, ATTRIBUTE_CURRENT_PLAYER_Y,
 					ATTRIBUTE_CURRENT_PLAYER_DISTANCE, ATTRIBUTE_AREA,
-					ATTRIBUTE_PASS_COUNT, ATTRIBUTE_AVERAGE_VELOCITY,
+					ATTRIBUTE_PASS_COUNT, ATTRIBUTE_AVERAGE_VELOCITY,ATTRIBUTE_DISTANCE_TO_NEAREST_OPPONENT,
 					ATTRIBUTE_CLASS });
 
 	private InstancesHeader instanceHeader;
@@ -90,10 +90,9 @@ public class AttackResultPredictionInstance extends PredictionInstance {
 		attributes.add(new Attribute(ATTRIBUTE_OPPPOSITE_IN_AREA));
 
 		// player pass success rate
-		attributes.add(new Attribute(ATTRIBUTE_PLAYER_PASS_SUCCESS));
+		attributes.add(new Attribute(ATTRIBUTE_PLAYER_PASS_RATE));
 
-		attributes.add(new Attribute(ATTRIBUTE_PLAYER_PASS_MISSED));
-
+		
 		attributes.add(new Attribute(ATTRIBUTE_PLAYER_BALLCONTACT));
 
 		attributes.add(new Attribute(ATTRIBUTE_LAST_PLAYER_ID, players));
@@ -101,7 +100,7 @@ public class AttackResultPredictionInstance extends PredictionInstance {
 		attributes.add(new Attribute(ATTRIBUTE_CURRENT_PLAYER_ID, players));
 
 		// distance to nearest friendly player
-		attributes.add(new Attribute(ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER));
+		attributes.add(new Attribute(ATTRIBUTE_DISTANCE_TO_NEAREST_TEAMMATE));
 
 		attributes.add(new Attribute(ATTRIBUTE_CURRENT_PLAYER_X));
 
@@ -119,7 +118,8 @@ public class AttackResultPredictionInstance extends PredictionInstance {
 		attributes.add(new Attribute(ATTRIBUTE_PASS_COUNT));
 
 		attributes.add(new Attribute(ATTRIBUTE_AVERAGE_VELOCITY));
-
+		
+		attributes.add(new Attribute(ATTRIBUTE_DISTANCE_TO_NEAREST_OPPONENT));
 		/*
 		 * classes
 		 */
@@ -186,7 +186,7 @@ public class AttackResultPredictionInstance extends PredictionInstance {
 			int playerPassesMissed, int ballContact, String lastPlayerId,
 			String curentPlayerId, int distanceNearestPlayer, int currentX,
 			int currentY, int playerDistance, boolean playerOnOwnSide,
-			int passCounter, int averageVelocity) {
+			int passCounter,int distanceOpponent, int averageVelocity) {
 		createEmptyInstance();
 
 		currentInstance.setValue(
@@ -198,11 +198,8 @@ public class AttackResultPredictionInstance extends PredictionInstance {
 
 		int playerPassSuccessRate = (int) (((float) playerPassesSuccessful / ((float) playerPassesSuccessful + (float) playerPassesMissed)) * 100);
 		currentInstance.setValue(
-				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_PLAYER_PASS_SUCCESS),
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_PLAYER_PASS_RATE),
 				playerPassSuccessRate);
-
-		currentInstance.setValue(
-				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_PLAYER_PASS_MISSED), 0);
 
 		currentInstance.setValue(
 				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_PLAYER_BALLCONTACT),
@@ -219,8 +216,12 @@ public class AttackResultPredictionInstance extends PredictionInstance {
 					curentPlayerId);
 
 		currentInstance.setValue(
-				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_DISTANCE_TO_NEAREST_PLAYER),
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_DISTANCE_TO_NEAREST_TEAMMATE),
 				distanceNearestPlayer);
+		
+		currentInstance.setValue(
+				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_DISTANCE_TO_NEAREST_OPPONENT),
+				distanceOpponent);
 
 		currentInstance.setValue(
 				ATTRIBUTE_LIST.indexOf(ATTRIBUTE_CURRENT_PLAYER_X), currentX);
