@@ -828,10 +828,8 @@ public class GameInformation implements UpdateListener
 	 * @param newPosY
 	 *            new Y <code>Ball</code> position
 	 */
-	public void shotOnGoal(Ball ball, final int oldPosX, final int oldPosY, final int newPosX, final int newPosY)
+	public boolean shotOnGoal(Ball ball, final int oldPosX, final int oldPosY, final int newPosX, final int newPosY)
 	{
-		// TODO: Jon: Schauen ob er wirklich aufs Tor geht
-
 		final int vecX = newPosX - oldPosX;
 		final int vecY = newPosY - oldPosY;
 
@@ -844,11 +842,14 @@ public class GameInformation implements UpdateListener
 		if (xAmTor1 > Config.GOALONEMINX && xAmTor1 < Config.GOALONEMAXX && ball.getAcceleration() >= 15000000 && oldPosX != 0)
 		{
 			System.out.println("TORSCHUSS AUF TOR1");
+			return true;
 		}
 		if (xAmTor2 > Config.GOALTWOMINX && xAmTor2 < Config.GOALTWOMAXX && ball.getAcceleration() >= 15000000 && oldPosX != 0)
 		{
 			System.out.println("TORSCHUSS AUF TOR2");
+			return true;
 		}
+		return false;
 	}
 
 	public void update(EventBean[] newData, EventBean[] oldData)
@@ -875,8 +876,11 @@ public class GameInformation implements UpdateListener
 			if (!lastShotOnGoalDisplayed && lastHitPlayerID != 0 && (lastHitTimeStamp + 100000000000L) < event.getTimestamp())
 			{
 				lastShotOnGoalDisplayed = true;
-				shotOnGoal(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY());
-				lastShotOnGoalTimeStamp = lastHitTimeStamp;
+				if (shotOnGoal(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY()))
+				{
+					lastShotOnGoalTimeStamp = lastHitTimeStamp;
+					System.out.println("---#############---");
+				}
 			}
 
 			// Return if ball is not within the game field.
