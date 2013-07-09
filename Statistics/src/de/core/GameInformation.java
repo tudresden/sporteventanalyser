@@ -64,34 +64,34 @@ public class GameInformation implements UpdateListener
 	 * The timestamp of the last ball possession.
 	 */
 	private long lastBallPossessionTimeStamp = 0;
+	private int lastHitPlayerID = 0;
+	private Point lastHitPosition = new Point(0, 0);
+
+	// new
+	private long lastHitTimeStamp = 0;
 	/**
 	 * The timestamp of the last pushed of statistics data.
 	 */
 	private long lastPushedStatistics = 0;
+	private boolean lastShotOnGoalDisplayed;
+
 	/**
 	 * The timestamp of the last shot on goal.
 	 */
 	private long lastShotOnGoalTimeStamp = 0;
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
+
 	private Prophet prophet;
 	private StatisticsFacade statisticsFacade;
-
 	/**
 	 * Difference of timestamps for counter.
 	 */
 	private long timeAllBall = 0;
-
 	/**
 	 * timestamp of lastBallEvent - BESSER: letztes Ball Objekt halten - ging nur nicht bei mir o.O genauso unten
 	 */
 	private long timeBall = 0;
-
-	// new
-	private long lastHitTimeStamp = 0;
-	private Point lastHitPosition = new Point(0, 0);
-	private int lastHitPlayerID = 0;
-	private boolean lastShotOnGoalDisplayed;
 
 	public GameInformation(StatisticsFacade statisticsFacade)
 	{
@@ -697,9 +697,19 @@ public class GameInformation implements UpdateListener
 	 *            ball object
 	 * @return The Ball.
 	 */
-	public Ball setActiveBall(Ball ball)
+	private Ball setActiveBall(Ball ball)
 	{
 		return currentActiveBall = ball;
+	}
+
+	/**
+	 * Sets the current player that owns the ball.
+	 * 
+	 * @return <code>Player</code> object.
+	 */
+	private Player setCurrentBallPossessionPlayer(Player player)
+	{
+		return currentPlayer = player;
 	}
 
 	/**
@@ -746,7 +756,7 @@ public class GameInformation implements UpdateListener
 	 * 
 	 * @params milliseconds The relative game time in milliseconds.
 	 */
-	public void setLastBallLossTimeStamp(long milliseconds)
+	private void setLastBallLossTimeStamp(long milliseconds)
 	{
 		this.lastBallLossTimeStamp = milliseconds;
 	}
@@ -756,22 +766,22 @@ public class GameInformation implements UpdateListener
 	 * 
 	 * @params milliseconds The relative game time in milliseconds.
 	 */
-	public void setLastBallOutsideTimeStamp(long milliseconds)
+	private void setLastBallOutsideTimeStamp(long milliseconds)
 	{
 		this.lastBallOutsideTimeStamp = milliseconds;
 	}
 
-	public void setLastBallPossessionTimeStamp(long lastBallPossessionTimeStamp)
+	private void setLastBallPossessionTimeStamp(long lastBallPossessionTimeStamp)
 	{
 		this.lastBallPossessionTimeStamp = lastBallPossessionTimeStamp;
 	}
 
-	public void setLastPushedStatistics(long lastPushedStatistics)
+	private void setLastPushedStatistics(long lastPushedStatistics)
 	{
 		this.lastPushedStatistics = lastPushedStatistics;
 	}
 
-	public void setLastShotOnGoalTimeStamp(long lastShotOnGoalTimeStamp)
+	private void setLastShotOnGoalTimeStamp(long lastShotOnGoalTimeStamp)
 	{
 		this.lastShotOnGoalTimeStamp = lastShotOnGoalTimeStamp;
 	}
@@ -797,6 +807,7 @@ public class GameInformation implements UpdateListener
 		if (Utils.pass(from, to) == 1)
 		{
 			from.setSuccessfulPasses(from.getSuccessfulPasses() + 1);
+			from.setShots(from.getShots() + 1);
 			from.setLastPass(new Pass(from.getId(), to.getId(), true, from.getTimeStamp()));
 			logger.log(Level.INFO, "Spielzeit: {0} - {1} - Erfolgreiche Pässe: {2}", new Object[] { time, name, from.getSuccessfulPasses() });
 		}
@@ -804,6 +815,7 @@ public class GameInformation implements UpdateListener
 		else if (Utils.pass(from, to) == 2)
 		{
 			from.setMissedPasses(from.getMissedPasses() + 1);
+			from.setShots(from.getShots() + 1);
 			from.setLastPass(new Pass(from.getId(), to.getId(), false, from.getTimeStamp()));
 			logger.log(Level.INFO, "Spielzeit: {0} - {1} - Fehlgeschlagene Pässe: {2}", new Object[] { time, name, from.getMissedPasses() });
 		}
@@ -828,7 +840,7 @@ public class GameInformation implements UpdateListener
 	 * @param newPosY
 	 *            new Y <code>Ball</code> position
 	 */
-	public boolean shotOnGoal(Ball ball, final int oldPosX, final int oldPosY, final int newPosX, final int newPosY)
+	private boolean shotOnGoal(Ball ball, final int oldPosX, final int oldPosY, final int newPosX, final int newPosY)
 	{
 		final int vecX = newPosX - oldPosX;
 		final int vecY = newPosY - oldPosY;
@@ -878,7 +890,7 @@ public class GameInformation implements UpdateListener
 				lastShotOnGoalDisplayed = true;
 				if (shotOnGoal(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY()))
 				{
-					lastShotOnGoalTimeStamp = lastHitTimeStamp;
+					setLastShotOnGoalTimeStamp(lastHitTimeStamp);
 					System.out.println("---#############---");
 				}
 			}
@@ -905,9 +917,6 @@ public class GameInformation implements UpdateListener
 				return;
 			}
 
-			// shotOnGoal(ball, ball.getPositionX(), ball.getPositionY(),
-			// event.getPositionX(), event.getPositionY());
-
 			ball.update(event);
 
 			/* send data update to the visualization project */
@@ -917,7 +926,7 @@ public class GameInformation implements UpdateListener
 			}
 
 			Player nearestPlayer = getNearestPlayer(ball);
-			Player lastPlayer = currentPlayer;
+			Player lastPlayer = getCurrentBallPossessionPlayer();
 
 			if (nearestPlayer != null)
 			{
@@ -945,8 +954,7 @@ public class GameInformation implements UpdateListener
 						getStatisticsFacade().setBallContacts(nearestPlayer.getId(), nearestPlayer.getBallContacts());
 					}
 
-					System.out.println("==================================================");
-					String message = "";
+					String message = "==================================================";
 					List<Object> params = new ArrayList<Object>();
 
 					message += "\nSpielzeit: {0}";
@@ -987,10 +995,10 @@ public class GameInformation implements UpdateListener
 
 					logger.log(Level.INFO, message, params.toArray());
 
-					if (lastBallPossessionTimeStamp != 0 && lastPlayer != null)
+					if (getLastBallPossessionTimeStamp() != 0 && lastPlayer != null)
 					{
 						// Function for BallPossessionTime
-						lastPlayer.setBallPossessionTime(lastPlayer.getBallPossessionTime() + (nearestPlayer.getTimeStamp() - lastBallPossessionTimeStamp));
+						lastPlayer.setBallPossessionTime(lastPlayer.getBallPossessionTime() + (nearestPlayer.getTimeStamp() - getLastBallPossessionTimeStamp()));
 					}
 
 					/* Calculate Passes */
@@ -1008,9 +1016,20 @@ public class GameInformation implements UpdateListener
 						setLastBallLossTimeStamp(getCurrentGameTime());
 					}
 
-					currentPlayer = nearestPlayer;
-					lastBallPossessionTimeStamp = nearestPlayer.getTimeStamp();
+					setCurrentBallPossessionPlayer(nearestPlayer);
+					setLastBallPossessionTimeStamp(nearestPlayer.getTimeStamp());
 				}
+			}
+		}
+		else if (entity instanceof Goalkeeper)
+		{
+			Goalkeeper goalkeeper = (Goalkeeper) entity;
+			goalkeeper.update(event);
+
+			/* send data update to the visualization project */
+			if (getStatisticsFacade() != null)
+			{
+				getStatisticsFacade().setPositionOfPlayer(goalkeeper.getId(), goalkeeper.getPositionX(), goalkeeper.getPositionY(), goalkeeper.getVelocityX(), goalkeeper.getVelocityY());
 			}
 		}
 		else if (entity instanceof Player)
@@ -1023,10 +1042,6 @@ public class GameInformation implements UpdateListener
 			{
 				getStatisticsFacade().setPositionOfPlayer(player.getId(), player.getPositionX(), player.getPositionY(), player.getVelocityX(), player.getVelocityY());
 			}
-		}
-		else if (entity instanceof Goalkeeper)
-		{
-			((Goalkeeper) entity).update(event);
 		}
 
 		/* push statistics data to the prediction project */
