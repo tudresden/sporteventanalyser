@@ -15,6 +15,7 @@ public class AttackResultPredictor extends Predictor {
 	public static final String TAG = "[Predictions][AttackResultPredictor] ";
 
 	private static final int PLAYER_RADIUS = 20;
+	private static final int NUMBER_OF_INSTANCES_FOR_ARFF = 350; // 352instances
 
 	private int idOfLastPlayerWithBall = -1;
 
@@ -60,7 +61,7 @@ public class AttackResultPredictor extends Predictor {
 
 		// TODO create ARFF file at the very end
 		if (Utils.ARFF_WRITING_MODE && !arffCreated)
-			if (learner.getAccumulatedInstances().size() == 720) { // 721instances
+			if (learner.getAccumulatedInstances().size() == NUMBER_OF_INSTANCES_FOR_ARFF) {
 				arffCreated = true;
 				Utils.createArffFileFromInstances(learner
 						.getAccumulatedInstances(), this.getClass().getName()
@@ -99,27 +100,27 @@ public class AttackResultPredictor extends Predictor {
 
 		// init velocity values
 		long currentGameTime = gameInformation.getCurrentGameTime();
-		int currentBallXPosition = gameInformation
-				.getCurrentBallPossessionPlayer().getPositionX();
+		int currentBallYPosition = gameInformation
+				.getCurrentBallPossessionPlayer().getPositionY();
 
 		if (lastGameTime == -1) {
 			lastBallYPosition = gameInformation
-					.getCurrentBallPossessionPlayer().getPositionX();
+					.getCurrentBallPossessionPlayer().getPositionY();
 			lastGameTime = gameInformation.getCurrentGameTime();
 		}
 
 		// calculate velocity
 		int velocity = (int) (Math
-				.abs(currentBallXPosition - lastBallYPosition) / (currentGameTime
+				.abs(currentBallYPosition - lastBallYPosition) / (currentGameTime
 				- lastGameTime + 1));
 		velocityHistory.add(velocity);
-		if (velocityHistory.size() > 5)
+		if (velocityHistory.size() > 8)
 			velocityHistory.remove(0);
 		int averageVelocity = 0;
 		for (int velocityValue : velocityHistory)
 			averageVelocity += velocityValue / velocityHistory.size();
 
-		lastBallYPosition = currentBallXPosition;
+		lastBallYPosition = currentBallYPosition;
 		lastGameTime = currentGameTime;
 
 		// update instance
@@ -144,7 +145,9 @@ public class AttackResultPredictor extends Predictor {
 								.getPlayerDistance(idOfLastPlayerWithBall)),
 						gameInformation.isPlayerOnOwnSide(gameInformation
 								.getCurrentBallPossessionPlayer()),
-						passCounter, averageVelocity);
+						passCounter, (int) gameInformation
+								.getDistanceOfNearestOpponent(),
+						averageVelocity);
 
 		// check if class event occurred
 		String eventClass = "";

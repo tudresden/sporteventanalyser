@@ -11,6 +11,7 @@ public class PassSuccessPredictor extends Predictor {
 	public static final String TAG = "[Predictions][PassSuccessPredictor] ";
 
 	private static final int PLAYER_RADIUS = 20;
+	private static final int NUMBER_OF_INSTANCES_FOR_ARFF = 820; // 827instances
 
 	private int idOfLastPlayerWithBall = -1;
 
@@ -45,7 +46,7 @@ public class PassSuccessPredictor extends Predictor {
 
 		// TODO create ARFF file at the very end
 		if (Utils.ARFF_WRITING_MODE && !arffCreated)
-			if (learner.getAccumulatedInstances().size() == 642) { // 643instances
+			if (learner.getAccumulatedInstances().size() == NUMBER_OF_INSTANCES_FOR_ARFF) {
 				arffCreated = true;
 				Utils.createArffFileFromInstances(learner
 						.getAccumulatedInstances(), this.getClass().getName()
@@ -79,8 +80,8 @@ public class PassSuccessPredictor extends Predictor {
 								+ gameInformation
 										.getCurrentBallPossessionPlayer()
 										.getId(), (int) gameInformation
-								.getDistanceOfNearestTeammate(),(int) gameInformation
-								.getDistanceOfNearestOpponent(),
+								.getDistanceOfNearestTeammate(),
+						(int) gameInformation.getDistanceOfNearestOpponent(),
 						gameInformation.getCurrentBallPossessionPlayer()
 								.getPositionX(), gameInformation
 								.getCurrentBallPossessionPlayer()
