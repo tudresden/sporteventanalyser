@@ -128,6 +128,14 @@ class Player extends Moveable
     @anim_factor = ANIM_FACTOR
     @time = 0
     @selected = 2
+    @stats =
+      ballContacts: "0"
+      goalsScored:  "0"
+      passesMade:   "0"
+
+  update_stats: (time, stats) ->
+    @last_update = time
+    @stats = stats
 
   animate: (time) ->
     @shirt.position.x = (@anim_factor * @shirt.position.x + @target_pos.x)/(@anim_factor + 1)
