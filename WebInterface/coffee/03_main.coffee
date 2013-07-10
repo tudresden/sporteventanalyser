@@ -142,19 +142,15 @@ $ ->
     selected: refresh_selection
 
   console.log "* preparing diagrams"
-  data_a = []
-  for i in [1..10]
-    do (i) ->
-      data_a.push [i, Math.floor Math.random() * 100]
-  console.log data_a
+  nodata = [[0, 0], [1, 0]]
   options = 
     series:
       lines:
         show: true
       points:
-        show: true
-  $("#player_a_plot").plot(data_a, options).data("plot")
-  $.plot("#player_b_plot", data_a, options)
+        show: false
+  $("#player_a_plot").plot([nodata], options).data("plot")
+  $("#player_b_plot").plot([nodata], options).data("plot")
   
   $("#startbutton").button().click (event) ->
     $(this).html '<img src="img/spinner_animated.svg"/>'

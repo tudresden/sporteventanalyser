@@ -558,7 +558,7 @@
   };
 
   $(function() {
-    var b, data_a, i, options, _fn, _fn1, _i, _j, _len, _ref;
+    var b, nodata, options, _fn, _i, _len, _ref;
 
     $("#content").hide();
     console.log("* preparing view buttons");
@@ -581,26 +581,19 @@
       selected: refresh_selection
     });
     console.log("* preparing diagrams");
-    data_a = [];
-    _fn1 = function(i) {
-      return data_a.push([i, Math.floor(Math.random() * 100)]);
-    };
-    for (i = _j = 1; _j <= 10; i = ++_j) {
-      _fn1(i);
-    }
-    console.log(data_a);
+    nodata = [[0, 0], [1, 0]];
     options = {
       series: {
         lines: {
           show: true
         },
         points: {
-          show: true
+          show: false
         }
       }
     };
-    $("#player_a_plot").plot(data_a, options).data("plot");
-    $.plot("#player_b_plot", data_a, options);
+    $("#player_a_plot").plot([nodata], options).data("plot");
+    $("#player_b_plot").plot([nodata], options).data("plot");
     return $("#startbutton").button().click(function(event) {
       $(this).html('<img src="img/spinner_animated.svg"/>');
       if (!running) {
