@@ -233,20 +233,6 @@ article {
   display: table;
   width: 100%;
 }
-#content {
-  display: table-row;
-}
-#team_a,
-#team_b {
-  height: 240pt;
-  width: 100%;
-  vertical-align: top;
-}
-#team_a .smallinfo img,
-#team_b .smallinfo img {
-  max-height: 16pt !important;
-  max-width: 16pt;
-}
 #team_a input,
 #team_b input {
   border: none;
@@ -254,16 +240,49 @@ article {
 #goals {
   text-align: center;
 }
-#left {
-  width: 33%;
-  display: table-cell;
-}
-#right {
-  width: 33%;
-  display: table-cell;
-}
 #field {
   display: table-cell;
+}
+#content {
+  display: table-row;
+}
+#content #left,
+#content #right {
+  width: 33%;
+  display: table-cell;
+}
+#content #left #team_a,
+#content #right #team_a,
+#content #left #team_b,
+#content #right #team_b {
+  height: 240pt;
+  width: 100%;
+  vertical-align: top;
+}
+#content #left #team_a .smallinfo img,
+#content #right #team_a .smallinfo img,
+#content #left #team_b .smallinfo img,
+#content #right #team_b .smallinfo img {
+  max-height: 16pt !important;
+  max-width: 16pt;
+}
+#content #left #player_a_stats table,
+#content #right #player_a_stats table,
+#content #left #player_b_stats table,
+#content #right #player_b_stats table {
+  width: 100%;
+  height: 200pt;
+}
+#content #left #player_a_stats #player_a_plot,
+#content #right #player_a_stats #player_a_plot,
+#content #left #player_b_stats #player_a_plot,
+#content #right #player_b_stats #player_a_plot,
+#content #left #player_a_stats #player_b_plot,
+#content #right #player_a_stats #player_b_plot,
+#content #left #player_b_stats #player_b_plot,
+#content #right #player_b_stats #player_b_plot {
+  height: 50pt;
+  width: 200pt;
 }
 .infobox {
   -webkit-border-radius: 5pt;
@@ -275,8 +294,10 @@ article {
   background: rgba(13, 54, 0, 0.5);
 }
 .colored_table {
-  cursor: pointer;
   border-spacing: 0;
+}
+.colored_table .ui-selectable {
+  cursor: pointer;
 }
 .colored_table tbody td,
 .colored_table thead th {
@@ -415,9 +436,12 @@ video {
   border: #6a8365 1pt solid;
   background: rgba(13, 54, 0, 0.5);
   margin: 2pt;
-  cursor: pointer;
   border-spacing: 0;
   overflow: auto;
+}
+#content #right .team .ui-selectable,
+#content #left .team .ui-selectable {
+  cursor: pointer;
 }
 #content #right .team tbody td,
 #content #left .team tbody td,
@@ -458,16 +482,18 @@ video {
   border-radius: 5pt;
   border: #6a8365 1pt solid;
   background: rgba(13, 54, 0, 0.5);
-  margin: 2pt;
 }
 #content #right #player_a_stats table,
 #content #left #player_a_stats table,
 #content #right #player_b_stats table,
 #content #left #player_b_stats table {
-  cursor: pointer;
   border-spacing: 0;
-  width: 100%;
-  height: 200pt;
+}
+#content #right #player_a_stats table .ui-selectable,
+#content #left #player_a_stats table .ui-selectable,
+#content #right #player_b_stats table .ui-selectable,
+#content #left #player_b_stats table .ui-selectable {
+  cursor: pointer;
 }
 #content #right #player_a_stats table tbody td,
 #content #left #player_a_stats table tbody td,

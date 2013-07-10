@@ -40,11 +40,11 @@ class Engine
 
   reposition: (position) ->
     result = {}
-    if @field
+    if @field  # TODO apply a transformation matrix here.
       if position.x
-        result.x = (position.x - @reality.width/2) * @field.width / @reality.width
+        result.y = (position.x - @reality.height/2) * @field.height / @reality.height
       if position.y
-        result.y = (position.y) * @field.height / @reality.height
+        result.x = (position.y) * @field.width / @reality.width
       if position.z
         result.z = position.z * (@field.width / @reality.width + @field.height / @reality.height) / 2
     return result
@@ -77,9 +77,9 @@ class Engine
         @camera.position.set FIELD_WIDTH/2, 6, 0
         @camera.lookAt @mean_ball_pos
       else
-        @camera.position.x =       5 * Math.sin (time / 600)
-        @camera.position.y = 33 +  5 * Math.cos (time / 1200)
-        @camera.position.z = FIELD_WIDTH/2 +  5 * Math.sin (time / 2700)
+        @camera.position.x =       5 * Math.cos (time / 1300)
+        @camera.position.y = 33 +  5 * Math.sin (time / 700)
+        @camera.position.z = FIELD_WIDTH/2 +  5 * Math.sin (time / 1900)
         @camera.lookAt @mean_ball_pos
     obj.follow(@camera.position, @camera_mode == "BIRD") for obj in @obj_stack
     obj.animate(time) for obj in @obj_stack

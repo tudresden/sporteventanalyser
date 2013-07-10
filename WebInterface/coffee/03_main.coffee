@@ -1,5 +1,6 @@
 console.log "# SEA - sport event analyzer"
 console.log "## Initializing"
+running = false
 
 ball = new Ball("img/ball.png")
 engine = new Engine(ball)
@@ -7,7 +8,11 @@ engine = new Engine(ball)
 playersdict = {}
 tmp_team_name = ""
 tmp_counter = {true: 0, false: 0}
-running = false
+
+team_a_stats = {}
+team_b_stats = {}
+observed_player_a = null
+observed_player_b = null
 
 console.log Date.now()
 
@@ -16,7 +21,13 @@ run = ->
   requestAnimationFrame run
   engine.render()
 
-refresh_selection = (ui, event) ->
+compose_stats_tbody = (stats) ->
+  res = "<tbody>"
+  $.each stats, (k, v) ->
+    res += "<tr><td>" + t(""+k) + "</td><td>" + v + "</td></tr>\n"
+  return res + "</tbody>"
+
+refresh_selection = (event, ui) ->
   all_plrs = []
   plr_ids_a = []
   plr_ids_b = []
@@ -26,10 +37,23 @@ refresh_selection = (ui, event) ->
   $("#team_b").find("tbody").find("tr.ui-selected").each (i, t) ->
     all_plrs.push t.id
     plr_ids_b.push t.id
+
   a_stats = $("#player_a_stats")
-  a_stats.find(".player_name").text playersdict[plr_ids_a[0]]?.name
-  a_stats.find(".player_a_runway").text playersdict[plr_ids_a[0]]?.stats
-  $("#player_b_stats").find(".player_name").text playersdict[plr_ids_b[0]]?.name
+  if plr_ids_a.length
+    observed_player_a = a_plr = playersdict[plr_ids_a[0]]
+    a_stats.find(".player_name").text playersdict[plr_ids_a[0]]?.name
+    a_stats.find("tbody").replaceWith compose_stats_tbody playersdict[plr_ids_a[0]]?.stats
+  else
+    a_stats.find("tbody").replaceWith compose_stats_tbody team_a_stats
+
+  b_stats = $("#player_b_stats")
+  if plr_ids_b.length
+    observed_player_b = b_plr = playersdict[plr_ids_b[0]]
+    b_stats.find(".player_name").text playersdict[plr_ids_b[0]]?.name
+    b_stats.find("tbody").replaceWith compose_stats_tbody playersdict[plr_ids_b[0]]?.stats
+  else
+    b_stats.find("tbody").replaceWith compose_stats_tbody team_b_stats
+
   engine.select_players all_plrs
 
 add_player = (v, i) ->
@@ -76,26 +100,33 @@ update_position = (v, i) ->
         x: parseInt v.positionX
         y: parseInt v.positionY
       playersdict[v.id]?.update Date.now(), engine.reposition data
-      if v.id == "13"
-        console.log v
     else
-      console.log "Unknown position update."
+      console.log "Unknown position update.", v
 
 update_statistics = (v, i) ->
   switch v.constructor.name
     when "PlayerStatistic"
       playersdict[v.id]?.update_stats Date.now(), v
+      if observed_player_a? and v.id == observed_player_a.id
+        a_stats = $("#player_a_stats")
+        a_stats.find("tbody").replaceWith compose_stats_tbody observed_player_a.stats
+      else if observed_player_b? and v.id == observed_player_b.id
+        b_stats = $("#player_b_stats")
+        b_stats.find("tbody").replaceWith compose_stats_tbody observed_player_b.stats
+    else
+      console.log "Unknown Statistics", v
+
 
 establish_sea_connection = (onsuccess) ->
   sea.connect "seaclient@sea", "sea", "mobilis@sea", ->
     sea.getGameMappings (mappings) ->
       console.log "* Setting up field"
       gf = mappings.GameFieldSize
-      reality =
-        width: gf.GameFieldMaxX - gf.GameFieldMinX
-        height: gf.GameFieldMaxY - gf.GameFieldMinY
-        offx: parseInt gf.GameFieldMinX
-        offy: parseInt gf.GameFieldMinY
+      reality =  # x and y confuse you here
+        height: gf.GameFieldMaxX - gf.GameFieldMinX
+        width: gf.GameFieldMaxY - gf.GameFieldMinY
+        offy: parseInt gf.GameFieldMinX
+        offx: parseInt gf.GameFieldMinY
       field = new Field("img/Fussballfeld.png", reality)
       engine.set_field field
 
@@ -116,14 +147,14 @@ establish_sea_connection = (onsuccess) ->
     sea.pubsub.addCurrentPlayerDataHandler (item) ->
       item.playerStatistics.forEach update_statistics
 
-    #sea.pubsub.addCurrentTeamDataHandler (item) ->
-      #console.log "team", item
+    sea.pubsub.addCurrentTeamDataHandler (item) ->
+      item.teamStatistics.forEach update_statistics
 
     #sea.pubsub.addCurrentHeatMapDataHandler (item) ->
       #console.log "heatmap", item
 
-    #sea.pubsub.addCurrentPrognosisDataHandler (item) ->
-      #console.log "prognosis", item
+    sea.pubsub.addCurrentPrognosisDataHandler (item) ->
+      console.log "prognosis", item
 
     onsuccess?()
     

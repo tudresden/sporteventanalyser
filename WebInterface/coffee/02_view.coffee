@@ -128,14 +128,15 @@ class Player extends Moveable
     @anim_factor = ANIM_FACTOR
     @time = 0
     @selected = 2
-    @stats =
-      ballContacts: "0"
-      goalsScored:  "0"
-      passesMade:   "0"
+    @stats = {}
+    console.log @
 
-  update_stats: (time, stats) ->
-    @last_update = time
-    @stats = stats
+  update_stats: (@last_update, stats) ->
+    res = @stats
+    $.each stats, (k, v) ->
+      if ""+k not in ["id"]
+        res[""+k] = v
+    @stats = res
 
   animate: (time) ->
     @shirt.position.x = (@anim_factor * @shirt.position.x + @target_pos.x)/(@anim_factor + 1)
@@ -165,4 +166,4 @@ class Player extends Moveable
     @time = time
 
   toString: ->
-    "Player(" + @tricot_image + ")"
+    "Player(" + string.Join(", ", [@id, @name, @tricot_image]) + ")"
