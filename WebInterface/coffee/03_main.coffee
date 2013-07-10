@@ -39,21 +39,23 @@ add_player = (v, i) ->
   color = "rot"
 
   tableentry = '<tr id="'+v.PlayerID+'"><td>'+v.PlayerName+'</td><td class="smallinfo"></td></tr>'
+  team_a = $("#team_a")
+  team_b = $("#team_b")
 
   if v.TeamName == tmp_team_name
-    $("#team_a").find("tbody").append tableentry
+    team_a.find("tbody").append tableentry
     $("body").find(".team_a_name").text v.TeamName;
     color = "gelb"
   else
-    $("#team_b").find("tbody").append tableentry
+    team_b.find("tbody").append tableentry
     $("body").find(".team_b_name").text v.TeamName;
 
   tshirt = "img/trikot_" + color + "_" + tmp_counter[v.TeamName == tmp_team_name] + ".png"
 
   if v.TeamName == tmp_team_name
-    $("#team_a").find("tr#"+v.PlayerID+" .smallinfo").append $("<img class=\"tshirt\" src=\"" + tshirt + "\"/>")
+    team_a.find("tr#"+v.PlayerID+" .smallinfo").append $("<img class=\"tshirt\" src=\"" + tshirt + "\"/>")
   else
-    $("#team_b").find("tr#"+v.PlayerID+" .smallinfo").append $("<img class=\"tshirt\" src=\"" + tshirt + "\"/>")
+    team_b.find("tr#"+v.PlayerID+" .smallinfo").append $("<img class=\"tshirt\" src=\"" + tshirt + "\"/>")
 
   plr = new Player v.PlayerID, v.PlayerName, v.TeamName, tshirt
   engine.add plr
