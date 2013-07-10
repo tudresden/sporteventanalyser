@@ -248,7 +248,7 @@
 				var $item, node;
 				$.each($iq.children("item"), function(index, value) {
 					node = ($item = $(value)).attr("node");
-					console.log(node);
+					//console.log(node);
 					for (var i = 0; i < sea.pubsub.INTERNAL.handlers.length; i++) {
 						if (sea.pubsub.INTERNAL.handlers[i].match(node)) {
 							sea.pubsub.INTERNAL.handlers[i].handle($item);
