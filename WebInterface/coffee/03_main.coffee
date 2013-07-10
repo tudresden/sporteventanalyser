@@ -26,7 +26,9 @@ refresh_selection = (ui, event) ->
   $("#team_b").find("tbody").find("tr.ui-selected").each (i, t) ->
     all_plrs.push t.id
     plr_ids_b.push t.id
-  $("#player_a_stats").find(".player_name").text playersdict[plr_ids_a[0]]?.name
+  a_stats = $("#player_a_stats")
+  a_stats.find(".player_name").text playersdict[plr_ids_a[0]]?.name
+  a_stats.find(".player_a_runway").text playersdict[plr_ids_a[0]]?.stats
   $("#player_b_stats").find(".player_name").text playersdict[plr_ids_b[0]]?.name
   engine.select_players all_plrs
 
@@ -64,12 +66,17 @@ update_position = (v, i) ->
         y: parseInt v.positionY
       playersdict[v.id]?.update Date.now(), engine.reposition data
       if v.id == "13"
-        console.log data
+        console.log v
     else
       console.log "Unknown position update."
 
+update_statistics = (v, i) ->
+  switch v.constructor.name
+    when "PlayerStatistic"
+      playersdict[v.id]?.update_stats Date.now(), v
+
 establish_sea_connection = (onsuccess) ->
-  sea.connect "seaclient@sea/Client", "sea", "mobilis@sea", ->
+  sea.connect "seaclient@sea", "sea", "mobilis@sea", ->
     sea.getGameMappings (mappings) ->
       console.log "* Setting up field"
       gf = mappings.GameFieldSize
@@ -89,10 +96,24 @@ establish_sea_connection = (onsuccess) ->
       mappings.PlayerMappings.forEach add_player
 
     console.log "* adding pos handler"
+
+    sea.pubsub.subscribeStatistic()
+
     sea.pubsub.addCurrentPositionDataHandler (item) ->
       item.positionNodes.forEach update_position
 
-    sea.pubsub.subscribeStatistic()
+    sea.pubsub.addCurrentPlayerDataHandler (item) ->
+      item.playerStatistics.forEach update_statistics
+
+    #sea.pubsub.addCurrentTeamDataHandler (item) ->
+      #console.log "team", item
+
+    #sea.pubsub.addCurrentHeatMapDataHandler (item) ->
+      #console.log "heatmap", item
+
+    #sea.pubsub.addCurrentPrognosisDataHandler (item) ->
+      #console.log "prognosis", item
+
     onsuccess?()
     
 $ ->
@@ -110,6 +131,21 @@ $ ->
   $("#team_a, #team_b").selectable
     filter: 'tr'
     selected: refresh_selection
+
+  console.log "* preparing diagrams"
+  data_a = []
+  for i in [1..10]
+    do (i) ->
+      data_a.push [i, Math.floor Math.random() * 100]
+  console.log data_a
+  options = 
+    series:
+      lines:
+        show: true
+      points:
+        show: true
+  $("#player_a_plot").plot(data_a, options).data("plot")
+  $.plot("#player_b_plot", data_a, options)
   
   $("#startbutton").button().click (event) ->
     $(this).html '<img src="img/spinner_animated.svg"/>'
