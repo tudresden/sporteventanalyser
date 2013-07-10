@@ -8,6 +8,7 @@ engine = new Engine(ball)
 playersdict = {}
 tmp_team_name = ""
 tmp_counter = {true: 0, false: 0}
+teams = []
 
 team_a_stats = {}
 team_b_stats = {}
@@ -41,17 +42,21 @@ refresh_selection = (event, ui) ->
   a_stats = $("#player_a_stats")
   if plr_ids_a.length
     observed_player_a = a_plr = playersdict[plr_ids_a[0]]
-    a_stats.find(".player_name").text playersdict[plr_ids_a[0]]?.name
-    a_stats.find("tbody").replaceWith compose_stats_tbody playersdict[plr_ids_a[0]]?.stats
+    a_stats.find(".player_name").text a_plr?.name
+    a_stats.find("tbody").replaceWith compose_stats_tbody a_plr?.stats
   else
+    observed_player_a = null
+    a_stats.find(".player_name").text teams[0]
     a_stats.find("tbody").replaceWith compose_stats_tbody team_a_stats
 
   b_stats = $("#player_b_stats")
   if plr_ids_b.length
     observed_player_b = b_plr = playersdict[plr_ids_b[0]]
-    b_stats.find(".player_name").text playersdict[plr_ids_b[0]]?.name
-    b_stats.find("tbody").replaceWith compose_stats_tbody playersdict[plr_ids_b[0]]?.stats
+    b_stats.find(".player_name").text b_plr?.name
+    b_stats.find("tbody").replaceWith compose_stats_tbody b_plr?.stats
   else
+    observed_player_b = null
+    b_stats.find(".player_name").text teams[1]
     b_stats.find("tbody").replaceWith compose_stats_tbody team_b_stats
 
   engine.select_players all_plrs
@@ -59,6 +64,8 @@ refresh_selection = (event, ui) ->
 add_player = (v, i) ->
   if i == 0
     tmp_team_name = v.TeamName
+  if tmp_counter[v.TeamName == tmp_team_name] == 0
+    teams.push v.TeamName
   tmp_counter[v.TeamName == tmp_team_name] += 1
   color = "rot"
 
