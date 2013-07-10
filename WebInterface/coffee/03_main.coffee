@@ -37,7 +37,9 @@ add_player = (v, i) ->
     tmp_team_name = v.TeamName
   tmp_counter[v.TeamName == tmp_team_name] += 1
   color = "rot"
+
   tableentry = '<tr id="'+v.PlayerID+'"><td>'+v.PlayerName+'</td><td class="smallinfo"></td></tr>'
+
   if v.TeamName == tmp_team_name
     $("#team_a").find("tbody").append tableentry
     $("body").find(".team_a_name").text v.TeamName;
@@ -45,7 +47,14 @@ add_player = (v, i) ->
   else
     $("#team_b").find("tbody").append tableentry
     $("body").find(".team_b_name").text v.TeamName;
+
   tshirt = "img/trikot_" + color + "_" + tmp_counter[v.TeamName == tmp_team_name] + ".png"
+
+  if v.TeamName == tmp_team_name
+    $("#team_a").find("tr#"+v.PlayerID+" .smallinfo").append $("<img class=\"tshirt\" src=\"" + tshirt + "\"/>")
+  else
+    $("#team_b").find("tr#"+v.PlayerID+" .smallinfo").append $("<img class=\"tshirt\" src=\"" + tshirt + "\"/>")
+
   plr = new Player v.PlayerID, v.PlayerName, v.TeamName, tshirt
   engine.add plr
   engine.players.push plr

@@ -367,6 +367,7 @@
     }
 
     Player.prototype.update_stats = function(time, stats) {
+      this.last_update = time;
       return this.stats = stats;
     };
 
@@ -475,6 +476,11 @@
       $("body").find(".team_b_name").text(v.TeamName);
     }
     tshirt = "img/trikot_" + color + "_" + tmp_counter[v.TeamName === tmp_team_name] + ".png";
+    if (v.TeamName === tmp_team_name) {
+      $("#team_a").find("tr#" + v.PlayerID + " .smallinfo").append($("<img class=\"tshirt\" src=\"" + tshirt + "\"/>"));
+    } else {
+      $("#team_b").find("tr#" + v.PlayerID + " .smallinfo").append($("<img class=\"tshirt\" src=\"" + tshirt + "\"/>"));
+    }
     plr = new Player(v.PlayerID, v.PlayerName, v.TeamName, tshirt);
     engine.add(plr);
     engine.players.push(plr);
