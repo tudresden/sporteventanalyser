@@ -23,6 +23,9 @@ class Moveable extends Drawable
     @target_pos.z = data.z if data.z?
     @last_update = time if time?
 
+  transition: (factor, current, target) ->
+    return (current * factor + target) / (factor + 1)
+
   toString: ->
     "Moveable"
 
@@ -71,12 +74,13 @@ class Ball extends Moveable
       y: 0,  # middle of the field
       z: 0
     @anim_factor = ANIM_FACTOR
-    @time = 0
+    @local_time = 0
 
   animate: (time) ->
-    @ball.position.x = (@anim_factor * @ball.position.x + @target_pos.x)/(@anim_factor + 1)
-    @ball.position.y = Math.max(@ball.geometry.height/2, (@anim_factor * @ball.position.y + 0.5 * @ball.geometry.height + @target_pos.z)/(@anim_factor + 1))
-    @ball.position.z = (@anim_factor * @ball.position.z + @target_pos.y)/(@anim_factor + 1)
+    dt = time - @local_time
+    @ball.position.x = @.transition @anim_factor/dt, @ball.position.x, @target_pos.x
+    @ball.position.y = Math.max @ball.geometry.height/2, @.transition @anim_factor/dt, @ball.position.y, 0.5 * @ball.geometry.height + @target_pos.z
+    @ball.position.z = @.transition @anim_factor/dt, @ball.position.z, @target_pos.y
 
     @shadow.position.x = @ball.position.x
     @shadow.position.z = @ball.position.z
@@ -84,7 +88,7 @@ class Ball extends Moveable
     s_scale = 1.0 + 1.0 * Math.max(1.0, @ball.position.y)
     @shadow.scale.set s_scale, s_scale, s_scale
     @shadow.material.opacity = Math.min(1.0, Math.max(0.0, 1.0 / @ball.position.y))
-    @time = time
+    @local_time = time
 
   toString: ->
     "Ball"
@@ -126,7 +130,7 @@ class Player extends Moveable
       x: 0,
       y: 0  # middle of the field
     @anim_factor = ANIM_FACTOR
-    @time = 0
+    @local_time = 0
     @selected = 2
     @stats = {}
     console.log @
@@ -139,8 +143,9 @@ class Player extends Moveable
     @stats = res
 
   animate: (time) ->
-    @shirt.position.x = (@anim_factor * @shirt.position.x + @target_pos.x)/(@anim_factor + 1)
-    @shirt.position.z = (@anim_factor * @shirt.position.z + @target_pos.y)/(@anim_factor + 1)
+    dt = time - @local_time
+    @shirt.position.x = @.transition @anim_factor/dt, @shirt.position.x, @target_pos.x
+    @shirt.position.z = @.transition @anim_factor/dt, @shirt.position.z, @target_pos.y
 
     @shadow.position.x = @shirt.position.x
     @shadow.position.z = @shirt.position.z
@@ -163,7 +168,7 @@ class Player extends Moveable
       else
         @select.material.opacity = 0
         @shirt.material.opacity = 0.5
-    @time = time
+    @local_time = time
 
   toString: ->
     "Player(" + string.Join(", ", [@id, @name, @tricot_image]) + ")"

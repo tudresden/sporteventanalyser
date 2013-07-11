@@ -23,7 +23,7 @@
 
   SELECT_SIZE = 5;
 
-  ANIM_FACTOR = 10;
+  ANIM_FACTOR = 300;
 
   translation_dict = {
     "id": "Software ID",
@@ -240,6 +240,10 @@
       }
     };
 
+    Moveable.prototype.transition = function(factor, current, target) {
+      return (current * factor + target) / (factor + 1);
+    };
+
     Moveable.prototype.toString = function() {
       return "Moveable";
     };
@@ -310,21 +314,22 @@
         z: 0
       };
       this.anim_factor = ANIM_FACTOR;
-      this.time = 0;
+      this.local_time = 0;
     }
 
     Ball.prototype.animate = function(time) {
-      var s_scale;
+      var dt, s_scale;
 
-      this.ball.position.x = (this.anim_factor * this.ball.position.x + this.target_pos.x) / (this.anim_factor + 1);
-      this.ball.position.y = Math.max(this.ball.geometry.height / 2, (this.anim_factor * this.ball.position.y + 0.5 * this.ball.geometry.height + this.target_pos.z) / (this.anim_factor + 1));
-      this.ball.position.z = (this.anim_factor * this.ball.position.z + this.target_pos.y) / (this.anim_factor + 1);
+      dt = time - this.local_time;
+      this.ball.position.x = this.transition(this.anim_factor / dt, this.ball.position.x, this.target_pos.x);
+      this.ball.position.y = Math.max(this.ball.geometry.height / 2, this.transition(this.anim_factor / dt, this.ball.position.y, 0.5 * this.ball.geometry.height + this.target_pos.z));
+      this.ball.position.z = this.transition(this.anim_factor / dt, this.ball.position.z, this.target_pos.y);
       this.shadow.position.x = this.ball.position.x;
       this.shadow.position.z = this.ball.position.z;
       s_scale = 1.0 + 1.0 * Math.max(1.0, this.ball.position.y);
       this.shadow.scale.set(s_scale, s_scale, s_scale);
       this.shadow.material.opacity = Math.min(1.0, Math.max(0.0, 1.0 / this.ball.position.y));
-      return this.time = time;
+      return this.local_time = time;
     };
 
     Ball.prototype.toString = function() {
@@ -380,7 +385,7 @@
         y: 0
       };
       this.anim_factor = ANIM_FACTOR;
-      this.time = 0;
+      this.local_time = 0;
       this.selected = 2;
       this.stats = {};
       console.log(this);
@@ -402,10 +407,11 @@
     };
 
     Player.prototype.animate = function(time) {
-      var s;
+      var dt, s;
 
-      this.shirt.position.x = (this.anim_factor * this.shirt.position.x + this.target_pos.x) / (this.anim_factor + 1);
-      this.shirt.position.z = (this.anim_factor * this.shirt.position.z + this.target_pos.y) / (this.anim_factor + 1);
+      dt = time - this.local_time;
+      this.shirt.position.x = this.transition(this.anim_factor / dt, this.shirt.position.x, this.target_pos.x);
+      this.shirt.position.z = this.transition(this.anim_factor / dt, this.shirt.position.z, this.target_pos.y);
       this.shadow.position.x = this.shirt.position.x;
       this.shadow.position.z = this.shirt.position.z;
       s = this.shirt.position.y - this.shirt.geometry.height;
@@ -428,7 +434,7 @@
           this.select.material.opacity = 0;
           this.shirt.material.opacity = 0.5;
       }
-      return this.time = time;
+      return this.local_time = time;
     };
 
     Player.prototype.toString = function() {
