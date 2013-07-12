@@ -355,7 +355,7 @@ article {
   border-radius: 5pt 5pt 0 0;
   border-bottom: 0 hidden;
   background: rgba(13, 54, 0, 0.3);
-  padding: 0 5pt;
+  padding: 0 2pt;
   cursor: pointer;
 }
 .radio_menu label:hover {
@@ -583,7 +583,7 @@ video {
   border-radius: 5pt 5pt 0 0;
   border-bottom: 0 hidden;
   background: rgba(13, 54, 0, 0.3);
-  padding: 0 5pt;
+  padding: 0 2pt;
   cursor: pointer;
 }
 #content #center #perspectives_menu label:hover {
