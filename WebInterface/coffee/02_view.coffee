@@ -77,7 +77,7 @@ class Ball extends Moveable
     @local_time = 0
 
   animate: (time) ->
-    dt = time - @local_time
+    dt = Math.max 1, time - @local_time
     @ball.position.x = @.transition @anim_factor/dt, @ball.position.x, @target_pos.x
     @ball.position.y = Math.max @ball.geometry.height/2, @.transition @anim_factor/dt, @ball.position.y, 0.5 * @ball.geometry.height + @target_pos.z
     @ball.position.z = @.transition @anim_factor/dt, @ball.position.z, @target_pos.y
@@ -143,7 +143,7 @@ class Player extends Moveable
     @stats = res
 
   animate: (time) ->
-    dt = time - @local_time
+    dt = Math.max 1, time - @local_time
     @shirt.position.x = @.transition @anim_factor/dt, @shirt.position.x, @target_pos.x
     @shirt.position.z = @.transition @anim_factor/dt, @shirt.position.z, @target_pos.y
 
