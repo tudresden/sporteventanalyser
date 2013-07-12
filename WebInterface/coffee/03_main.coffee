@@ -22,6 +22,21 @@ run = ->
   requestAnimationFrame run
   engine.render()
 
+replace_img_by_svg = ->
+  console.log "* replace img with svg by the svg"
+  $("img").each () ->
+    $img = $(@)
+    imgid = $img.attr "id"
+    imgclass = $img.attr "class"
+    imgurl = $img.attr "src"
+    if imgurl.substring(imgurl.length - 3) == "svg"
+      $.get imgurl, (data) ->
+        $svg = $(data).find "svg"
+        $svg = $svg.attr("id", imgid) if imgid?
+        $svg = $svg.attr("class", imgclass) if imgclass?
+        $svg = $svg.removeAttr "xmlns:a"
+        $img.replaceWith $svg
+
 compose_stats_tbody = (stats) ->
   res = "<tbody>"
   $.each stats, (k, v) ->
@@ -123,7 +138,6 @@ update_statistics = (v, i) ->
     else
       console.log "Unknown Statistics", v
 
-
 establish_sea_connection = (onsuccess) ->
   sea.connect "seaclient@sea", "sea", "mobilis@sea", ->
     sea.getGameMappings (mappings) ->
@@ -167,6 +181,9 @@ establish_sea_connection = (onsuccess) ->
     
 $ ->
   $("#content").hide()
+
+  replace_img_by_svg()
+
   console.log "* preparing view buttons"
   $("#perspectives_menu").buttonset
   for b in $("#perspectives_menu").find("input")
