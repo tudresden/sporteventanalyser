@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="65" height="40" xmlns="http://www.w3.org/2000/svg">
+ <g>
+  <title>TorViewA</title>
+  <g class="colored_icon" id="GoalViewA">
+   <g id="svg_17">
+    <polyline id="svg_18" points="62.76573181152344,31.705116271972656 62.76573181152344,3.9423165321350098 11.470795631408691,9.351818084716797 11.420458793640137,38.35667037963867 " stroke-miterlimit="10" stroke-width="2" stroke="#8A9583" fill="none"/>
+    <path id="svg_19" d="m63.372124,3.229399l-7.405445,-1.586212l-50.055222,4.577186c-3.388986,0.313728 -3.041306,3.689837 -3.538826,9.894207l-0.744525,15.316608l7.04253,4.663809" stroke-miterlimit="10" stroke="#8A9583" fill="none"/>
+    <line id="svg_20" y2="25.688052" x2="52.45478" y1="31.431193" x1="1.6281" stroke-miterlimit="10" stroke="#8A9583" fill="none"/>
+    <line id="svg_21" y2="25.688052" x2="52.45478" y1="7.861605" x1="54.285655" stroke-miterlimit="10" stroke="#8A9583" fill="none"/>
+    <line id="svg_22" y2="29.492619" x2="59.81457" y1="25.688052" x1="52.45478" stroke-miterlimit="10" stroke="#8A9583" fill="none"/>
+    <line id="svg_23" y2="6.905195" x2="4.60854" y1="9.329582" x1="11.181662" stroke-miterlimit="10" stroke="#8A9583" fill="none"/>
+   </g>
+  </g>
+ </g>
+
+</svg>

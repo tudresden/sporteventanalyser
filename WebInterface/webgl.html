@@ -36,7 +36,7 @@
   </header>
   <article>
     <div id="startbutton">
-      Start
+      <img src="img/Start.svg" alt="Start"/>
     </div>
   </article>
   <article>
@@ -67,24 +67,24 @@
       <div id="center">
         <div id="goals">
           <h1><span class="team_a_name">Team A</span> <span id="goals_team_a">0</span>:<span id="goals_team_b">0</span> <span class="team_b_name">Team B</span></h1>
-          <p id="time">0:00:00</p>
+          <p id="time">00:00</p>
         </div>
         <div class="tab_menu" id="perspectives_menu">
-          <input name="perspectives_menu" type="radio" id="KEEPERA" /><label for="KEEPERA">A</label>
-          <input name="perspectives_menu" type="radio" checked="checked" id="BIRD" /><label for="BIRD">top</label>
-          <input name="perspectives_menu" type="radio" id="HEAT" /><label for="HEAT">heatmap</label>
-          <input name="perspectives_menu" type="radio" id="TAUMEL" /><label for="TAUMEL">swing</label>
-          <input name="perspectives_menu" type="radio" id="KEEPERB" /><label for="KEEPERB">B</label>
+          <input name="perspectives_menu" type="radio" id="KEEPERA" /><label for="KEEPERA"><img src="img/TorViewA.svg" alt="Side A"/></label>
+          <input name="perspectives_menu" type="radio" checked="checked" id="BIRD" /><label for="BIRD"><img src="img/TopView.svg" alt="Top"/></label>
+          <!--<input name="perspectives_menu" type="radio" id="HEAT" /><label for="HEAT"><img src="img/Torschuss.svg" alt="Heatmap"/></label>//-->
+          <input name="perspectives_menu" type="radio" id="TAUMEL" /><label for="TAUMEL"><img src="img/Torschuss.svg" alt="Swing"/></label>
+          <input name="perspectives_menu" type="radio" id="KEEPERB" /><label for="KEEPERB"><img src="img/TorViewB.svg" alt="Side B"/></label>
         </div>
         <div id="field">
         </div>
         <div id="gametrack">
-          <svg id="image" xmlns="http://www.w3.org/2000/svg" version="1.1" width="630" height="42">
-            <line id="centerline" x1="0" y1="21" x2="630" y2="21" />
+          <svg id="gametrack_display" xmlns="http://www.w3.org/2000/svg" version="1.1" width="620" height="42">
+            <line id="centerline" x1="0" y1="21" x2="620" y2="21" />
             <line id="start" x1="0" y1="16" x2="0" y2="26" />
-            <line id="mid" x1="315" y1="16" x2="315" y2="26" />
+            <line id="mid" x1="310" y1="16" x2="310" y2="26" />
             <line id="cur" x1="0" y1="10" x2="0" y2="32" />
-            <line id="end" x1="630" y1="16" x2="630" y2="26" />
+            <line id="end" x1="620" y1="16" x2="620" y2="26" />
           </svg>
         </div>
       </div>
