@@ -338,6 +338,10 @@ article {
   background: #154307;
   color: #eee8d5;
 }
+.radio_menu img {
+  height: 20pt;
+  margin-bottom: 13pt;
+}
 .radio_menu input[type="radio"] {
   display: none;
 }
@@ -351,7 +355,7 @@ article {
   border-radius: 5pt 5pt 0 0;
   border-bottom: 0 hidden;
   background: rgba(13, 54, 0, 0.3);
-  padding: 0 5pt;
+  padding: 0 2pt;
   cursor: pointer;
 }
 .radio_menu label:hover {
@@ -408,15 +412,6 @@ video {
 }
 #goals h1 {
   font-size: 19pt;
-}
-#field {
-  -webkit-border-radius: 5pt;
-  -moz-border-radius: 5pt;
-  -ms-border-radius: 5pt;
-  -o-border-radius: 5pt;
-  border-radius: 5pt;
-  border: #6a8365 1pt solid;
-  background: rgba(13, 54, 0, 0.5);
 }
 #content {
   display: table-row;
@@ -568,6 +563,10 @@ video {
   padding: 0;
   margin: 5pt 5pt 0 5pt;
 }
+#content #center #perspectives_menu img {
+  height: 20pt;
+  margin-bottom: 13pt;
+}
 #content #center #perspectives_menu input[type="radio"] {
   display: none;
 }
@@ -581,7 +580,7 @@ video {
   border-radius: 5pt 5pt 0 0;
   border-bottom: 0 hidden;
   background: rgba(13, 54, 0, 0.3);
-  padding: 0 5pt;
+  padding: 0 2pt;
   cursor: pointer;
 }
 #content #center #perspectives_menu label:hover {
@@ -591,4 +590,13 @@ video {
 #content #center #perspectives_menu input[type="radio"]:checked + label {
   color: #0d3600;
   background: #6a8365;
+}
+#content #center #field {
+  -webkit-border-radius: 5pt;
+  -moz-border-radius: 5pt;
+  -ms-border-radius: 5pt;
+  -o-border-radius: 5pt;
+  border-radius: 5pt;
+  border: #6a8365 1pt solid;
+  background: rgba(13, 54, 0, 0.5);
 }

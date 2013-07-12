@@ -320,7 +320,7 @@
     Ball.prototype.animate = function(time) {
       var dt, s_scale;
 
-      dt = time - this.local_time;
+      dt = Math.max(1, time - this.local_time);
       this.ball.position.x = this.transition(this.anim_factor / dt, this.ball.position.x, this.target_pos.x);
       this.ball.position.y = Math.max(this.ball.geometry.height / 2, this.transition(this.anim_factor / dt, this.ball.position.y, 0.5 * this.ball.geometry.height + this.target_pos.z));
       this.ball.position.z = this.transition(this.anim_factor / dt, this.ball.position.z, this.target_pos.y);
@@ -409,7 +409,7 @@
     Player.prototype.animate = function(time) {
       var dt, s;
 
-      dt = time - this.local_time;
+      dt = Math.max(1, time - this.local_time);
       this.shirt.position.x = this.transition(this.anim_factor / dt, this.shirt.position.x, this.target_pos.x);
       this.shirt.position.z = this.transition(this.anim_factor / dt, this.shirt.position.z, this.target_pos.y);
       this.shadow.position.x = this.shirt.position.x;
