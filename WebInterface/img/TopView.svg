@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="65" height="40" xmlns="http://www.w3.org/2000/svg">
+ <g>
+  <title>TopView</title>
+  <g id="Ebene_1"/>
+  <g id="TopView" class="colored_icon">
+   <g id="svg_1">
+    <rect id="svg_2" height="34.405" width="60.373" stroke-miterlimit="10" stroke="#8A9583" fill="none" y="2.86" x="2.314"/>
+    <line id="svg_3" y2="37.377" x2="32.5" y1="2.624" x1="32.5" stroke-miterlimit="10" stroke="#8A9583" fill="none"/>
+    <polyline id="svg_4" points="2.203,11.622 12.811,11.622 12.811,28.377 2.203,28.377       " stroke-miterlimit="10" stroke="#8A9583" fill="none"/>
+    <polyline id="svg_5" points="62.797,11.622 52.189,11.622 52.189,28.377 62.797,28.377       " stroke-miterlimit="10" stroke="#8A9583" fill="none"/>
+    <circle id="svg_6" r="5.139" cy="20" cx="32.5" stroke-miterlimit="10" stroke="#8A9583" fill="none"/>
+    <path id="svg_7" d="m52.457001,16.386c-1.862,0 -3.373001,1.618 -3.373001,3.613001c0,1.997 1.511002,3.614 3.373001,3.614" stroke-miterlimit="10" stroke="#8A9583" fill="none"/>
+    <path id="svg_8" d="m12.79,16.386c1.862,0 3.373,1.618 3.373,3.613001c0,1.997 -1.51,3.614 -3.373,3.614" stroke-miterlimit="10" stroke="#8A9583" fill="none"/>
+   </g>
+  </g>
+ </g>
+
+</svg>
