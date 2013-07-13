@@ -42,7 +42,7 @@ public class CurrentTeamData extends DataNode<CurrentTeamData> {
 	}
 
 	/**
-	 * Register teams
+	 * Register <code>TeamStatistic</code>s for both teams
 	 * 
 	 * @param firstTeam
 	 *            the <code>TeamStatistic</code> of the first team

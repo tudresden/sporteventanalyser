@@ -1,8 +1,8 @@
 package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces;
 
 /**
- * This <code>PositionNode</code> is an auxiliary node to bundle the
- * x/y-position and x/y-velocity of a subject
+ * This <code>PositionNode</code> is an auxiliary <code>Node</code> to bundle
+ * the x/y-position and x/y-velocity of a subject
  * 
  * @param <T>
  *            generic parameter to declare the type of this node

@@ -152,6 +152,21 @@
 					this.shotOnGoal = shotOnGoal;
 				}
 			},
+			PlayingTimeInformation : function PlayingTimeInformation(playingTime, additionalTime) {
+				if (arguments[0] instanceof jQuery) {
+					var _PlayingTimeInformation = this;
+
+					arguments[0].children().each(function() {
+						switch($(this).prop("tagName")) {
+							case "playingTime": _PlayingTimeInformation.playingTime = $(this).text(); break;
+							case "additionalTime": _PlayingTimeInformation.additionalTime = $(this).text(); break;
+						}
+					});
+				} else {
+					this.playingTime = playingTime;
+					this.additionalTime = additionalTime;
+				}
+			},
 			CurrentPositionData : function CurrentPositionData(positionNodes) {
 				if (arguments[0] instanceof jQuery) {
 					var _CurrentPositionData = this;
@@ -226,7 +241,20 @@
 					this.passSuccessPrediction = passSuccessPrediction;
 					this.attackResultPrediction = attackResultPrediction;
 				}
-			}
+			},
+			CurrentGameData : function CurrentGameData(playingTimeInformation) {
+				if (arguments[0] instanceof jQuery) {
+					var _CurrentGameData = this;
+
+					arguments[0].children().each(function() {
+						switch($(this).prop("tagName")) {
+							case "PlayingTimeInformation": _CurrentGameData.playingTimeInformation = new sea.pubsub.ELEMENTS.PlayingTimeInformation($(this));
+						}
+					});
+				} else {
+					this.playingTimeInformation = playingTimeInformation;
+				}
+			},
 		},
 
 		INTERNAL : {
@@ -248,7 +276,6 @@
 				var $item, node;
 				$.each($iq.children("item"), function(index, value) {
 					node = ($item = $(value)).attr("node");
-					//console.log(node);
 					for (var i = 0; i < sea.pubsub.INTERNAL.handlers.length; i++) {
 						if (sea.pubsub.INTERNAL.handlers[i].match(node)) {
 							sea.pubsub.INTERNAL.handlers[i].handle($item);
@@ -285,6 +312,11 @@
 				return function($item) {
 					_callback.apply(this, [new sea.pubsub.ELEMENTS.CurrentPrognosisData($item.children())]);
 				}
+			},
+			CurrentGameDataHandler : function(_callback) {
+				return function($item) {
+					_callback.apply(this, [new sea.pubsub.ELEMENTS.CurrentGameData($item.children())]);
+				}
 			}
 		},
 
@@ -317,6 +349,10 @@
 
 		addCurrentPrognosisDataHandler : function(onEvent) {
 			sea.pubsub.INTERNAL.addHandler(sea.pubsub.DECORATORS.CurrentPrognosisDataHandler(onEvent), "CurrentPrognosisData");
+		},
+
+		addCurrentGameDataHandler : function(onEvent) {
+			sea.pubsub.INTERNAL.addHandler(sea.pubsub.DECORATORS.CurrentGameDataHandler(onEvent), "CurrentGameData");
 		}
 
 	}

@@ -1,5 +1,9 @@
 package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.interfaces;
 
+/**
+ * This is an auxiliary <code>interface</code> to declare some methods which may
+ * be done on a <code>CurrentHeatMapData</code> <code>Node</code>
+ */
 public interface ICurrentHeatMapData {
 
 	/**

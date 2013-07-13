@@ -1,5 +1,6 @@
 package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree;
 
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.interfaces.ICurrentGameData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.interfaces.ICurrentHeatMapData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.interfaces.ICurrentPlayerData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.interfaces.ICurrentPositionData;
@@ -10,6 +11,7 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.BallPosition
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.PlayerHeatMap;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.PlayerPosition;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.PlayerStatistic;
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.PlayingTimeInformation;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.TeamHeatMap;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.TeamStatistic;
 
@@ -23,7 +25,7 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl.TeamStatisti
  */
 public class StatisticsFacade implements ICurrentPositionData,
 		ICurrentPlayerData, ICurrentTeamData, ICurrentHeatMapData,
-		ICurrentPrognosisData {
+		ICurrentPrognosisData, ICurrentGameData {
 
 	/**
 	 * The statistics model (this <code>StatisticCollection</code> will be
@@ -44,7 +46,8 @@ public class StatisticsFacade implements ICurrentPositionData,
 			currentPositionDataMutex = new Object(),
 			currentTeamDataMutex = new Object(),
 			currentHeatMapMutex = new Object(),
-			currentPrognosisDataMutex = new Object();
+			currentPrognosisDataMutex = new Object(),
+			currentGameDataMutex = new Object();
 
 	/**
 	 * This is an auxiliary mutex (used because mStatistics is communicated and
@@ -97,6 +100,12 @@ public class StatisticsFacade implements ICurrentPositionData,
 							synchronized (currentPrognosisDataMutex) {
 								statistics.getCurrentPrognosisData().copy(
 										mStatistics.getCurrentPrognosisData());
+							}
+
+							// Copy currentGameData-Node
+							synchronized (currentGameDataMutex) {
+								statistics.getCurrentGameData().copy(
+										mStatistics.getCurrentGameData());
 							}
 
 							// Notify
@@ -405,6 +414,24 @@ public class StatisticsFacade implements ICurrentPositionData,
 			attackResultPrediciton.setOutOfPlay(outOfPlay);
 			attackResultPrediciton.setShotOnGoal(shotOnGoal);
 			attackResultPrediciton.setTurnOver(turnOver);
+		}
+	}
+
+	@Override
+	public synchronized void setPlayingTime(String playingTime) {
+		synchronized (currentGameDataMutex) {
+			PlayingTimeInformation playingTimeInformation = statistics
+					.getCurrentGameData().getPlayingTimeInformation();
+			playingTimeInformation.setPlayingTime(playingTime);
+		}
+	}
+
+	@Override
+	public synchronized void setAdditionalTime(int additionalTime) {
+		synchronized (currentGameDataMutex) {
+			PlayingTimeInformation playingTimeInformation = statistics
+					.getCurrentGameData().getPlayingTimeInformation();
+			playingTimeInformation.setAdditionalTime(additionalTime);
 		}
 	}
 

@@ -72,6 +72,9 @@ var sea_default_setup = function() {
 		sea.pubsub.addCurrentPrognosisDataHandler(function(item) {
 			// console.log(item);
 		});
+		sea.pubsub.addCurrentGameDataHandler(function(item) {
+			// console.log(item);
+		});
 	});
 	return sea;
 }
