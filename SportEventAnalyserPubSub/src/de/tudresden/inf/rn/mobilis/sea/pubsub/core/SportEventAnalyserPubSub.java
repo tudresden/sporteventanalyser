@@ -6,11 +6,11 @@ import org.jivesoftware.smackx.pubsub.PubSubManager;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.StatisticsFacade;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.utils.DFSIterator;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.TreeRunner;
-import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.init.InitializationVisitor;
-import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.publish.GoDPublishVisitor;
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.impl.GoDPublishVisitor;
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.impl.InitializationVisitor;
 
 /**
- * This <code>SportEventAnalyserPubSub</code> is used to handle the build of
+ * This <code>SportEventAnalyserPubSub</code> is used to handle the bulk of
  * functionality which comes along with XEP-0060 (PubSub). Therefore it uses an
  * internal model which is accessed by using the <code>StatisticsFacade</code>
  * and may be filled with new data. Any changes within the model are published

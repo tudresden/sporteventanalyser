@@ -1,4 +1,4 @@
-package de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.publish;
+package de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.impl;
 
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.pubsub.LeafNode;
