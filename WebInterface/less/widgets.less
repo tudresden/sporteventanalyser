@@ -71,10 +71,10 @@
     background: fade(@base03, 30%);
     padding: 0 5pt;
     cursor: pointer;
-  }
-  label:hover {
-    border-color: @base00;
-    background: fade(@base00, 30%);
+    &:hover {
+      border-color: @base00;
+      background: fade(@base00, 30%);
+    }
   }
   input[type="radio"]:checked + label {
     color: @base03;
@@ -84,6 +84,7 @@
 
 
 #startbutton {
+  @start-icon-height: 50pt;
   .button;
   left: 50%;
   top: 50%;
@@ -94,10 +95,10 @@
   position: fixed;
   z-index: 999;
   overflow: hidden;
-  height: 50pt;
+  height: @start-icon-height;
   width: 100pt;
-  img {
-    height: 50pt;
+  img, svg {
+    height: @start-icon-height;
   }
 }
 #startbutton:hover {
