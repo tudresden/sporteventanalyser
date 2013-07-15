@@ -122,6 +122,7 @@ update_position = (v, i) ->
         x: parseInt v.positionX
         y: parseInt v.positionY
       playersdict[v.id]?.update Date.now(), engine.reposition data
+      #console.log v
     else
       console.log "Unknown position update.", v
 

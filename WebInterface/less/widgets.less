@@ -49,36 +49,48 @@
   color: @base1;
   cursor: pointer;
   overflow: hidden;
+  svg .colored_icon {
+    fill: @base1;
+  }
 }
 .ui-button:hover,
 .button_hover {
   background: @base02;
   color: @base2;
+  svg .colored_icon {
+    fill: @base2;
+  }
 }
 
 .radio_menu {
-  img {
-    height: 20pt;
-    margin-bottom: 13pt;
-  }
   input[type="radio"] {
     display: none;
   }
   label {
-    .bordered;
+    .button;
     border-radius: 5pt 5pt 0 0;
     border-bottom: 0 hidden;
     background: fade(@base03, 30%);
     padding: 0 5pt;
     cursor: pointer;
+    img, svg {
+      height: 30pt;
+    }
   }
   label:hover {
+    .button_hover;
     border-color: @base00;
     background: fade(@base00, 30%);
+    svg path {
+      fill: @base03;
+    }
   }
   input[type="radio"]:checked + label {
     color: @base03;
     background: @base00;
+    svg path {
+      fill: @base03;
+    }
   }
 }
 

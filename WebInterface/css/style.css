@@ -333,14 +333,18 @@ article {
   cursor: pointer;
   overflow: hidden;
 }
+.ui-button svg .colored_icon,
+.button svg .colored_icon {
+  fill: #99a193;
+}
 .ui-button:hover,
 .button_hover {
   background: #154307;
   color: #eee8d5;
 }
-.radio_menu img {
-  height: 20pt;
-  margin-bottom: 13pt;
+.ui-button:hover svg .colored_icon,
+.button_hover svg .colored_icon {
+  fill: #eee8d5;
 }
 .radio_menu input[type="radio"] {
   display: none;
@@ -352,19 +356,40 @@ article {
   -o-border-radius: 5pt;
   border-radius: 5pt;
   border: #6a8365 1pt solid;
+  background: #0d3600;
+  color: #99a193;
+  overflow: hidden;
   border-radius: 5pt 5pt 0 0;
   border-bottom: 0 hidden;
   background: rgba(13, 54, 0, 0.3);
-  padding: 0 2pt;
+  padding: 0 5pt;
   cursor: pointer;
 }
+.radio_menu label svg .colored_icon {
+  fill: #99a193;
+}
+.radio_menu label img,
+.radio_menu label svg {
+  height: 30pt;
+}
 .radio_menu label:hover {
+  background: #154307;
+  color: #eee8d5;
   border-color: #6a8365;
   background: rgba(106, 131, 101, 0.3);
+}
+.radio_menu label:hover svg .colored_icon {
+  fill: #eee8d5;
+}
+.radio_menu label:hover svg path {
+  fill: #0d3600;
 }
 .radio_menu input[type="radio"]:checked + label {
   color: #0d3600;
   background: #6a8365;
+}
+.radio_menu input[type="radio"]:checked + label svg path {
+  fill: #0d3600;
 }
 #startbutton {
   -webkit-border-radius: 5pt;
@@ -388,12 +413,18 @@ article {
   height: 50pt;
   width: 100pt;
 }
+#startbutton svg .colored_icon {
+  fill: #99a193;
+}
 #startbutton img {
   height: 50pt;
 }
 #startbutton:hover {
   background: #154307;
   color: #eee8d5;
+}
+#startbutton:hover svg .colored_icon {
+  fill: #eee8d5;
 }
 html {
   background-image: url(../img/background.jpg);
@@ -566,10 +597,6 @@ video {
   padding: 0;
   margin: 5pt 5pt 0 5pt;
 }
-#content #center #perspectives_menu img {
-  height: 20pt;
-  margin-bottom: 13pt;
-}
 #content #center #perspectives_menu input[type="radio"] {
   display: none;
 }
@@ -580,19 +607,40 @@ video {
   -o-border-radius: 5pt;
   border-radius: 5pt;
   border: #6a8365 1pt solid;
+  background: #0d3600;
+  color: #99a193;
+  overflow: hidden;
   border-radius: 5pt 5pt 0 0;
   border-bottom: 0 hidden;
   background: rgba(13, 54, 0, 0.3);
-  padding: 0 2pt;
+  padding: 0 5pt;
   cursor: pointer;
 }
+#content #center #perspectives_menu label svg .colored_icon {
+  fill: #99a193;
+}
+#content #center #perspectives_menu label img,
+#content #center #perspectives_menu label svg {
+  height: 30pt;
+}
 #content #center #perspectives_menu label:hover {
+  background: #154307;
+  color: #eee8d5;
   border-color: #6a8365;
   background: rgba(106, 131, 101, 0.3);
+}
+#content #center #perspectives_menu label:hover svg .colored_icon {
+  fill: #eee8d5;
+}
+#content #center #perspectives_menu label:hover svg path {
+  fill: #0d3600;
 }
 #content #center #perspectives_menu input[type="radio"]:checked + label {
   color: #0d3600;
   background: #6a8365;
+}
+#content #center #perspectives_menu input[type="radio"]:checked + label svg path {
+  fill: #0d3600;
 }
 #content #center #field {
   -webkit-border-radius: 5pt;
