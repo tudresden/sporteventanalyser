@@ -138,6 +138,30 @@ update_statistics = (v, i) ->
     else
       console.log "Unknown Statistics", v
 
+update_commentator = (v) ->
+  switch v.constructor.name
+    when "CurrentPrognosisData"
+      # playerHeatMap probably wrongly named here.
+      saying = $("#commentator").find(".says")
+      data = v.playerHeatMaps
+      switch data.constructor.name
+        when "AttackResultPrediction"
+          max = 0.0
+          probably = "Any"
+          $.each data, (k) ->
+            if data[k] > max
+              max = data[k]
+              probably = k
+          probably = t "commentPred:" + probably
+          if saying.html() != probably
+            saying.fadeOut "fast", ->
+              saying.html(probably).fadeIn("fast")
+          console.log v, saying.html()
+        else
+          console.log v
+    else
+      console.log "unknown type of prediction: ", v
+
 establish_sea_connection = (onsuccess) ->
   sea.connect "seaclient@sea", "sea", "mobilis@sea", ->
     sea.getGameMappings (mappings) ->
@@ -174,11 +198,11 @@ establish_sea_connection = (onsuccess) ->
     #sea.pubsub.addCurrentHeatMapDataHandler (item) ->
       #console.log "heatmap", item
 
-    sea.pubsub.addCurrentPrognosisDataHandler (item) ->
-      console.log "prognosis", item
+    sea.pubsub.addCurrentPrognosisDataHandler update_commentator
+      
 
     onsuccess?()
-    
+
 $ ->
   $("#content").hide()
 
