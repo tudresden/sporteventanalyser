@@ -418,11 +418,12 @@ public class StatisticsFacade implements ICurrentPositionData,
 	}
 
 	@Override
-	public synchronized void setPlayingTime(String playingTime) {
+	public synchronized void setPlayingTime(int playedMinutes, int playedSeconds) {
 		synchronized (currentGameDataMutex) {
 			PlayingTimeInformation playingTimeInformation = statistics
 					.getCurrentGameData().getPlayingTimeInformation();
-			playingTimeInformation.setPlayingTime(playingTime);
+			playingTimeInformation.setPlayedMinutes(playedMinutes);
+			playingTimeInformation.setPlayedSeconds(playedSeconds);
 		}
 	}
 

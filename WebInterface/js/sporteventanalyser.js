@@ -31,7 +31,7 @@ var sea = {
 	}
 }
 var sea_default_setup = function() {
-	sea.connect("seaclient@sea/Client", "sea", "mobilis@sea", function() {
+	sea.connect("seaclient@sea", "sea", "mobilis@sea", function() {
 		// Do something special here!
 
 		sea.getGameMappings(function(Mappings) {

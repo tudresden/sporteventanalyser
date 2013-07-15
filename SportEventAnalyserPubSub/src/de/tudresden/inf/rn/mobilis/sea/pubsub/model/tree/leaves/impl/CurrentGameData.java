@@ -25,7 +25,7 @@ public class CurrentGameData extends DataNode<CurrentGameData> {
 	 * Constructor for a <code>CurrentGameData</code>
 	 */
 	public CurrentGameData() {
-		playingTimeInformation = new PlayingTimeInformation("", 0);
+		playingTimeInformation = new PlayingTimeInformation(0, 0, 0);
 	}
 
 	/**
