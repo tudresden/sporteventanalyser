@@ -15,10 +15,10 @@ team_b_stats = {}
 observed_player_a = null
 observed_player_b = null
 
-console.log Date.now()
+console.log "* current local time is: " + Date.now()
 
-console.log "* starting animation loop"
 run = ->
+  # animation loop
   requestAnimationFrame run
   engine.render()
 
@@ -198,16 +198,16 @@ $ ->
     filter: 'tr'
     selected: refresh_selection
 
-  console.log "* preparing diagrams"
-  nodata = [[0, 0], [1, 0]]
-  options = 
-    series:
-      lines:
-        show: true
-      points:
-        show: false
-  $("#player_a_plot").plot([nodata], options).data("plot")
-  $("#player_b_plot").plot([nodata], options).data("plot")
+  #console.log "* preparing diagrams"
+  #nodata = [[0, 0], [1, 0]]
+  #options = 
+  #  series:
+  #    lines:
+  #      show: true
+  #    points:
+  #      show: false
+  #$("#player_a_plot").plot([nodata], options).data("plot")
+  #$("#player_b_plot").plot([nodata], options).data("plot")
   
   $("#startbutton").button().click (event) ->
     $(this).html '<img src="img/spinner_animated.svg"/>'
