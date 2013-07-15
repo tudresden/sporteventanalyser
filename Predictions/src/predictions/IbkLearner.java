@@ -2,9 +2,13 @@ package predictions;
 
 import moa.core.InstancesHeader;
 import weka.classifiers.lazy.IBk;
+import weka.core.ChebyshevDistance;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SelectedTag;
 import weka.core.Tag;
+import weka.core.neighboursearch.LinearNNSearch;
+import weka.core.neighboursearch.NearestNeighbourSearch;
 
 /**
  * This class encapsulates the <i>IBk</i> classifier.
@@ -35,10 +39,38 @@ public class IbkLearner extends Learner {
 		this.instanceHeader = instanceHeader;
 
 		ibk = new IBk(KNN);
+
+		// try {
+		// ibk.setOptions(new String[] {
+		// "-K",
+		// "1",
+		// "-W",
+		// "0",
+		// "-A",
+		// "weka.core.neighboursearch.LinearNNSearch -A \"weka.core.ChebyshevDistance -R first-last\""
+		// }); //
+		// } catch (Exception e1) {
+		// // TODO Auto-generated catch block
+		// e1.printStackTrace();
+		// }
+		//
+
 		// ibk.setDistanceWeighting(new SelectedTag(WEIGHT_SIMILARITY,
 		// TAGS_WEIGHTING));
 		// int newWindowSize = 300;
 		// ibk.setWindowSize(newWindowSize);
+
+		// LinearNNSearch linearNNSearch= new LinearNNSearch();
+		// try {
+		// ChebyshevDistance chebyshevDistance = new ChebyshevDistance();
+		// String[] options = {"-R first-last"};
+		// chebyshevDistance.setOptions(options);
+		// linearNNSearch.setDistanceFunction(new ChebyshevDistance());
+		// } catch (Exception e1) {
+		// // TODO Auto-generated catch block
+		// e1.printStackTrace();
+		// }
+		// ibk.setNearestNeighbourSearchAlgorithm(linearNNSearch);
 
 		try {
 			ibk.buildClassifier(new Instances(instanceHeader));
@@ -72,7 +104,7 @@ public class IbkLearner extends Learner {
 						/ (distances[0] + distances[1]) * 100f);
 
 				// prediction correct
-				if (firstClassProbability > 50f
+				if (firstClassProbability >= 50f
 						&& result.equals(getClassName(0))
 						|| firstClassProbability <= 50f
 						&& result.equals(getClassName(1))) {
@@ -95,14 +127,14 @@ public class IbkLearner extends Learner {
 						- secondClassProbability;
 
 				// prediction correct
-				if (firstClassProbability > secondClassProbability
-						&& firstClassProbability > thirdClassProbability
+				if (firstClassProbability >= secondClassProbability
+						&& firstClassProbability >= thirdClassProbability
 						&& result.equals(getClassName(0))
-						|| secondClassProbability > firstClassProbability
-						&& secondClassProbability > thirdClassProbability
+						|| secondClassProbability >= firstClassProbability
+						&& secondClassProbability >= thirdClassProbability
 						&& result.equals(getClassName(1))
-						|| thirdClassProbability > secondClassProbability
-						&& thirdClassProbability > firstClassProbability
+						|| thirdClassProbability >= secondClassProbability
+						&& thirdClassProbability >= firstClassProbability
 						&& result.equals(getClassName(2))) {
 					numberSamplesCorrect++;
 					if (Utils.DEBUGGING)
