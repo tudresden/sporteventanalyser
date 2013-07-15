@@ -11,6 +11,7 @@
 
 .infobox {
   .bordered;
+  margin: 1.1pt;
   background: fade(@background, 50%);
 }
 
@@ -42,6 +43,14 @@
   border-spacing: 0;
 }
 
+.ui-button:hover,
+.button_hover {
+  background: @base02;
+  color: @base2;
+  svg .colored_icon {
+    fill: @base2;
+  }
+}
 .ui-button,
 .button {
   .bordered;
@@ -49,39 +58,52 @@
   color: @base1;
   cursor: pointer;
   overflow: hidden;
-}
-.ui-button:hover,
-.button_hover {
-  background: @base02;
-  color: @base2;
+  svg .colored_icon {
+    fill: @base1;
+  }
+  &:hover {
+    .button_hover;
+  }
 }
 
 .radio_menu {
-  img {
-    height: 20pt;
-    margin-bottom: 13pt;
-  }
   input[type="radio"] {
     display: none;
   }
   label {
-    .bordered;
+    .button;
+    @icon_height: 40px;
+    display: inline;
     border-radius: 5pt 5pt 0 0;
     border-bottom: 0 hidden;
     background: fade(@base03, 30%);
     padding: 0 5pt;
+    height: @icon_height;
+    font-size: @icon_height;
     cursor: pointer;
+    img, svg {
+      margin: 0 auto;
+      vertical-align: middle;
+    }
     &:hover {
+      .button_hover;
       border-color: @base00;
       background: fade(@base00, 30%);
+      label {
+        .colored_icon, .colored_icon * {
+          stroke: @base03;
+        }
+      }
     }
   }
   input[type="radio"]:checked + label {
     color: @base03;
     background: @base00;
+    .colored_icon, .colored_icon * {
+      stroke: @base03;
+    }
   }
 }
-
 
 #startbutton {
   @start-icon-height: 50pt;

@@ -233,56 +233,56 @@ article {
   display: table;
   width: 100%;
 }
-#team_a input,
-#team_b input {
-  border: none;
-}
-#goals {
-  text-align: center;
-}
-#field {
-  display: table-cell;
-}
-#content {
+article #content {
   display: table-row;
 }
-#content #left,
-#content #right {
+article #content #left,
+article #content #right {
   width: 33%;
   display: table-cell;
 }
-#content #left #team_a,
-#content #right #team_a,
-#content #left #team_b,
-#content #right #team_b {
+article #content #left #team_a,
+article #content #right #team_a,
+article #content #left #team_b,
+article #content #right #team_b {
   height: 240pt;
   width: 100%;
   vertical-align: top;
 }
-#content #left #team_a .smallinfo img,
-#content #right #team_a .smallinfo img,
-#content #left #team_b .smallinfo img,
-#content #right #team_b .smallinfo img {
+article #content #left #team_a .smallinfo img,
+article #content #right #team_a .smallinfo img,
+article #content #left #team_b .smallinfo img,
+article #content #right #team_b .smallinfo img {
   max-height: 16pt !important;
   max-width: 16pt;
 }
-#content #left #player_a_stats table,
-#content #right #player_a_stats table,
-#content #left #player_b_stats table,
-#content #right #player_b_stats table {
+article #content #left #player_a_stats table,
+article #content #right #player_a_stats table,
+article #content #left #player_b_stats table,
+article #content #right #player_b_stats table {
   width: 100%;
   height: 200pt;
 }
-#content #left #player_a_stats #player_a_plot,
-#content #right #player_a_stats #player_a_plot,
-#content #left #player_b_stats #player_a_plot,
-#content #right #player_b_stats #player_a_plot,
-#content #left #player_a_stats #player_b_plot,
-#content #right #player_a_stats #player_b_plot,
-#content #left #player_b_stats #player_b_plot,
-#content #right #player_b_stats #player_b_plot {
+article #content #left #player_a_stats #player_a_plot,
+article #content #right #player_a_stats #player_a_plot,
+article #content #left #player_b_stats #player_a_plot,
+article #content #right #player_b_stats #player_a_plot,
+article #content #left #player_a_stats #player_b_plot,
+article #content #right #player_a_stats #player_b_plot,
+article #content #left #player_b_stats #player_b_plot,
+article #content #right #player_b_stats #player_b_plot {
   height: 50pt;
   width: 200pt;
+}
+article #content #team_a input,
+article #content #team_b input {
+  border: none;
+}
+article #content #goals {
+  text-align: center;
+}
+article #content #field {
+  display: table-cell;
 }
 .infobox {
   -webkit-border-radius: 5pt;
@@ -291,6 +291,7 @@ article {
   -o-border-radius: 5pt;
   border-radius: 5pt;
   border: #6a8365 1pt solid;
+  margin: 1.1pt;
   background: rgba(13, 54, 0, 0.5);
 }
 .colored_table {
@@ -320,6 +321,15 @@ article {
 .colored_table thead tr th {
   background: rgba(21, 67, 7, 0.5);
 }
+.ui-button:hover,
+.button_hover {
+  background: #154307;
+  color: #eee8d5;
+}
+.ui-button:hover svg .colored_icon,
+.button_hover svg .colored_icon {
+  fill: #eee8d5;
+}
 .ui-button,
 .button {
   -webkit-border-radius: 5pt;
@@ -333,14 +343,18 @@ article {
   cursor: pointer;
   overflow: hidden;
 }
+.ui-button svg .colored_icon,
+.button svg .colored_icon {
+  fill: #99a193;
+}
 .ui-button:hover,
-.button_hover {
+.button:hover {
   background: #154307;
   color: #eee8d5;
 }
-.radio_menu img {
-  height: 20pt;
-  margin-bottom: 13pt;
+.ui-button:hover svg .colored_icon,
+.button:hover svg .colored_icon {
+  fill: #eee8d5;
 }
 .radio_menu input[type="radio"] {
   display: none;
@@ -352,19 +366,53 @@ article {
   -o-border-radius: 5pt;
   border-radius: 5pt;
   border: #6a8365 1pt solid;
+  background: #0d3600;
+  color: #99a193;
+  overflow: hidden;
+  display: inline;
   border-radius: 5pt 5pt 0 0;
   border-bottom: 0 hidden;
   background: rgba(13, 54, 0, 0.3);
   padding: 0 5pt;
+  height: 40px;
+  font-size: 40px;
   cursor: pointer;
 }
+.radio_menu label svg .colored_icon {
+  fill: #99a193;
+}
 .radio_menu label:hover {
+  background: #154307;
+  color: #eee8d5;
+}
+.radio_menu label:hover svg .colored_icon {
+  fill: #eee8d5;
+}
+.radio_menu label img,
+.radio_menu label svg {
+  margin: 0 auto;
+  vertical-align: middle;
+}
+.radio_menu label:hover {
+  background: #154307;
+  color: #eee8d5;
   border-color: #6a8365;
   background: rgba(106, 131, 101, 0.3);
+}
+.radio_menu label:hover svg .colored_icon {
+  fill: #eee8d5;
+}
+.radio_menu label:hover label .colored_icon,
+.radio_menu label:hover label .colored_icon * {
+  stroke: #0d3600;
 }
 .radio_menu input[type="radio"]:checked + label {
   color: #0d3600;
   background: #6a8365;
+}
+.radio_menu input[type="radio"]:checked + label .colored_icon,
+.radio_menu input[type="radio"]:checked + label .colored_icon * {
+  stroke: #0d3600;
 }
 #startbutton {
   -webkit-border-radius: 5pt;
@@ -388,6 +436,16 @@ article {
   height: 50pt;
   width: 100pt;
 }
+#startbutton svg .colored_icon {
+  fill: #99a193;
+}
+#startbutton:hover {
+  background: #154307;
+  color: #eee8d5;
+}
+#startbutton:hover svg .colored_icon {
+  fill: #eee8d5;
+}
 #startbutton img,
 #startbutton svg {
   height: 50pt;
@@ -395,6 +453,9 @@ article {
 #startbutton:hover {
   background: #154307;
   color: #eee8d5;
+}
+#startbutton:hover svg .colored_icon {
+  fill: #eee8d5;
 }
 html {
   background-image: url(../img/background.jpg);
@@ -433,8 +494,8 @@ video {
   -o-border-radius: 5pt;
   border-radius: 5pt;
   border: #6a8365 1pt solid;
+  margin: 1.1pt;
   background: rgba(13, 54, 0, 0.5);
-  margin: 2pt;
   border-spacing: 0;
   overflow: auto;
 }
@@ -480,6 +541,7 @@ video {
   -o-border-radius: 5pt;
   border-radius: 5pt;
   border: #6a8365 1pt solid;
+  margin: 1.1pt;
   background: rgba(13, 54, 0, 0.5);
 }
 #content #right #player_a_stats table,
@@ -543,6 +605,7 @@ video {
   -o-border-radius: 5pt;
   border-radius: 5pt;
   border: #6a8365 1pt solid;
+  margin: 1.1pt;
   background: rgba(13, 54, 0, 0.5);
   margin-top: 2pt;
   padding: 5pt;
@@ -565,11 +628,7 @@ video {
 #content #center #perspectives_menu {
   width: 100%;
   padding: 0;
-  margin: 5pt 5pt 0 5pt;
-}
-#content #center #perspectives_menu img {
-  height: 20pt;
-  margin-bottom: 13pt;
+  margin: 5pt 5pt 2pt 5pt;
 }
 #content #center #perspectives_menu input[type="radio"] {
   display: none;
@@ -581,19 +640,53 @@ video {
   -o-border-radius: 5pt;
   border-radius: 5pt;
   border: #6a8365 1pt solid;
+  background: #0d3600;
+  color: #99a193;
+  overflow: hidden;
+  display: inline;
   border-radius: 5pt 5pt 0 0;
   border-bottom: 0 hidden;
   background: rgba(13, 54, 0, 0.3);
   padding: 0 5pt;
+  height: 40px;
+  font-size: 40px;
   cursor: pointer;
 }
+#content #center #perspectives_menu label svg .colored_icon {
+  fill: #99a193;
+}
 #content #center #perspectives_menu label:hover {
+  background: #154307;
+  color: #eee8d5;
+}
+#content #center #perspectives_menu label:hover svg .colored_icon {
+  fill: #eee8d5;
+}
+#content #center #perspectives_menu label img,
+#content #center #perspectives_menu label svg {
+  margin: 0 auto;
+  vertical-align: middle;
+}
+#content #center #perspectives_menu label:hover {
+  background: #154307;
+  color: #eee8d5;
   border-color: #6a8365;
   background: rgba(106, 131, 101, 0.3);
+}
+#content #center #perspectives_menu label:hover svg .colored_icon {
+  fill: #eee8d5;
+}
+#content #center #perspectives_menu label:hover label .colored_icon,
+#content #center #perspectives_menu label:hover label .colored_icon * {
+  stroke: #0d3600;
 }
 #content #center #perspectives_menu input[type="radio"]:checked + label {
   color: #0d3600;
   background: #6a8365;
+}
+#content #center #perspectives_menu input[type="radio"]:checked + label .colored_icon,
+#content #center #perspectives_menu input[type="radio"]:checked + label .colored_icon * {
+  stroke: #0d3600;
 }
 #content #center #field {
   -webkit-border-radius: 5pt;
@@ -602,6 +695,7 @@ video {
   -o-border-radius: 5pt;
   border-radius: 5pt;
   border: #6a8365 1pt solid;
+  margin: 1.1pt;
   background: rgba(13, 54, 0, 0.5);
 }
 #content #center #commentator {
@@ -611,6 +705,7 @@ video {
   -o-border-radius: 5pt;
   border-radius: 5pt;
   border: #6a8365 1pt solid;
+  margin: 1.1pt;
   background: rgba(13, 54, 0, 0.5);
   text-align: center;
 }
