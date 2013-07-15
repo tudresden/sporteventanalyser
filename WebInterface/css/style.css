@@ -300,26 +300,29 @@ article #content #field {
 .colored_table .ui-selectable {
   cursor: pointer;
 }
+.colored_table .ui-selectable tr:hover {
+  background: rgba(238, 232, 213, 0.3);
+}
 .colored_table tbody td,
 .colored_table thead th {
   padding: 0 5pt 0 5pt;
 }
-.colored_table tbody tr:nth-child(2n+1) td {
-  background: rgba(21, 67, 7, 0.3);
-}
-.colored_table tbody tr:nth-child(2n) td {
-  background: rgba(13, 54, 0, 0.3);
-}
-.colored_table tbody tr.ui-selecting td {
-  color: #0d3600;
-  background: #eee8d5;
-}
-.colored_table tbody tr.ui-selected td {
-  color: #0d3600;
-  background: #eee8d5;
-}
 .colored_table thead tr th {
   background: rgba(21, 67, 7, 0.5);
+}
+.colored_table tr:nth-child(2n+1) td {
+  background: rgba(21, 67, 7, 0.3);
+}
+.colored_table tr:nth-child(2n) td {
+  background: rgba(13, 54, 0, 0.3);
+}
+.colored_table tr.ui-selecting td {
+  color: #0d3600;
+  background: #eee8d5;
+}
+.colored_table tr.ui-selected td {
+  color: #0d3600;
+  background: #eee8d5;
 }
 .ui-button:hover,
 .button_hover {
@@ -503,33 +506,37 @@ video {
 #content #left .team .ui-selectable {
   cursor: pointer;
 }
+#content #right .team .ui-selectable tr:hover,
+#content #left .team .ui-selectable tr:hover {
+  background: rgba(238, 232, 213, 0.3);
+}
 #content #right .team tbody td,
 #content #left .team tbody td,
 #content #right .team thead th,
 #content #left .team thead th {
   padding: 0 5pt 0 5pt;
 }
-#content #right .team tbody tr:nth-child(2n+1) td,
-#content #left .team tbody tr:nth-child(2n+1) td {
-  background: rgba(21, 67, 7, 0.3);
-}
-#content #right .team tbody tr:nth-child(2n) td,
-#content #left .team tbody tr:nth-child(2n) td {
-  background: rgba(13, 54, 0, 0.3);
-}
-#content #right .team tbody tr.ui-selecting td,
-#content #left .team tbody tr.ui-selecting td {
-  color: #0d3600;
-  background: #eee8d5;
-}
-#content #right .team tbody tr.ui-selected td,
-#content #left .team tbody tr.ui-selected td {
-  color: #0d3600;
-  background: #eee8d5;
-}
 #content #right .team thead tr th,
 #content #left .team thead tr th {
   background: rgba(21, 67, 7, 0.5);
+}
+#content #right .team tr:nth-child(2n+1) td,
+#content #left .team tr:nth-child(2n+1) td {
+  background: rgba(21, 67, 7, 0.3);
+}
+#content #right .team tr:nth-child(2n) td,
+#content #left .team tr:nth-child(2n) td {
+  background: rgba(13, 54, 0, 0.3);
+}
+#content #right .team tr.ui-selecting td,
+#content #left .team tr.ui-selecting td {
+  color: #0d3600;
+  background: #eee8d5;
+}
+#content #right .team tr.ui-selected td,
+#content #left .team tr.ui-selected td {
+  color: #0d3600;
+  background: #eee8d5;
 }
 #content #right #player_a_stats,
 #content #left #player_a_stats,
@@ -556,6 +563,12 @@ video {
 #content #left #player_b_stats table .ui-selectable {
   cursor: pointer;
 }
+#content #right #player_a_stats table .ui-selectable tr:hover,
+#content #left #player_a_stats table .ui-selectable tr:hover,
+#content #right #player_b_stats table .ui-selectable tr:hover,
+#content #left #player_b_stats table .ui-selectable tr:hover {
+  background: rgba(238, 232, 213, 0.3);
+}
 #content #right #player_a_stats table tbody td,
 #content #left #player_a_stats table tbody td,
 #content #right #player_b_stats table tbody td,
@@ -566,37 +579,37 @@ video {
 #content #left #player_b_stats table thead th {
   padding: 0 5pt 0 5pt;
 }
-#content #right #player_a_stats table tbody tr:nth-child(2n+1) td,
-#content #left #player_a_stats table tbody tr:nth-child(2n+1) td,
-#content #right #player_b_stats table tbody tr:nth-child(2n+1) td,
-#content #left #player_b_stats table tbody tr:nth-child(2n+1) td {
-  background: rgba(21, 67, 7, 0.3);
-}
-#content #right #player_a_stats table tbody tr:nth-child(2n) td,
-#content #left #player_a_stats table tbody tr:nth-child(2n) td,
-#content #right #player_b_stats table tbody tr:nth-child(2n) td,
-#content #left #player_b_stats table tbody tr:nth-child(2n) td {
-  background: rgba(13, 54, 0, 0.3);
-}
-#content #right #player_a_stats table tbody tr.ui-selecting td,
-#content #left #player_a_stats table tbody tr.ui-selecting td,
-#content #right #player_b_stats table tbody tr.ui-selecting td,
-#content #left #player_b_stats table tbody tr.ui-selecting td {
-  color: #0d3600;
-  background: #eee8d5;
-}
-#content #right #player_a_stats table tbody tr.ui-selected td,
-#content #left #player_a_stats table tbody tr.ui-selected td,
-#content #right #player_b_stats table tbody tr.ui-selected td,
-#content #left #player_b_stats table tbody tr.ui-selected td {
-  color: #0d3600;
-  background: #eee8d5;
-}
 #content #right #player_a_stats table thead tr th,
 #content #left #player_a_stats table thead tr th,
 #content #right #player_b_stats table thead tr th,
 #content #left #player_b_stats table thead tr th {
   background: rgba(21, 67, 7, 0.5);
+}
+#content #right #player_a_stats table tr:nth-child(2n+1) td,
+#content #left #player_a_stats table tr:nth-child(2n+1) td,
+#content #right #player_b_stats table tr:nth-child(2n+1) td,
+#content #left #player_b_stats table tr:nth-child(2n+1) td {
+  background: rgba(21, 67, 7, 0.3);
+}
+#content #right #player_a_stats table tr:nth-child(2n) td,
+#content #left #player_a_stats table tr:nth-child(2n) td,
+#content #right #player_b_stats table tr:nth-child(2n) td,
+#content #left #player_b_stats table tr:nth-child(2n) td {
+  background: rgba(13, 54, 0, 0.3);
+}
+#content #right #player_a_stats table tr.ui-selecting td,
+#content #left #player_a_stats table tr.ui-selecting td,
+#content #right #player_b_stats table tr.ui-selecting td,
+#content #left #player_b_stats table tr.ui-selecting td {
+  color: #0d3600;
+  background: #eee8d5;
+}
+#content #right #player_a_stats table tr.ui-selected td,
+#content #left #player_a_stats table tr.ui-selected td,
+#content #right #player_b_stats table tr.ui-selected td,
+#content #left #player_b_stats table tr.ui-selected td {
+  color: #0d3600;
+  background: #eee8d5;
 }
 #content #center #gametrack {
   -webkit-border-radius: 5pt;

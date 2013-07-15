@@ -18,27 +18,32 @@
 .colored_table {
   .ui-selectable {
     cursor: pointer;
+    & tr:hover {
+      background: fade(@base2, 30%);
+    }
   }
 
   tbody td, thead th {
     padding: 0 5pt 0 5pt;
   }
-  tbody tr:nth-child(2n+1) td{
-    background: fade(@base02, 30%);
-  }
-  tbody tr:nth-child(2n) td{
-    background: fade(@base03, 30%);
-  }
-  tbody tr.ui-selecting td {
-    color: @base03;
-    background: @base2;
-  }
-  tbody tr.ui-selected td {
-    color: @base03;
-    background: @base2;
-  }
   thead tr th {
     background: fade(@base02, 50%);
+  }
+  tr {
+    &:nth-child(2n+1) td {
+      background: fade(@base02, 30%);
+    }
+    &:nth-child(2n) td {
+      background: fade(@base03, 30%);
+    }
+    &.ui-selecting td {
+      color: @base03;
+      background: @base2;
+    }
+    &.ui-selected td {
+      color: @base03;
+      background: @base2;
+    }
   }
   border-spacing: 0;
 }
