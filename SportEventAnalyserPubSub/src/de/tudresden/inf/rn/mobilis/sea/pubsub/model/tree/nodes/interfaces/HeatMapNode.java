@@ -1,9 +1,26 @@
 package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces;
 
+/**
+ * This <code>HeatMapNode</code> is an auxiliary <code>Node</code> to handle a
+ * concrete heat map
+ * 
+ * @param <T>
+ *            generic parameter to declare the type of this node
+ */
 public abstract class HeatMapNode<T extends HeatMapNode<T>> extends Node<T> {
 
+	/**
+	 * The current heat map (size: width * height)
+	 */
 	private int[][] map;
 
+	/**
+	 * Constructor for a <code>HeatMapNode</code>
+	 * 
+	 * @param map
+	 *            the heat map (may be empty, but at least it should have a
+	 *            concrete width and height)
+	 */
 	public HeatMapNode(int[][] map) {
 		this.map = map;
 	}
@@ -77,8 +94,6 @@ public abstract class HeatMapNode<T extends HeatMapNode<T>> extends Node<T> {
 		StringBuilder sb = new StringBuilder();
 
 		// TODO: Not implemented yet
-		// TODO: hier muss noch etwas gemacht werden, da man hier wohl auch die
-		// Daten einzeln anders kodieren sollte
 
 		return sb.toString();
 	}

@@ -2,6 +2,10 @@ package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl;
 
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.HeatMapNode;
 
+/**
+ * A <code>TeamHeatMap</code> is a concrete <code>HeatMapNode</code> to handle
+ * the heat map of a team
+ */
 public class TeamHeatMap extends HeatMapNode<TeamHeatMap> {
 
 	/**
@@ -9,6 +13,15 @@ public class TeamHeatMap extends HeatMapNode<TeamHeatMap> {
 	 */
 	private String teamname;
 
+	/**
+	 * Constructor for a <code>TeamHeatMap</code>
+	 * 
+	 * @param teamname
+	 *            the name of the team
+	 * @param map
+	 *            the heat map (may be empty, but at least it should have a
+	 *            concrete width and height)
+	 */
 	public TeamHeatMap(String teamname, int[][] map) {
 		super(map);
 		this.teamname = teamname;

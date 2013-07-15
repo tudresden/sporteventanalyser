@@ -3,6 +3,7 @@ package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentGameData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentHeatMapData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPlayerData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPositionData;
@@ -52,6 +53,11 @@ public class StatisticCollection extends CollectionNode<StatisticCollection> {
 	private CurrentPrognosisData currentPrognosisData;
 
 	/**
+	 * A <code>CurrentGameData</code> information node
+	 */
+	private CurrentGameData currentGameData;
+
+	/**
 	 * Constructor for this <code>StatisticCollection</code>
 	 */
 	public StatisticCollection() {
@@ -60,6 +66,7 @@ public class StatisticCollection extends CollectionNode<StatisticCollection> {
 		this.currentTeamData = new CurrentTeamData();
 		this.currentHeatMapData = new CurrentHeatMapData();
 		this.currentPrognosisData = new CurrentPrognosisData();
+		this.currentGameData = new CurrentGameData();
 	}
 
 	/**
@@ -74,12 +81,15 @@ public class StatisticCollection extends CollectionNode<StatisticCollection> {
 	 *            the original <code>CurrentTeamData</code>
 	 * @param currentHeatMapData
 	 *            the original <code>CurrentHeatMapData</code>
+	 * @param currentGameData
+	 *            the original <code>CurrentGameData</code>
 	 */
 	private StatisticCollection(CurrentPositionData currentPositionData,
 			CurrentPlayerData currentPlayerData,
 			CurrentTeamData currentTeamData,
 			CurrentHeatMapData currentHeatMapData,
-			CurrentPrognosisData currentPrognosisData) {
+			CurrentPrognosisData currentPrognosisData,
+			CurrentGameData currentGameData) {
 		this.currentPositionData = currentPositionData;
 		this.currentPlayerData = currentPlayerData;
 		this.currentTeamData = currentTeamData;
@@ -132,6 +142,15 @@ public class StatisticCollection extends CollectionNode<StatisticCollection> {
 		return currentPrognosisData;
 	}
 
+	/**
+	 * Get the <code>CurrentGameData</code>
+	 * 
+	 * @return the currentGameData
+	 */
+	public CurrentGameData getCurrentGameData() {
+		return currentGameData;
+	}
+
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
@@ -142,11 +161,10 @@ public class StatisticCollection extends CollectionNode<StatisticCollection> {
 		List<ItemNode<?>> list = new LinkedList<ItemNode<?>>();
 		list.add(currentPositionData);
 		list.add(currentPlayerData);
-		
-
 		list.add(currentPrognosisData);
 		list.add(currentHeatMapData);
 		list.add(currentTeamData);
+		list.add(currentGameData);
 		return list;
 	}
 
@@ -171,6 +189,9 @@ public class StatisticCollection extends CollectionNode<StatisticCollection> {
 
 		// Copy CurrentPrognosisData
 		currentPrognosisData.copy(dest.getCurrentPrognosisData());
+
+		// Copy CurrentGameData
+		currentGameData.copy(dest.getCurrentGameData());
 	}
 
 	@Override
@@ -178,7 +199,7 @@ public class StatisticCollection extends CollectionNode<StatisticCollection> {
 		return new StatisticCollection(this.currentPositionData.clone(),
 				this.currentPlayerData.clone(), this.currentTeamData.clone(),
 				this.currentHeatMapData.clone(),
-				this.currentPrognosisData.clone());
+				this.currentPrognosisData.clone(), this.currentGameData.clone());
 	}
 
 }

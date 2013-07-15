@@ -8,6 +8,7 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.configs.CollectionConfig;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.configs.CommonSubmitNodeConfig;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.configs.NPLeafConfig;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.StatisticCollection;
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentGameData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentHeatMapData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPositionData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPlayerData;
@@ -112,8 +113,8 @@ public class InitializationVisitor implements Visitor {
 	@Override
 	public void visit(CurrentHeatMapData node) {
 		try {
-			createNode(node.getNodeName(), new NPLeafConfig("HeatMapStatistics",
-					"Statistic"));
+			createNode(node.getNodeName(), new NPLeafConfig(
+					"HeatMapStatistics", "Statistic"));
 		} catch (XMPPException e) {
 			e.printStackTrace();
 		}
@@ -123,6 +124,16 @@ public class InitializationVisitor implements Visitor {
 	public void visit(CurrentPrognosisData node) {
 		try {
 			createNode(node.getNodeName(), new NPLeafConfig("Prognosis",
+					"Statistic"));
+		} catch (XMPPException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void visit(CurrentGameData node) {
+		try {
+			createNode(node.getNodeName(), new NPLeafConfig("GameData",
 					"Statistic"));
 		} catch (XMPPException e) {
 			e.printStackTrace();

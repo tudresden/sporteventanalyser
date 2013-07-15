@@ -8,6 +8,7 @@ import org.jivesoftware.smackx.pubsub.SimplePayload;
 
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.StatisticCollection;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.StatisticsFacade;
+import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentGameData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentHeatMapData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPlayerData;
 import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl.CurrentPositionData;
@@ -158,6 +159,16 @@ public class GoDPublishVisitor implements Visitor {
 			sendPayload(node.getNodeName(),
 					node.toPredictiveCodedXML(iStatistics
 							.getCurrentPrognosisData()));
+		}
+	}
+
+	@Override
+	public void visit(CurrentGameData node) {
+		// Just send P-Frames (currently only the playingTime is sent)
+		if (cycleCounter > 0) {
+			// Send P-Frame
+			sendPayload(node.getNodeName(),
+					node.toPredictiveCodedXML(iStatistics.getCurrentGameData()));
 		}
 	}
 
