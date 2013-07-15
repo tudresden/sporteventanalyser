@@ -355,7 +355,7 @@ article {
   border-radius: 5pt 5pt 0 0;
   border-bottom: 0 hidden;
   background: rgba(13, 54, 0, 0.3);
-  padding: 0 2pt;
+  padding: 0 5pt;
   cursor: pointer;
 }
 .radio_menu label:hover {
@@ -388,7 +388,8 @@ article {
   height: 50pt;
   width: 100pt;
 }
-#startbutton img {
+#startbutton img,
+#startbutton svg {
   height: 50pt;
 }
 #startbutton:hover {
@@ -583,7 +584,7 @@ video {
   border-radius: 5pt 5pt 0 0;
   border-bottom: 0 hidden;
   background: rgba(13, 54, 0, 0.3);
-  padding: 0 2pt;
+  padding: 0 5pt;
   cursor: pointer;
 }
 #content #center #perspectives_menu label:hover {
@@ -602,4 +603,14 @@ video {
   border-radius: 5pt;
   border: #6a8365 1pt solid;
   background: rgba(13, 54, 0, 0.5);
+}
+#content #center #commentator {
+  -webkit-border-radius: 5pt;
+  -moz-border-radius: 5pt;
+  -ms-border-radius: 5pt;
+  -o-border-radius: 5pt;
+  border-radius: 5pt;
+  border: #6a8365 1pt solid;
+  background: rgba(13, 54, 0, 0.5);
+  text-align: center;
 }
