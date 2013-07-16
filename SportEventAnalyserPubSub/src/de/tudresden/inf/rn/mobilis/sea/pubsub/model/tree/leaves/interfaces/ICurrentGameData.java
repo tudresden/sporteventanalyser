@@ -7,13 +7,14 @@ package de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.interfaces;
 public interface ICurrentGameData {
 
 	/**
-	 * Set the current playing time of the game. The format should fit with
-	 * MM:SS (Minutes:Seconds)
+	 * Set the current playing time of the game
 	 * 
-	 * @param playingTime
-	 *            the current playing time of the game
+	 * @param playedMinutes
+	 *            the currently played minutes
+	 * @param playedSeconds
+	 *            the currently played seconds
 	 */
-	public void setPlayingTime(String playingTime);
+	public void setPlayingTime(int playedMinutes, int playedSeconds);
 
 	/**
 	 * Set the additional time to be played in this half

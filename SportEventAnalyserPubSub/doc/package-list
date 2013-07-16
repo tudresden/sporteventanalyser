@@ -1,0 +1,11 @@
+de.tudresden.inf.rn.mobilis.sea.pubsub.core
+de.tudresden.inf.rn.mobilis.sea.pubsub.model.configs
+de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree
+de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.impl
+de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.leaves.interfaces
+de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.impl
+de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces
+de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.utils
+de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor
+de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.impl
+de.tudresden.inf.rn.mobilis.sea.pubsub.model.visitor.interfaces

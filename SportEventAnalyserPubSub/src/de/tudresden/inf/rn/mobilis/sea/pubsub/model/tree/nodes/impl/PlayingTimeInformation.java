@@ -9,9 +9,14 @@ import de.tudresden.inf.rn.mobilis.sea.pubsub.model.tree.nodes.interfaces.Node;
 public class PlayingTimeInformation extends Node<PlayingTimeInformation> {
 
 	/**
-	 * <code>String</code> representation of the current playing time
+	 * Currently played minutes
 	 */
-	private String playingTime;
+	private int playedMinutes;
+
+	/**
+	 * Currently played seconds
+	 */
+	private int playedSeconds;
 
 	/**
 	 * Additional time to be played in this half
@@ -21,13 +26,17 @@ public class PlayingTimeInformation extends Node<PlayingTimeInformation> {
 	/**
 	 * Constructor for a <code>PlayingTimeInformation</code>
 	 * 
-	 * @param playingTime
-	 *            the current playing time
+	 * @param playedMinutes
+	 *            the currently played minutes
+	 * @param playedSeconds
+	 *            the currently played seconds
 	 * @param additionalTime
 	 *            the additional time to be played in this half
 	 */
-	public PlayingTimeInformation(String playingTime, int additionalTime) {
-		this.playingTime = playingTime;
+	public PlayingTimeInformation(int playedMinutes, int playedSeconds,
+			int additionalTime) {
+		this.playedMinutes = playedMinutes;
+		this.playedSeconds = playedSeconds;
 		this.additionalTime = additionalTime;
 	}
 
@@ -37,17 +46,46 @@ public class PlayingTimeInformation extends Node<PlayingTimeInformation> {
 	 * @return the playingTime
 	 */
 	public String getPlayingTime() {
-		return playingTime;
+		return playedMinutes + ":"
+				+ (playedSeconds > 9 ? playedSeconds : "0" + playedSeconds);
 	}
 
 	/**
-	 * Set the current playing time
+	 * Get the currently played minutes
 	 * 
-	 * @param playingTime
-	 *            the playingTime to set
+	 * @return the playedMinutes
 	 */
-	public void setPlayingTime(String playingTime) {
-		this.playingTime = playingTime;
+	public int getPlayedMinutes() {
+		return playedMinutes;
+	}
+
+	/**
+	 * Set the currently played minutes
+	 * 
+	 * @param playedMinutes
+	 *            the playedMinutes to set
+	 */
+	public void setPlayedMinutes(int playedMinutes) {
+		this.playedMinutes = playedMinutes;
+	}
+
+	/**
+	 * Get the currently played seconds
+	 * 
+	 * @return the playedSeconds
+	 */
+	public int getPlayedSeconds() {
+		return playedSeconds;
+	}
+
+	/**
+	 * Set the currently played seconds
+	 * 
+	 * @param playedSeconds
+	 *            the playedSeconds to set
+	 */
+	public void setPlayedSeconds(int playedSeconds) {
+		this.playedSeconds = playedSeconds;
 	}
 
 	/**
@@ -77,7 +115,7 @@ public class PlayingTimeInformation extends Node<PlayingTimeInformation> {
 
 		// playingTime
 		sb.append("<playingTime>");
-		sb.append(playingTime);
+		sb.append(getPlayingTime());
 		sb.append("</playingTime>");
 
 		// additionalTime
@@ -98,10 +136,11 @@ public class PlayingTimeInformation extends Node<PlayingTimeInformation> {
 		sb.append("<PlayingTimeInformation>");
 
 		// playingTime
-		if (!iNode.getPlayingTime().equals(this.getPlayingTime())) {
+		if (iNode.getPlayedMinutes() != this.getPlayedMinutes()
+				|| iNode.getPlayedSeconds() != this.getPlayedSeconds()) {
 			c = true;
 			sb.append("<playingTime>");
-			sb.append(playingTime);
+			sb.append(getPlayingTime());
 			sb.append("</playingTime>");
 		}
 
@@ -124,13 +163,15 @@ public class PlayingTimeInformation extends Node<PlayingTimeInformation> {
 
 	@Override
 	public void copy(PlayingTimeInformation dest) {
-		dest.setPlayingTime(playingTime);
+		dest.setPlayedMinutes(playedMinutes);
+		dest.setPlayedSeconds(playedSeconds);
 		dest.setAdditionalTime(additionalTime);
 	}
 
 	@Override
 	public PlayingTimeInformation clone() {
-		return new PlayingTimeInformation(playingTime, additionalTime);
+		return new PlayingTimeInformation(playedMinutes, playedSeconds,
+				additionalTime);
 	}
 
 }
