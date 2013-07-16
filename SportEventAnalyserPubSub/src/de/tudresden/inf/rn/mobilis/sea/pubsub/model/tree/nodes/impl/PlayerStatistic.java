@@ -65,6 +65,8 @@ public class PlayerStatistic extends Node<PlayerStatistic> {
 	 *            ID of this player
 	 * @param passesMade
 	 *            number of passes made by this player
+	 * @param passesMissed
+	 *            number of passed missed by this player
 	 * @param passesReceived
 	 *            number of passes received by this player
 	 * @param tacklings
@@ -81,11 +83,12 @@ public class PlayerStatistic extends Node<PlayerStatistic> {
 	 * @param totalDistance
 	 *            total distance this player has covered
 	 */
-	public PlayerStatistic(int id, int passesMade, int passesReceived,
-			int tacklings, int tacklesWon, int goalsScored, int ballContacts,
-			long possessionTime, float totalDistance) {
+	public PlayerStatistic(int id, int passesMade, int passesMissed,
+			int passesReceived, int tacklings, int tacklesWon, int goalsScored,
+			int ballContacts, long possessionTime, float totalDistance) {
 		this.id = id;
 		this.passesMade = passesMade;
+		this.passesMissed = passesMissed;
 		this.passesReceived = passesReceived;
 		this.tacklings = tacklings;
 		this.tacklesWon = tacklesWon;
@@ -445,9 +448,9 @@ public class PlayerStatistic extends Node<PlayerStatistic> {
 
 	@Override
 	public PlayerStatistic clone() {
-		return new PlayerStatistic(id, passesMade, passesReceived, tacklings,
-				tacklesWon, goalsScored, ballContacts, possessionTime,
-				totalDistance);
+		return new PlayerStatistic(id, passesMade, passesMissed,
+				passesReceived, tacklings, tacklesWon, goalsScored,
+				ballContacts, possessionTime, totalDistance);
 	}
 
 }

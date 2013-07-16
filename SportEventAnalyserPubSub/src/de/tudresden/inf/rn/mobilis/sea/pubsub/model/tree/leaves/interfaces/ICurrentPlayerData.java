@@ -15,6 +15,8 @@ public interface ICurrentPlayerData {
 	 *            the id of the player
 	 * @param passesMade
 	 *            the number of passes made by this player
+	 * @param passesMissed
+	 *            the number of passes missed by this player
 	 * @param passesReceived
 	 *            the number of passes received by this player
 	 * @param tacklings
@@ -28,9 +30,9 @@ public interface ICurrentPlayerData {
 	 * @param totalDistance
 	 *            the total distance this player has covered
 	 */
-	public void setPlayerStatistic(int id, int passesMade, int passesReceived,
-			int tacklings, int tacklesWon, int goalsScored, int ballContacts,
-			long possessionTime, float totalDistance);
+	public void setPlayerStatistic(int id, int passesMade, int passesMissed,
+			int passesReceived, int tacklings, int tacklesWon, int goalsScored,
+			int ballContacts, long possessionTime, float totalDistance);
 
 	/**
 	 * Set the number of passes made by this player. The player must be
@@ -43,6 +45,18 @@ public interface ICurrentPlayerData {
 	 *            the number of passes made by this player
 	 */
 	public void setPassesMade(int id, int passesMade);
+
+	/**
+	 * Set the number of passes missed by this player. The player must be
+	 * registered first (<code>StatisticsFacade.registerPlayer(id)</code>).
+	 * Otherwise nothing will be published
+	 * 
+	 * @param id
+	 *            the id of the player
+	 * @param passesMissed
+	 *            the number of passes missed by this player
+	 */
+	public void setPassesMissed(int id, int passesMissed);
 
 	/**
 	 * Set the number of passes received by this player. The player must be

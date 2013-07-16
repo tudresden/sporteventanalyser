@@ -176,7 +176,7 @@ public class StatisticsFacade implements ICurrentPositionData,
 		// Register player: CurrentPositionData-leaf
 		synchronized (currentPlayerDataMutex) {
 			statistics.getCurrentPlayerData().registerPlayerStatistic(
-					new PlayerStatistic(id, 0, 0, 0, 0, 0, 0, 0, 0));
+					new PlayerStatistic(id, 0, 0, 0, 0, 0, 0, 0, 0, 0));
 		}
 	}
 
@@ -211,13 +211,15 @@ public class StatisticsFacade implements ICurrentPositionData,
 
 	@Override
 	public synchronized void setPlayerStatistic(int id, int passesMade,
-			int passesReceived, int tacklings, int tacklesWon, int goalsScored,
-			int ballContacts, long possessionTime, float totalDistance) {
+			int passesMissed, int passesReceived, int tacklings,
+			int tacklesWon, int goalsScored, int ballContacts,
+			long possessionTime, float totalDistance) {
 		synchronized (currentPlayerDataMutex) {
 			PlayerStatistic playerStatistic = statistics.getCurrentPlayerData()
 					.getPlayerStatistic(id);
 			if (playerStatistic != null) {
 				playerStatistic.setPassesMade(passesMade);
+				playerStatistic.setPassesMissed(passesMissed);
 				playerStatistic.setPassesReceived(passesReceived);
 				playerStatistic.setTacklings(tacklings);
 				playerStatistic.setTacklesWon(tacklesWon);
@@ -236,6 +238,17 @@ public class StatisticsFacade implements ICurrentPositionData,
 					.getPlayerStatistic(id);
 			if (playerStatistic != null) {
 				playerStatistic.setPassesMade(passesMade);
+			}
+		}
+	}
+
+	@Override
+	public synchronized void setPassesMissed(int id, int passesMissed) {
+		synchronized (currentPlayerDataMutex) {
+			PlayerStatistic playerStatistic = statistics.getCurrentPlayerData()
+					.getPlayerStatistic(id);
+			if (playerStatistic != null) {
+				playerStatistic.setPassesMissed(passesMissed);
 			}
 		}
 	}
