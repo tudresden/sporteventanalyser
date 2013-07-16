@@ -656,11 +656,11 @@
             });
             probably = t("commentPred:" + probably);
             if (saying.html() !== probably) {
-              saying.fadeOut("fast", function() {
+              return saying.fadeOut("fast", function() {
                 return saying.html(probably).fadeIn("fast");
               });
             }
-            return console.log(v, saying.html());
+            break;
           default:
             return console.log(v);
         }
@@ -687,7 +687,6 @@
         engine.set_field(field);
         console.log("* Setting up goal positions and size");
         console.log("* Setting up players");
-        console.log(mappings.PlayerMappings);
         return mappings.PlayerMappings.forEach(add_player);
       });
       console.log("* adding pos handler");
@@ -701,6 +700,9 @@
       sea.pubsub.addCurrentTeamDataHandler(function(item) {
         return item.teamStatistics.forEach(update_statistics);
       });
+      sea.pubsub.addCurrentHeatMapDataHandler(function(item) {
+        return console.log("heatmap", item);
+      });
       sea.pubsub.addCurrentPrognosisDataHandler(update_commentator);
       return typeof onsuccess === "function" ? onsuccess() : void 0;
     });
@@ -710,14 +712,27 @@
     var b, _fn, _i, _len, _ref;
 
     $("#content").hide();
+    $("#heatmap").hide();
     replace_img_by_svg();
     console.log("* preparing view buttons");
     $("#perspectives_menu").buttonset;
     _ref = $("#perspectives_menu").find("input");
     _fn = function(b) {
-      return b.onclick = function() {
-        return engine.camera_mode = b.id;
-      };
+      switch (b.id) {
+        case "HEAT":
+          return b.onclick = function() {
+            return $("#field").hide(0, function() {
+              return $("#heatmap").show(0);
+            });
+          };
+        default:
+          return b.onclick = function() {
+            engine.camera_mode = b.id;
+            return $("#heatmap").hide(0, function() {
+              return $("#field").show(0);
+            });
+          };
+      }
     };
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       b = _ref[_i];

@@ -72,9 +72,24 @@
         <div class="tab_menu" id="perspectives_menu">
           <input name="perspectives_menu" type="radio" id="KEEPERA" /><label for="KEEPERA"><img src="img/TorViewA.svg" alt="Side A"/></label>
           <input name="perspectives_menu" type="radio" checked="checked" id="BIRD" /><label for="BIRD"><img src="img/TopView.svg" alt="Top"/></label>
-          <input name="perspectives_menu" type="radio" id="HEAT" /><label for="HEAT"><img src="img/Torschuss.svg" alt="Heatmap"/></label>
+          <input name="perspectives_menu" type="radio" id="HEAT" /><label for="HEAT"><img src="img/Heatmap.svg" alt="Heatmap"/></label>
           <input name="perspectives_menu" type="radio" id="TAUMEL" /><label for="TAUMEL"><img src="img/Torschuss.svg" alt="Swing"/></label>
           <input name="perspectives_menu" type="radio" id="KEEPERB" /><label for="KEEPERB"><img src="img/TorViewB.svg" alt="Side B"/></label>
+        </div>
+        <div id="heatmap">
+          <div id="heatmap_a">
+            <svg id="heatmap_team_a" xmlns="http://www.w3.org/2000/svg" version="1.1" width="200" height="300">
+              <pattern id="green">
+                <image xlink:href="img/Fussballfeld.png"/>
+              </pattern>
+              <rect y1="0" x1="0" y2="120" x2="90" style="fill:url(#green);"/>
+            </svg>
+          </div>
+          <div id="heatmap_b">
+            <svg id="heatmap_team_b" xmlns="http://www.w3.org/2000/svg" version="1.1" width="90" height="120">
+              <rect y1="0" x1="0" y2="120" x2="90"/>
+            </svg>
+          </div>
         </div>
         <div id="field">
         </div>

@@ -282,7 +282,23 @@ article #content #goals {
   text-align: center;
 }
 article #content #field {
+  width: 100%;
   display: table-cell;
+}
+article #content #heatmap {
+  width: 640px;
+  display: table-cell;
+}
+article #content #heatmap #heatmap_a,
+article #content #heatmap #heatmap_b {
+  display: inline;
+  width: 320px;
+}
+article #content #heatmap #heatmap_a svg,
+article #content #heatmap #heatmap_b svg {
+  height: 480px;
+  margin: 0 auto;
+  vertical-align: bottom;
 }
 .infobox {
   -webkit-border-radius: 5pt;
@@ -631,11 +647,11 @@ video {
 #content #center #gametrack #image #cur,
 #content #center #gametrack #image #mid,
 #content #center #gametrack #image #end {
-  stroke: #fdf6e3;
+  stroke: white;
   stroke-width: 1pt;
 }
 #content #center #gametrack #image #centerline {
-  stroke: #fdf6e3;
+  stroke: white;
   stroke-width: 3pt;
 }
 #content #center #perspectives_menu {
@@ -701,7 +717,8 @@ video {
 #content #center #perspectives_menu input[type="radio"]:checked + label .colored_icon * {
   stroke: #0d3600;
 }
-#content #center #field {
+#content #center #field,
+#content #center #heatmap {
   -webkit-border-radius: 5pt;
   -moz-border-radius: 5pt;
   -ms-border-radius: 5pt;

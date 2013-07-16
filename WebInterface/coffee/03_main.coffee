@@ -122,7 +122,6 @@ update_position = (v, i) ->
         x: parseInt v.positionX
         y: parseInt v.positionY
       playersdict[v.id]?.update Date.now(), engine.reposition data
-      #console.log v
     else
       console.log "Unknown position update.", v
 
@@ -157,7 +156,6 @@ update_commentator = (v) ->
           if saying.html() != probably
             saying.fadeOut "fast", ->
               saying.html(probably).fadeIn("fast")
-          console.log v, saying.html()
         else
           console.log v
     else
@@ -180,7 +178,6 @@ establish_sea_connection = (onsuccess) ->
       # TODO: engine.set_goals_pos mappings.Goals
       
       console.log "* Setting up players"
-      console.log mappings.PlayerMappings
       mappings.PlayerMappings.forEach add_player
 
     console.log "* adding pos handler"
@@ -196,16 +193,19 @@ establish_sea_connection = (onsuccess) ->
     sea.pubsub.addCurrentTeamDataHandler (item) ->
       item.teamStatistics.forEach update_statistics
 
-    #sea.pubsub.addCurrentHeatMapDataHandler (item) ->
-      #console.log "heatmap", item
+    sea.pubsub.addCurrentHeatMapDataHandler (item) ->
+      console.log "heatmap", item
 
     sea.pubsub.addCurrentPrognosisDataHandler update_commentator
       
+    #sea.pubsub.addCurrentGameDataHandler (item) ->
+      #console.log item
 
     onsuccess?()
 
 $ ->
   $("#content").hide()
+  $("#heatmap").hide()
 
   replace_img_by_svg()
 
@@ -213,7 +213,16 @@ $ ->
   $("#perspectives_menu").buttonset
   for b in $("#perspectives_menu").find("input")
     do (b) ->
-      b.onclick = -> engine.camera_mode = b.id
+      switch b.id
+        when "HEAT"
+          b.onclick = ->
+            $("#field").hide 0, ->
+              $("#heatmap").show(0)
+        else
+          b.onclick = ->
+            engine.camera_mode = b.id
+            $("#heatmap").hide 0, ->
+              $("#field").show(0)
 
   console.log "* adding canvas"
   $("#field").append engine.get_canvas()

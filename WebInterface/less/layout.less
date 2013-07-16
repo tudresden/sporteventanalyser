@@ -38,7 +38,21 @@ article {
       text-align: center;
     }
     #field {
+      width: 100%;
       display: table-cell;
+    }
+    #heatmap {
+      width: 640px;
+      display: table-cell;
+      #heatmap_a, #heatmap_b {
+        display: inline;
+        width: 320px;
+        svg {
+          height: 480px;
+          margin: 0 auto;
+          vertical-align: bottom;
+        }
+      }
     }
   }
 }
