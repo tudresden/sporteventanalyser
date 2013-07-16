@@ -808,8 +808,14 @@ public class GameInformation implements UpdateListener
 		{
 			from.setSuccessfulPasses(from.getSuccessfulPasses() + 1);
 			from.setShots(from.getShots() + 1);
+			to.setReceivedPasses(to.getReceivedPasses() + 1);
 			from.setLastPass(new Pass(from.getId(), to.getId(), true, from.getTimeStamp()));
 			logger.log(Level.INFO, "Spielzeit: {0} - {1} - Erfolgreiche Pässe: {2}", new Object[] { time, name, from.getSuccessfulPasses() });
+			/* Send Pass successful received statistic if available */
+			if (getStatisticsFacade() != null)
+			{
+				getStatisticsFacade().setPassesReceived(to.getId(), to.getReceivedPasses());
+			}
 		}
 		// pass not successful
 		else if (Utils.pass(from, to) == 2)
@@ -818,6 +824,11 @@ public class GameInformation implements UpdateListener
 			from.setShots(from.getShots() + 1);
 			from.setLastPass(new Pass(from.getId(), to.getId(), false, from.getTimeStamp()));
 			logger.log(Level.INFO, "Spielzeit: {0} - {1} - Fehlgeschlagene Pässe: {2}", new Object[] { time, name, from.getMissedPasses() });
+			/* Send Pass missed statistic if available */
+			if (getStatisticsFacade() != null)
+			{
+				getStatisticsFacade().setPassesMissed(from.getId(), from.getMissedPasses());
+			}
 		}
 		// no pass
 		else

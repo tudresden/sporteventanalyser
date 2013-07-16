@@ -21,6 +21,7 @@ public class Player extends Entity
 	private boolean left = false;
 	private int leftFootID;
 	private int missedPasses;
+	private int receivedPasses;
 	private String name;
 	private int oldPositionX;
 	private int oldPositionY;
@@ -52,6 +53,7 @@ public class Player extends Entity
 		this.shotsOnGoal = 0;
 		this.shots = 0;
 		this.missedPasses = 0;
+		this.receivedPasses = 0;
 		this.successfulPasses = 0;
 		this.ballContacts = 0;
 		this.ballPossessionTime = 0;
@@ -95,6 +97,11 @@ public class Player extends Entity
 	public int getMissedPasses()
 	{
 		return missedPasses;
+	}
+
+	public int getReceivedPasses()
+	{
+		return receivedPasses;
 	}
 
 	public String getName()
@@ -171,6 +178,11 @@ public class Player extends Entity
 	public void setMissedPasses(int missedPasses)
 	{
 		this.missedPasses = missedPasses;
+	}
+
+	public void setReceivedPasses(int receivedPasses)
+	{
+		this.receivedPasses = receivedPasses;
 	}
 
 	public void setName(String name)
