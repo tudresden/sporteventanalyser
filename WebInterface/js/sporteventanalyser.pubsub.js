@@ -234,7 +234,7 @@
 					arguments[0].children().each(function() {
 						switch($(this).prop("tagName")) {
 							case "PassSuccessPredicition": _CurrentPrognosisData.passSuccessPrediction = new sea.pubsub.ELEMENTS.PassSuccessPredicition($(this)); break;
-							case "AttackResultPrediction": _CurrentPrognosisData.playerHeatMaps = new sea.pubsub.ELEMENTS.AttackResultPrediction($(this)); break;
+							case "AttackResultPrediction": _CurrentPrognosisData.attackResultPrediction = new sea.pubsub.ELEMENTS.AttackResultPrediction($(this)); break;
 						}
 					});
 				} else {
