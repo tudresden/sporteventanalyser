@@ -1,5 +1,7 @@
-console.log "# SEA - sport event analyzer"
-console.log "## Initializing"
+comment = console.log
+
+comment "# SEA - sport event analyzer"
+comment "## Initializing"
 running = false
 
 ball = new Ball("img/ball.png")
@@ -15,7 +17,7 @@ team_b_stats = {}
 observed_player_a = null
 observed_player_b = null
 
-console.log "* current local time is: " + Date.now()
+comment "* current local time is: " + Date.now()
 
 run = ->
   # animation loop
@@ -23,7 +25,7 @@ run = ->
   engine.render()
 
 replace_img_by_svg = ->
-  console.log "* replace img with svg by the svg"
+  comment "* replace img with svg by the svg"
   $("img").each () ->
     $img = $(@)
     imgid = $img.attr "id"
@@ -141,30 +143,28 @@ update_statistics = (v, i) ->
 update_commentator = (v) ->
   switch v.constructor.name
     when "CurrentPrognosisData"
-      # playerHeatMap probably wrongly named here.
       saying = $("#commentator").find(".says")
-      data = v.playerHeatMaps
-      switch data.constructor.name
-        when "AttackResultPrediction"
-          max = 0.0
-          probably = "Any"
-          $.each data, (k) ->
-            if data[k] > max
-              max = data[k]
-              probably = k
-          probably = t "commentPred:" + probably
-          if saying.html() != probably
-            saying.fadeOut "fast", ->
-              saying.html(probably).fadeIn("fast")
-        else
-          console.log v
+      data = v.attackResultPrediction
+      if data?
+        console.log data
+        max = 0.0
+        probably = "Any"
+        $.each data, (k) ->
+          d = parseInt data[k]
+          if d > max
+            max = d
+            probably = k
+        probably = t "commentPred:" + probably
+        if saying.html() != probably
+          saying.fadeOut "fast", ->
+            saying.html(probably).fadeIn("fast")
     else
       console.log "unknown type of prediction: ", v
 
 establish_sea_connection = (onsuccess) ->
   sea.connect "seaclient@sea", "sea", "mobilis@sea", ->
     sea.getGameMappings (mappings) ->
-      console.log "* Setting up field"
+      comment "* Setting up field"
       gf = mappings.GameFieldSize
       reality =  # x and y confuse you here
         height: gf.GameFieldMaxX - gf.GameFieldMinX
@@ -174,13 +174,13 @@ establish_sea_connection = (onsuccess) ->
       field = new Field("img/Fussballfeld.png", reality)
       engine.set_field field
 
-      console.log "* Setting up goal positions and size"
+      comment "* Setting up goal positions and size"
       # TODO: engine.set_goals_pos mappings.Goals
       
-      console.log "* Setting up players"
+      comment "* Setting up players"
       mappings.PlayerMappings.forEach add_player
 
-    console.log "* adding pos handler"
+    comment "* adding pos handler"
 
     sea.pubsub.subscribeStatistic()
 
@@ -193,13 +193,13 @@ establish_sea_connection = (onsuccess) ->
     sea.pubsub.addCurrentTeamDataHandler (item) ->
       item.teamStatistics.forEach update_statistics
 
-    sea.pubsub.addCurrentHeatMapDataHandler (item) ->
-      console.log "heatmap", item
+    #sea.pubsub.addCurrentHeatMapDataHandler (item) ->
+      #console.log "heatmap", item
 
     sea.pubsub.addCurrentPrognosisDataHandler update_commentator
       
-    #sea.pubsub.addCurrentGameDataHandler (item) ->
-      #console.log item
+    sea.pubsub.addCurrentGameDataHandler (item) ->
+      console.log item
 
     onsuccess?()
 
