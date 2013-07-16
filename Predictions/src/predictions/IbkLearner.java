@@ -24,21 +24,41 @@ public class IbkLearner extends Learner {
 
 	private static final int WEIGHT_INVERSE = 2;
 
+	private boolean adaptiveKNN;
+
 	private static final Tag[] TAGS_WEIGHTING = {
 			new Tag(4, "WEIGHT_SIMILARITY"), new Tag(1, "WEIGHT_NONE"),
 			new Tag(2, "WEIGHT_INVERSE") };
 
-	private static final int KNN = 1;
+	private int knn = 10;
 
 	private IBk ibk;
 
 	private int counter = 0;
 
+	/**
+	 * Initiates an IBk learner instance with adaptive knn value.
+	 */
+	public IbkLearner() {
+		adaptiveKNN = true;
+	}
+
+	/**
+	 * Initiates an IBk learner instance with chosen knn value.
+	 * 
+	 * @param knn
+	 *            number of nearest neighbors used for prediction
+	 */
+	public IbkLearner(int knn) {
+		this.knn = knn;
+		adaptiveKNN = false;
+	}
+
 	@Override
 	public void init(InstancesHeader instanceHeader) {
 		this.instanceHeader = instanceHeader;
 
-		ibk = new IBk(KNN);
+		ibk = new IBk(knn);
 
 		// try {
 		// ibk.setOptions(new String[] {
@@ -84,6 +104,10 @@ public class IbkLearner extends Learner {
 
 	@Override
 	public void train(PredictionInstance trainingInstance) {
+
+		if (Utils.DEBUGGING)
+			System.out.println("KNN = " + ibk.getKNN());
+
 		numberSamples++;
 
 		/*
@@ -106,7 +130,7 @@ public class IbkLearner extends Learner {
 				// prediction correct
 				if (firstClassProbability >= 50f
 						&& result.equals(getClassName(0))
-						|| firstClassProbability <= 50f
+						|| firstClassProbability < 50f
 						&& result.equals(getClassName(1))) {
 					numberSamplesCorrect++;
 					if (Utils.DEBUGGING)
@@ -133,8 +157,8 @@ public class IbkLearner extends Learner {
 						|| secondClassProbability >= firstClassProbability
 						&& secondClassProbability >= thirdClassProbability
 						&& result.equals(getClassName(1))
-						|| thirdClassProbability >= secondClassProbability
-						&& thirdClassProbability >= firstClassProbability
+						|| thirdClassProbability > secondClassProbability
+						&& thirdClassProbability > firstClassProbability
 						&& result.equals(getClassName(2))) {
 					numberSamplesCorrect++;
 					if (Utils.DEBUGGING)
@@ -164,7 +188,7 @@ public class IbkLearner extends Learner {
 		try {
 			ibk.updateClassifier(trainingInstance.getInstanceCopy());
 			counter++;
-			if (counter > KNN)
+			if (counter > knn && adaptiveKNN)
 				ibk.setCrossValidate(true);
 		} catch (Exception e) {
 		}
