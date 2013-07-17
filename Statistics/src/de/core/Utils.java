@@ -183,14 +183,8 @@ public class Utils
 		heatMapInit.widthInCells = fastRound((float) fieldWidthInMM / heatMapInit.heightResolution);
 		heatMapInit.widthResolution = fieldWidthInMM / heatMapInit.widthInCells;
 
-		if (Config.GAMEFIELDMINY < 0)
-		{
-			heatMapInit.yMinNegativeAbs -= Config.GAMEFIELDMINY;
-		}
-		if (Config.GAMEFIELDMINX < 0)
-		{
-			heatMapInit.xMinNegativeAbs -= Config.GAMEFIELDMINX;
-		}
+		heatMapInit.yOffset -= Config.GAMEFIELDMINY;
+		heatMapInit.xOffset -= Config.GAMEFIELDMINX;
 
 		return heatMapInit;
 	}
