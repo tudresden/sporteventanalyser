@@ -153,15 +153,35 @@ public class Utils
 	 */
 	public static HeatMapInit calculateHeatMapInit()
 	{
+		// HeatMapInit heatMapInit = new HeatMapInit();
+		//
+		// int fieldWidthInMM = Config.GAMEFIELDMAXY + Math.abs(Config.GAMEFIELDMINY);
+		// int fieldHeightInMM = Config.GAMEFIELDMAXX + Math.abs(Config.GAMEFIELDMINX);
+		//
+		// heatMapInit.heigInCells = Config.heatMapWidthInCells;
+		// heatMapInit.widthResolution = fieldWidthInMM / Config.heatMapWidthInCells;
+		// heatMapInit.heightInCells = fastRound((float) fieldHeightInMM / heatMapInit.widthResolution);
+		// heatMapInit.heightResolution = fieldHeightInMM / heatMapInit.heightInCells;
+		//
+		// if (Config.GAMEFIELDMINY < 0)
+		// {
+		// heatMapInit.yMinNegativeAbs -= Config.GAMEFIELDMINY;
+		// }
+		// if (Config.GAMEFIELDMINX < 0)
+		// {
+		// heatMapInit.xMinNegativeAbs -= Config.GAMEFIELDMINX;
+		// }
+		//
+		// return heatMapInit;
 		HeatMapInit heatMapInit = new HeatMapInit();
 
-		int fieldWidthInMM = Config.GAMEFIELDMAXY + Math.abs(Config.GAMEFIELDMINY);
-		int fieldHeightInMM = Config.GAMEFIELDMAXX + Math.abs(Config.GAMEFIELDMINX);
+		int fieldHeightInMM = Config.GAMEFIELDMAXY + Math.abs(Config.GAMEFIELDMINY);
+		int fieldWidthInMM = Config.GAMEFIELDMAXX + Math.abs(Config.GAMEFIELDMINX);
 
-		heatMapInit.widthInCells = Config.heatMapWidthInCells;
-		heatMapInit.widthResolution = fieldWidthInMM / Config.heatMapWidthInCells;
-		heatMapInit.heightInCells = fastRound((float) fieldHeightInMM / heatMapInit.widthResolution);
-		heatMapInit.heightResolution = fieldHeightInMM / heatMapInit.heightInCells;
+		heatMapInit.heightInCells = Config.heatMapHeightInCells;
+		heatMapInit.heightResolution = fieldHeightInMM / Config.heatMapHeightInCells;
+		heatMapInit.widthInCells = fastRound((float) fieldWidthInMM / heatMapInit.heightResolution);
+		heatMapInit.widthResolution = fieldWidthInMM / heatMapInit.widthInCells;
 
 		if (Config.GAMEFIELDMINY < 0)
 		{
