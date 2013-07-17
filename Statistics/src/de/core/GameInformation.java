@@ -597,6 +597,30 @@ public class GameInformation implements UpdateListener
 	}
 
 	/**
+	 * Calculates and returns heat map for a given team.
+	 * 
+	 * @param team
+	 *            <code>Team</code> enumeration
+	 * @return <code>HeatMapGrid</code> object.
+	 */
+	public HeatMapGrid calculateTeamHeatMap(Team team)
+	{
+		HeatMapGrid teamHeatMap = new HeatMapGrid(Config.heatMapInit);
+		for (int id : Config.PLAYERIDS)
+		{
+			Player player = (Player) getEntityFromId(id);
+			if (player.getTeam() == team)
+			{
+				for (int i = 0; i < teamHeatMap.getGridSize(); i++)
+				{
+					teamHeatMap.setCell(i, teamHeatMap.getCell(i) + player.getHeatmap().getCell(i));
+				}
+			}
+		}
+		return teamHeatMap;
+	}
+
+	/**
 	 * Returns the number of teammates in a area.
 	 * 
 	 * @param meters
