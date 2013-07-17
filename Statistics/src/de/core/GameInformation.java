@@ -873,6 +873,55 @@ public class GameInformation implements UpdateListener
 		return false;
 	}
 
+	/**
+	 * Calculates if the <code>Ball</code> moves towards the goal lines
+	 * 
+	 * @param ball
+	 *            the <code>Ball</code> object
+	 * @param oldPosX
+	 *            old X <code>Ball</code> position
+	 * @param oldPosY
+	 *            old Y <code>Ball</code> position
+	 * @param newPosX
+	 *            new X <code>Ball</code> position
+	 * @param newPosY
+	 *            new Y <code>Ball</code> position
+	 */
+	private boolean shot(Ball ball, final int oldPosX, final int oldPosY, final int newPosX, final int newPosY)
+	{
+		// motion vector entries of the ball
+		final int vecX = newPosX - oldPosX;
+		final int vecY = newPosY - oldPosY;
+
+		// motion vector of the ball needs to be multiplied
+		// by this factor to reach a particular goal line
+		double factorToGoalLine1 = (Config.GOALONEY - oldPosY) / vecY;
+		double factorToGoalLine2 = (Config.GOALTWOY - oldPosY) / vecY;
+
+		// shot can only go towards a goal if the motion
+		// vector is oriented in the direction of that goal
+		// -> factor is positive
+		if (factorToGoalLine1 > 0)
+		{
+			double xValueAtGoalLine1 = oldPosX + (factorToGoalLine1 * vecX);
+			if (xValueAtGoalLine1 > Config.GAMEFIELDMINX && xValueAtGoalLine1 < Config.GAMEFIELDMAXX && ball.getAcceleration() >= 15000000)
+			{
+				System.out.println("SCHUSS RICHTUNG TOR1");
+				return true;
+			}
+		}
+		else if (factorToGoalLine2 > 0)
+		{
+			double xValueAtGoalLine2 = oldPosX + (factorToGoalLine2 * vecX);
+			if (xValueAtGoalLine2 > Config.GAMEFIELDMINX && xValueAtGoalLine2 < Config.GAMEFIELDMAXX && ball.getAcceleration() >= 15000000)
+			{
+				System.out.println("SCHUSS RICHTUNG TOR2");
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void update(EventBean[] newData, EventBean[] oldData)
 	{
 		Event event = ((Event) newData[0].getUnderlying());
