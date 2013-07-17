@@ -796,7 +796,7 @@ public class GameInformation implements UpdateListener
 	 */
 	private void setPasses(Player from, Player to, String time)
 	{
-		if (from == null || from == null)
+		if (from == null || to == null)
 		{
 			return;
 		}
@@ -807,7 +807,6 @@ public class GameInformation implements UpdateListener
 		if (Utils.pass(from, to) == 1)
 		{
 			from.setSuccessfulPasses(from.getSuccessfulPasses() + 1);
-			from.setShots(from.getShots() + 1);
 			to.setReceivedPasses(to.getReceivedPasses() + 1);
 			from.setLastPass(new Pass(from.getId(), to.getId(), true, from.getTimeStamp()));
 			logger.log(Level.INFO, "Spielzeit: {0} - {1} - Erfolgreiche Pässe: {2}", new Object[] { time, name, from.getSuccessfulPasses() });
@@ -821,7 +820,6 @@ public class GameInformation implements UpdateListener
 		else if (Utils.pass(from, to) == 2)
 		{
 			from.setMissedPasses(from.getMissedPasses() + 1);
-			from.setShots(from.getShots() + 1);
 			from.setLastPass(new Pass(from.getId(), to.getId(), false, from.getTimeStamp()));
 			logger.log(Level.INFO, "Spielzeit: {0} - {1} - Fehlgeschlagene Pässe: {2}", new Object[] { time, name, from.getMissedPasses() });
 			/* Send Pass missed statistic if available */
@@ -875,6 +873,55 @@ public class GameInformation implements UpdateListener
 		return false;
 	}
 
+	/**
+	 * Calculates if the <code>Ball</code> moves towards the goal lines
+	 * 
+	 * @param ball
+	 *            the <code>Ball</code> object
+	 * @param oldPosX
+	 *            old X <code>Ball</code> position
+	 * @param oldPosY
+	 *            old Y <code>Ball</code> position
+	 * @param newPosX
+	 *            new X <code>Ball</code> position
+	 * @param newPosY
+	 *            new Y <code>Ball</code> position
+	 */
+	private boolean shot(Ball ball, final int oldPosX, final int oldPosY, final int newPosX, final int newPosY)
+	{
+		// motion vector entries of the ball
+		final int vecX = newPosX - oldPosX;
+		final int vecY = newPosY - oldPosY;
+
+		// motion vector of the ball needs to be multiplied
+		// by this factor to reach a particular goal line
+		double factorToGoalLine1 = (Config.GOALONEY - oldPosY) / vecY;
+		double factorToGoalLine2 = (Config.GOALTWOY - oldPosY) / vecY;
+
+		// shot can only go towards a goal if the motion
+		// vector is oriented in the direction of that goal
+		// -> factor is positive
+		if (factorToGoalLine1 > 0)
+		{
+			double xValueAtGoalLine1 = oldPosX + (factorToGoalLine1 * vecX);
+			if (xValueAtGoalLine1 > Config.GAMEFIELDMINX && xValueAtGoalLine1 < Config.GAMEFIELDMAXX && ball.getAcceleration() >= 15000000)
+			{
+				System.out.println("SCHUSS RICHTUNG TOR1");
+				return true;
+			}
+		}
+		else if (factorToGoalLine2 > 0)
+		{
+			double xValueAtGoalLine2 = oldPosX + (factorToGoalLine2 * vecX);
+			if (xValueAtGoalLine2 > Config.GAMEFIELDMINX && xValueAtGoalLine2 < Config.GAMEFIELDMAXX && ball.getAcceleration() >= 15000000)
+			{
+				System.out.println("SCHUSS RICHTUNG TOR2");
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void update(EventBean[] newData, EventBean[] oldData)
 	{
 		Event event = ((Event) newData[0].getUnderlying());
@@ -890,21 +937,15 @@ public class GameInformation implements UpdateListener
 		setCurrentGameTime(Utils.convertTimeToOffset(timestamp));
 		final String time = Utils.timeToHumanReadable(getCurrentGameTime());
 
+		if (getStatisticsFacade() != null)
+		{
+			getStatisticsFacade().setPlayingTime((int) (getCurrentGameTime() / 60000), (int) ((getCurrentGameTime() / 1000) % 60));
+		}
+
 		if (entity instanceof Ball)
 		{
 			Ball ball = (Ball) entity;
 			Ball activeBall = getActiveBall();
-
-			// new
-			if (!lastShotOnGoalDisplayed && lastHitPlayerID != 0 && (lastHitTimeStamp + 100000000000L) < event.getTimestamp())
-			{
-				lastShotOnGoalDisplayed = true;
-				if (shotOnGoal(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY()))
-				{
-					setLastShotOnGoalTimeStamp(lastHitTimeStamp);
-					System.out.println("---#############---");
-				}
-			}
 
 			// Return if ball is not within the game field.
 			if (Utils.positionWithinField(event.getPositionX(), event.getPositionY()))
@@ -939,6 +980,22 @@ public class GameInformation implements UpdateListener
 			Player nearestPlayer = getNearestPlayer(ball);
 			Player lastPlayer = getCurrentBallPossessionPlayer();
 
+			// new
+			if (!lastShotOnGoalDisplayed && lastHitPlayerID != 0 && (lastHitTimeStamp + 100000000000L) < event.getTimestamp())
+			{
+				lastShotOnGoalDisplayed = true;
+				if (shotOnGoal(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY()))
+				{
+					setLastShotOnGoalTimeStamp(lastHitTimeStamp);
+					if (nearestPlayer != null)
+					{
+						nearestPlayer.setShots(nearestPlayer.getShots() + 1);
+						nearestPlayer.setShotsOnGoal(nearestPlayer.getShotsOnGoal() + 1);
+					}
+					System.out.println("---#############---");
+				}
+			}
+
 			if (nearestPlayer != null)
 			{
 				// Function for BallContacts - only one ball contact all 50ms
@@ -956,8 +1013,11 @@ public class GameInformation implements UpdateListener
 						lastShotOnGoalDisplayed = false;
 					}
 
-					// update ball contacts
-					nearestPlayer.setBallContacts(nearestPlayer.getBallContacts() + 1);
+					/* update ball contacts */
+					if (lastPlayer != nearestPlayer)
+					{
+						nearestPlayer.setBallContacts(nearestPlayer.getBallContacts() + 1);
+					}
 
 					/* send data update to the visualization project */
 					if (getStatisticsFacade() != null)
@@ -1004,21 +1064,30 @@ public class GameInformation implements UpdateListener
 					message += "\nBallkontakte: {11}";
 					params.add(nearestPlayer.getBallContacts());
 
+					message += "\nSchüsse: {12}";
+					params.add(nearestPlayer.getShots());
+
 					logger.log(Level.INFO, message, params.toArray());
 
 					if (getLastBallPossessionTimeStamp() != 0 && lastPlayer != null)
 					{
-						// Function for BallPossessionTime
+						/* Calculate ball possession time */
 						lastPlayer.setBallPossessionTime(lastPlayer.getBallPossessionTime() + (nearestPlayer.getTimeStamp() - getLastBallPossessionTimeStamp()));
+
+						if (getStatisticsFacade() != null)
+						{
+							getStatisticsFacade().setBallPossession(lastPlayer.getTeam().toString(), getTeamBallPossessionPercentage(lastPlayer.getTeam()));
+						}
 					}
 
 					/* Calculate Passes */
 					setPasses(lastPlayer, nearestPlayer, time);
 
 					/* Send Pass statistic if available */
-					if (getStatisticsFacade() != null)
+					if (getStatisticsFacade() != null && lastPlayer != null)
 					{
 						getStatisticsFacade().setPassesMade(lastPlayer.getId(), lastPlayer.getMissedPasses() + lastPlayer.getSuccessfulPasses());
+						getStatisticsFacade().setPassingAccuracy(lastPlayer.getTeam().toString(), getTeamPassQuote(lastPlayer.getTeam()));
 					}
 
 					/* Set timestamp of team-ball-loss */
@@ -1052,6 +1121,8 @@ public class GameInformation implements UpdateListener
 			if (getStatisticsFacade() != null)
 			{
 				getStatisticsFacade().setPositionOfPlayer(player.getId(), player.getPositionX(), player.getPositionY(), player.getVelocityX(), player.getVelocityY());
+				getStatisticsFacade().setTotalDistance(player.getId(), player.getTotalDistance());
+				getStatisticsFacade().setPossessionTime(player.getId(), player.getBallPossessionTime());
 			}
 		}
 

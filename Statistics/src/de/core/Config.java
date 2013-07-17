@@ -31,6 +31,9 @@ public class Config
 	public static final int GOALTWOMINX = 22560;
 	public static final int GOALTWOMAXX = 29880;
 
+	public static final int GOALONEY = 33941;
+	public static final int GOALTWOY = -33968;
+
 	public final static int[] PLAYERIDS = { 47, 49, 19, 53, 23, 57, 59, 63, 65, 67, 69, 71, 73, 75, 13, 61 };
 	public final static int[] PLAYERSENSORIDS = { 47, 16, 49, 88, 19, 52, 53, 54, 23, 24, 57, 58, 59, 28, 63, 64, 65, 66, 67, 68, 69, 38, 71, 40, 73, 74, 75, 44, 13, 14, 61, 62 };
 	public final static int[] BALLIDS = { 4, 8, 10 };
