@@ -98,6 +98,7 @@ public class GameInformation implements UpdateListener
 		this.statisticsFacade = statisticsFacade;
 		this.prophet = new Prophet(this);
 		config = new Config();
+		registerAllPlayerHeatMaps();
 
 		logger.setLevel(Level.INFO);
 	}
@@ -922,6 +923,16 @@ public class GameInformation implements UpdateListener
 		return false;
 	}
 
+	public void registerAllPlayerHeatMaps()
+	{
+		final int width = Config.heatMapInit.widthInCells;
+		final int height = Config.heatMapInit.heightInCells;
+		for (int id : Config.PLAYERIDS)
+		{
+			getStatisticsFacade().registerPlayerHeatMap(id, width, height);
+		}
+	}
+
 	public void update(EventBean[] newData, EventBean[] oldData)
 	{
 		Event event = ((Event) newData[0].getUnderlying());
@@ -984,6 +995,7 @@ public class GameInformation implements UpdateListener
 			if (!lastShotOnGoalDisplayed && lastHitPlayerID != 0 && (lastHitTimeStamp + 100000000000L) < event.getTimestamp())
 			{
 				lastShotOnGoalDisplayed = true;
+				// shot(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY());
 				if (shotOnGoal(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY()))
 				{
 					setLastShotOnGoalTimeStamp(lastHitTimeStamp);
