@@ -8,7 +8,13 @@ import de.core.GameInformation;
  */
 public abstract class Predictor {
 
+	/**
+	 * The learner which is responsible for the predictions.
+	 */
 	protected Learner learner;
+	/**
+	 * The prediction instance which will used for training and prediction.
+	 */
 	protected PredictionInstance predictionInstance;
 
 	/**

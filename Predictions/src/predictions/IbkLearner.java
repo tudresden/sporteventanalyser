@@ -2,39 +2,44 @@ package predictions;
 
 import moa.core.InstancesHeader;
 import weka.classifiers.lazy.IBk;
-import weka.core.ChebyshevDistance;
-import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.SelectedTag;
-import weka.core.Tag;
-import weka.core.neighboursearch.LinearNNSearch;
-import weka.core.neighboursearch.NearestNeighbourSearch;
 
 /**
  * This class encapsulates the <i>IBk</i> classifier.
  * 
  */
 public class IbkLearner extends Learner {
-
+	/**
+	 * Tag for logs.
+	 */
 	public static final String TAG = "[Predictions][IbkLearner] ";
 
-	private static final int WEIGHT_SIMILARITY = 4;
+	// private static final int WEIGHT_SIMILARITY = 4;
+	//
+	// private static final int WEIGHT_NONE = 1;
+	//
+	// private static final int WEIGHT_INVERSE = 2;
 
-	private static final int WEIGHT_NONE = 1;
-
-	private static final int WEIGHT_INVERSE = 2;
-
+	/**
+	 * Specifies if the knn value will be adjusted automatically by cross
+	 * validation.
+	 */
 	private boolean adaptiveKNN;
 
-	private static final Tag[] TAGS_WEIGHTING = {
-			new Tag(4, "WEIGHT_SIMILARITY"), new Tag(1, "WEIGHT_NONE"),
-			new Tag(2, "WEIGHT_INVERSE") };
+	// private static final Tag[] TAGS_WEIGHTING = {
+	// new Tag(4, "WEIGHT_SIMILARITY"), new Tag(1, "WEIGHT_NONE"),
+	// new Tag(2, "WEIGHT_INVERSE") };
 
+	/**
+	 * The number of nearest neighbors used for prediction. Will be adjusted
+	 * automatically.
+	 */
 	private int knn = 10;
 
+	/**
+	 * The classifier used for training and predictions.
+	 */
 	private IBk ibk;
-
-	private int counter = 0;
 
 	/**
 	 * Initiates an IBk learner instance with adaptive knn value.
@@ -70,7 +75,6 @@ public class IbkLearner extends Learner {
 		// "weka.core.neighboursearch.LinearNNSearch -A \"weka.core.ChebyshevDistance -R first-last\""
 		// }); //
 		// } catch (Exception e1) {
-		// // TODO Auto-generated catch block
 		// e1.printStackTrace();
 		// }
 		//
@@ -87,7 +91,6 @@ public class IbkLearner extends Learner {
 		// chebyshevDistance.setOptions(options);
 		// linearNNSearch.setDistanceFunction(new ChebyshevDistance());
 		// } catch (Exception e1) {
-		// // TODO Auto-generated catch block
 		// e1.printStackTrace();
 		// }
 		// ibk.setNearestNeighbourSearchAlgorithm(linearNNSearch);
@@ -105,7 +108,7 @@ public class IbkLearner extends Learner {
 	@Override
 	public void train(PredictionInstance trainingInstance) {
 
-		if (Utils.DEBUGGING)
+		if (Utils.WRITE_DEBUGGING_LOGS)
 			System.out.println("KNN = " + ibk.getKNN());
 
 		numberSamples++;
@@ -133,13 +136,13 @@ public class IbkLearner extends Learner {
 						|| firstClassProbability < 50f
 						&& result.equals(getClassName(1))) {
 					numberSamplesCorrect++;
-					if (Utils.DEBUGGING)
+					if (Utils.WRITE_DEBUGGING_LOGS)
 						System.out.println(TAG + "Prediction was correct.");
 				}
 
 				// prediction wrong
 				else {
-					if (Utils.DEBUGGING)
+					if (Utils.WRITE_DEBUGGING_LOGS)
 						System.out.println(TAG + "Prediction was wrong.");
 				}
 			} else {
@@ -161,19 +164,19 @@ public class IbkLearner extends Learner {
 						&& thirdClassProbability > firstClassProbability
 						&& result.equals(getClassName(2))) {
 					numberSamplesCorrect++;
-					if (Utils.DEBUGGING)
+					if (Utils.WRITE_DEBUGGING_LOGS)
 						System.out.println(TAG + "Prediction was correct.");
 				}
 
 				// prediction wrong
 				else {
-					if (Utils.DEBUGGING)
+					if (Utils.WRITE_DEBUGGING_LOGS)
 						System.out.println(TAG + "Prediction was wrong.");
 				}
 			}
 
 		} catch (Exception e1) {
-			if (Utils.DEBUGGING)
+			if (Utils.WRITE_DEBUGGING_LOGS)
 				System.out.println(TAG + "no neighbors found in "
 						+ ibk.getNumTraining() + " instances");
 		}
@@ -187,8 +190,7 @@ public class IbkLearner extends Learner {
 
 		try {
 			ibk.updateClassifier(trainingInstance.getInstanceCopy());
-			counter++;
-			if (counter > knn && adaptiveKNN)
+			if (ibk.getNumTraining() > knn && adaptiveKNN)
 				ibk.setCrossValidate(true);
 		} catch (Exception e) {
 		}
@@ -230,11 +232,11 @@ public class IbkLearner extends Learner {
 
 		} catch (Exception e) {
 			// e.printStackTrace();
-			if (Utils.DEBUGGING)
+			if (Utils.WRITE_DEBUGGING_LOGS)
 				System.out.println(TAG + "no neighbors found");
 		}
 
-		if (Utils.DEBUGGING)
+		if (Utils.WRITE_DEBUGGING_LOGS)
 			printAccuracy(TAG
 					+ InstancesHeader.getClassNameString(instanceHeader) + " ");
 

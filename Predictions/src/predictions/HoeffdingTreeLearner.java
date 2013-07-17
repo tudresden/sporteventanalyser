@@ -11,8 +11,14 @@ import moa.core.InstancesHeader;
  */
 public class HoeffdingTreeLearner extends Learner {
 
+	/**
+	 * Tag for logs.
+	 */
 	public static final String TAG = "[Predictions][HoeffdingTreeLearner] ";
 
+	/**
+	 * The classifier used for training and predictions.
+	 */
 	Classifier learner;
 
 	@Override
@@ -40,10 +46,10 @@ public class HoeffdingTreeLearner extends Learner {
 
 		if (learner.correctlyClassifies(trainingInstance.getInstance())) {
 			numberSamplesCorrect++;
-			if (Utils.DEBUGGING)
+			if (Utils.WRITE_DEBUGGING_LOGS)
 				System.out.println(TAG + "Prediction was correct.");
 		} else {
-			if (Utils.DEBUGGING)
+			if (Utils.WRITE_DEBUGGING_LOGS)
 				System.out.println(TAG + "Prediction was wrong.");
 		}
 
@@ -81,7 +87,7 @@ public class HoeffdingTreeLearner extends Learner {
 					- predictionsBundle[1];
 		}
 
-		if (Utils.DEBUGGING)
+		if (Utils.WRITE_DEBUGGING_LOGS)
 			printAccuracy(TAG
 					+ InstancesHeader.getClassNameString(instanceHeader) + " ");
 

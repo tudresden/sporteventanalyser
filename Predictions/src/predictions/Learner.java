@@ -8,11 +8,30 @@ import moa.core.InstancesHeader;
  * 
  */
 public abstract class Learner {
+	/**
+	 * Counts the number of samples used for training which has been predicted
+	 * correctly.
+	 */
 	protected int numberSamplesCorrect = 0;
+	/**
+	 * Counts the number of samples used for training.
+	 */
 	protected int numberSamples = 0;
+	/**
+	 * Gives information about the instance structure.
+	 */
 	protected InstancesHeader instanceHeader;
+	/**
+	 * Accumulates all instances if an ARFF file has to be created.
+	 */
 	protected Instances accumulatedInstances;
 
+	/**
+	 * Initializes the classifier. Has to be called before use.
+	 * 
+	 * @param instanceHeader
+	 *            the header of the instance
+	 */
 	protected abstract void init(InstancesHeader instanceHeader);
 
 	/**
@@ -39,6 +58,9 @@ public abstract class Learner {
 	 *            string for console output
 	 */
 	protected void printAccuracy(String tag) {
+
+		if (!Utils.WRITE_INFO_LOGS)
+			return;
 
 		if (numberSamples > 0) {
 			double accuracy = 100.0 * (double) numberSamplesCorrect

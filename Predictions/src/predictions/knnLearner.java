@@ -10,9 +10,14 @@ import weka.core.neighboursearch.LinearNNSearch;
  * 
  */
 public class knnLearner extends Learner {
-
+	/**
+	 * Tag for logs.
+	 */
 	public static final String TAG = "[Predictions][KnnLearner] ";
 
+	/**
+	 * The classifier used for training and predictions.
+	 */
 	private LinearNNSearch knn;
 
 	@Override
@@ -46,7 +51,7 @@ public class knnLearner extends Learner {
 				String neighborClass = neighbor.stringValue(neighbor
 						.classIndex());
 
-				if (Utils.DEBUGGING)
+				if (Utils.WRITE_DEBUGGING_LOGS)
 					System.out.println(TAG + (neighborIndex + 1) + ". "
 							+ neighborClass + " (distance: "
 							+ distances[neighborIndex] + ")");
@@ -58,7 +63,7 @@ public class knnLearner extends Learner {
 
 		} catch (Exception e) {
 			// e.printStackTrace();
-			if (Utils.DEBUGGING)
+			if (Utils.WRITE_DEBUGGING_LOGS)
 				System.out.println(TAG + "no neighbors found in "
 						+ accumulatedInstances.size() + " instances");
 
@@ -95,18 +100,18 @@ public class knnLearner extends Learner {
 				String neighborClass = neighbor.stringValue(neighbor
 						.classIndex());
 
-				if (Utils.DEBUGGING)
+				if (Utils.WRITE_DEBUGGING_LOGS)
 					System.out.println(TAG + (neighborIndex + 1) + ". "
 							+ neighborClass + " (distance: "
 							+ distances[neighborIndex] + ")");
 			}
 		} catch (Exception e) {
 			// e.printStackTrace();
-			if (Utils.DEBUGGING)
+			if (Utils.WRITE_DEBUGGING_LOGS)
 				System.out.println(TAG + "no neighbors found");
 		}
 
-		if (Utils.DEBUGGING)
+		if (Utils.WRITE_DEBUGGING_LOGS)
 			printAccuracy(TAG
 					+ InstancesHeader.getClassNameString(instanceHeader) + " ");
 

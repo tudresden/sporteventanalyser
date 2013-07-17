@@ -11,28 +11,74 @@ import de.core.GameInformation;
  * 
  */
 public class AttackResultPredictor extends Predictor {
-
+	/**
+	 * Tag for logs.
+	 */
 	public static final String TAG = "[Predictions][AttackResultPredictor] ";
 
+	/**
+	 * Specifies the radius in which players will be counted.
+	 */
 	private static final int PLAYER_RADIUS = 20;
+	/**
+	 * Specifies the number of instances to write to the ARFF file.
+	 */
 	private static final int NUMBER_OF_INSTANCES_FOR_ARFF = 350; // 352instances
 
+	/**
+	 * Stores the id of the last player with ball.
+	 */
 	private int idOfLastPlayerWithBall = -1;
 
+	/**
+	 * Counts all passes occurred.
+	 */
 	private int passCounter = 0;
 
+	/**
+	 * Remembers if ARFF file has already been created.
+	 */
 	private boolean arffCreated = false;
 
+	/**
+	 * Saves the ball velocity values of the past seconds.
+	 */
 	private List<Integer> velocityHistory = new LinkedList<Integer>();
+	/**
+	 * Stores the last game time.
+	 */
 	private long lastGameTime = -1;
-	private int lastBallYPosition = -1; // TODO x or y?
+	/**
+	 * Stores the last y position of the ball.
+	 */
+	private int lastBallYPosition = -1;
 
+	/**
+	 * Stores the time stamp of last ball loss to notice a new loss of ball.
+	 */
 	private long lastBallLossTimestamp = -1;
+	/**
+	 * Stores the time stamp of last ball out of bounds to notice a new
+	 * occurrence of ball out of bounds.
+	 */
 	private long lastBallOutsideTimestamp = -1;
+	/**
+	 * Stores the time stamp of last shot on goal to notice a new occurrence of
+	 * shot on goal.
+	 */
 	private long lastShotOnGoalTimestamp = -1;
 
+	/**
+	 * Counts all ball losses for distribution calculations.
+	 */
 	private int ballLossCounter = 0;
+	/**
+	 * Counts all shots on goal for distribution calculations.
+	 */
 	private int shotOnGoalCounter = 0;
+	/**
+	 * Counts all balls out of bounds for distribution calculations.
+	 */
 	private int ballOutOfBoundsCounter = 0;
 
 	/**
@@ -51,15 +97,15 @@ public class AttackResultPredictor extends Predictor {
 		learner.init(predictionInstance.getHeader());
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void update(GameInformation gameInformation) {
 
-		if (Utils.DEBUGGING)
+		if (Utils.WRITE_DEBUGGING_LOGS)
 			System.out.println(TAG
 					+ " - - - attack result prediction update with "
 					+ learner.getClass().getName() + " - - - ");
 
-		// TODO create ARFF file at the very end
 		if (Utils.ARFF_WRITING_MODE && !arffCreated)
 			if (learner.getAccumulatedInstances().size() == NUMBER_OF_INSTANCES_FOR_ARFF) {
 				arffCreated = true;
@@ -69,7 +115,7 @@ public class AttackResultPredictor extends Predictor {
 			}
 
 		if (gameInformation.getCurrentBallPossessionPlayer() == null) {
-			if (Utils.DEBUGGING)
+			if (Utils.WRITE_DEBUGGING_LOGS)
 				System.out.println(TAG
 						+ "Prediction update failed: no player has ball");
 			return;
@@ -182,7 +228,7 @@ public class AttackResultPredictor extends Predictor {
 	protected void predict(GameInformation gameInformation) {
 		float[] predictionsBundle = learner.makePrediction(predictionInstance);
 
-		if (Utils.DEBUGGING)
+		if (Utils.WRITE_DEBUGGING_LOGS)
 			System.out.println("PREDICTION" + "  loss: " + predictionsBundle[0]
 					+ "%  out of bounds: " + predictionsBundle[1]
 					+ "%  shot on goal: " + predictionsBundle[2] + "%");
@@ -208,7 +254,7 @@ public class AttackResultPredictor extends Predictor {
 			shotOnGoalCounter++;
 		}
 
-		if (Utils.DEBUGGING)
+		if (Utils.WRITE_DEBUGGING_LOGS)
 			System.out.println(TAG + "event occured: " + classAttribute);
 
 		((AttackResultPredictionInstance) predictionInstance)
@@ -216,23 +262,24 @@ public class AttackResultPredictor extends Predictor {
 
 		learner.train(predictionInstance);
 
-		System.out
-				.println(TAG
-						+ "Ball loss = "
-						+ ((float) ballLossCounter
-								/ ((float) ballLossCounter
-										+ (float) shotOnGoalCounter + (float) ballOutOfBoundsCounter) * 100)
-						+ "%"
-						+ "  Ball out of bounds = "
-						+ ((float) ballOutOfBoundsCounter
-								/ ((float) ballLossCounter
-										+ (float) shotOnGoalCounter + (float) ballOutOfBoundsCounter) * 100)
-						+ "%"
-						+ "  Shot on goal = "
-						+ ((float) shotOnGoalCounter
-								/ ((float) ballLossCounter
-										+ (float) shotOnGoalCounter + (float) ballOutOfBoundsCounter) * 100)
-						+ "%");
+		if (Utils.WRITE_INFO_LOGS)
+			System.out
+					.println(TAG
+							+ "Ball loss = "
+							+ ((float) ballLossCounter
+									/ ((float) ballLossCounter
+											+ (float) shotOnGoalCounter + (float) ballOutOfBoundsCounter) * 100)
+							+ "%"
+							+ "  Ball out of bounds = "
+							+ ((float) ballOutOfBoundsCounter
+									/ ((float) ballLossCounter
+											+ (float) shotOnGoalCounter + (float) ballOutOfBoundsCounter) * 100)
+							+ "%"
+							+ "  Shot on goal = "
+							+ ((float) shotOnGoalCounter
+									/ ((float) ballLossCounter
+											+ (float) shotOnGoalCounter + (float) ballOutOfBoundsCounter) * 100)
+							+ "%");
 
 	}
 
