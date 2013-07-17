@@ -41,6 +41,8 @@ public class Config
 	public static final HeatMapInit heatMapInit = Utils.calculateHeatMapInit();
 	public static final int heatMapWidthInCells = 13;
 
+	// public static final int heatMapHeightInCells = 13;
+
 	public Config()
 	{
 		entityList = new ConcurrentHashMap<Integer, Entity>();
