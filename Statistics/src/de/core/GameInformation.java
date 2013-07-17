@@ -99,6 +99,7 @@ public class GameInformation implements UpdateListener
 		this.prophet = new Prophet(this);
 		config = new Config();
 		registerAllPlayerHeatMaps();
+		registerAllTeamHeatMaps();
 
 		logger.setLevel(Level.INFO);
 	}
@@ -1002,8 +1003,13 @@ public class GameInformation implements UpdateListener
 		final int height = Config.heatMapInit.heightInCells;
 		for (int id : Config.PLAYERIDS)
 		{
-			getStatisticsFacade().registerPlayerHeatMap(id, width, height);
+			getStatisticsFacade().registerPlayerHeatMap(id, height, width);
 		}
+	}
+
+	public void registerAllTeamHeatMaps()
+	{
+		getStatisticsFacade().registerTeamHeatMap(Team.GELB.toString(), Team.ROT.toString(), Config.heatMapInit.heightInCells, Config.heatMapInit.widthInCells);
 	}
 
 	public void update(EventBean[] newData, EventBean[] oldData)
@@ -1207,6 +1213,10 @@ public class GameInformation implements UpdateListener
 				getStatisticsFacade().setPositionOfPlayer(player.getId(), player.getPositionX(), player.getPositionY(), player.getVelocityX(), player.getVelocityY());
 				getStatisticsFacade().setTotalDistance(player.getId(), player.getTotalDistance());
 				getStatisticsFacade().setPossessionTime(player.getId(), player.getBallPossessionTime());
+				HeatMapGrid playersHeatMap = player.getHeatmap();
+				Point positionOfLastUpdate = playersHeatMap.getPositionOfLastUpdate();
+				getStatisticsFacade().setValueInHeatMap(player.getId(), positionOfLastUpdate.x, positionOfLastUpdate.y, playersHeatMap.getCell(playersHeatMap.getCellOfLastUpdate()));
+				getStatisticsFacade().setValueInHeatMap(player.getTeam().toString(), positionOfLastUpdate.x, positionOfLastUpdate.y, playersHeatMap.getCell(playersHeatMap.getCellOfLastUpdate()));
 			}
 		}
 
