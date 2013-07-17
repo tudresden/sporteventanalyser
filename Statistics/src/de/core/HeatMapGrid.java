@@ -12,9 +12,19 @@ public class HeatMapGrid
 	private int fieldYmax;
 	private int fieldXmin;
 	private int fieldXmax;
-	private int yMinNegativeAbs;
-	private int xMinNegativeAbs;
+	private int yOffset;
+	private int xOffset;
 	private int cellOfLastUpdate;
+
+	public int getCellOfLastUpdate()
+	{
+		return cellOfLastUpdate;
+	}
+
+	public void setCellOfLastUpdate(int cellOfLastUpdate)
+	{
+		this.cellOfLastUpdate = cellOfLastUpdate;
+	}
 
 	public HeatMapGrid(HeatMapInit heatMapInit)
 	{
@@ -29,8 +39,8 @@ public class HeatMapGrid
 		widthResolution = heatMapInit.widthResolution;
 		heightResolution = heatMapInit.heightResolution;
 
-		yMinNegativeAbs = heatMapInit.yMinNegativeAbs;
-		xMinNegativeAbs = heatMapInit.xMinNegativeAbs;
+		yOffset = heatMapInit.yOffset;
+		xOffset = heatMapInit.xOffset;
 
 		this.grid = new int[widthInCells * heightInCells];
 	}
@@ -41,10 +51,12 @@ public class HeatMapGrid
 		if (fieldYmin <= y && y <= fieldYmax && fieldXmin <= x && x <= fieldXmax)
 		{
 
-			y += yMinNegativeAbs;
-			x += xMinNegativeAbs;
+			x += xOffset;
+			y += yOffset;
 			int column = (int) (y / widthResolution);
 			int row = (int) (x / heightResolution);
+			// int row = (int) (y / heightResolution);
+			// int column = (int) (x / widthResolution);
 
 			return row * widthInCells + column;
 		}
