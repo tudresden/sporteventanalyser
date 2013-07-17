@@ -10,9 +10,18 @@ import de.core.GameInformation;
  * 
  */
 public class Prophet {
+	/**
+	 * Tag for logs.
+	 */
 	public static final String TAG = "[Predictions][Prophet] ";
 
+	/**
+	 * Contains all predictors, which has to be updated periodically.
+	 */
 	private List<Predictor> listOfPredictors;
+	/**
+	 * Reference to the statistics.
+	 */
 	private GameInformation gameInformation;
 
 	/**
@@ -32,26 +41,22 @@ public class Prophet {
 		 * pass prediction
 		 */
 
-		// listOfPredictors.add(new PassSuccessPredictor(
-		// new HoeffdingTreeLearner()));
 		listOfPredictors.add(new PassSuccessPredictor(new IbkLearner()));
-
-		// listOfPredictors.add(new PassSuccessPredictor(new knnLearner()));
 
 		/*
 		 * attack result prediction
 		 */
 
-		// listOfPredictors.add(new AttackResultPredictor(
-		// new HoeffdingTreeLearner()));
-		listOfPredictors.add(new AttackResultPredictor(new IbkLearner()));
+		listOfPredictors.add(new AttackResultPredictor(new IbkLearner(4)));
+
 	}
 
 	/**
 	 * Updates predictions.
 	 */
 	public void updatePredictors() {
-		// System.out.println(TAG + "Updating predictors.");
+		if (Utils.WRITE_DEBUGGING_LOGS)
+			System.out.println(TAG + "Updating predictors.");
 
 		for (Predictor predictor : listOfPredictors)
 			predictor.update(gameInformation);

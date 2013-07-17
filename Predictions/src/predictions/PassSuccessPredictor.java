@@ -7,17 +7,36 @@ import de.core.GameInformation;
  * 
  */
 public class PassSuccessPredictor extends Predictor {
-
+	/**
+	 * Tag for logs.
+	 */
 	public static final String TAG = "[Predictions][PassSuccessPredictor] ";
 
+	/**
+	 * Specifies the radius in which players will be counted.
+	 */
 	private static final int PLAYER_RADIUS = 20;
+	/**
+	 * Specifies the number of instances to write to the ARFF file.
+	 */
 	private static final int NUMBER_OF_INSTANCES_FOR_ARFF = 820; // 827instances
-
+	/**
+	 * Stores the id of the last player with ball.
+	 */
 	private int idOfLastPlayerWithBall = -1;
 
+	/**
+	 * Counts all successful passes for distribution calculations.
+	 */
 	private int successfulPassesCounter = 0;
+	/**
+	 * Counts all failed passes for distribution calculations.
+	 */
 	private int failedPassesCounter = 0;
 
+	/**
+	 * Remembers if ARFF file has already been created.
+	 */
 	private boolean arffCreated = false;
 
 	/**
@@ -36,15 +55,15 @@ public class PassSuccessPredictor extends Predictor {
 		learner.init(predictionInstance.getHeader());
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void update(GameInformation gameInformation) {
 
-		if (Utils.DEBUGGING)
+		if (Utils.WRITE_DEBUGGING_LOGS)
 			System.out.println(TAG
 					+ " - - - pass success prediction update with "
 					+ learner.getClass().getName() + " - - - ");
 
-		// TODO create ARFF file at the very end
 		if (Utils.ARFF_WRITING_MODE && !arffCreated)
 			if (learner.getAccumulatedInstances().size() == NUMBER_OF_INSTANCES_FOR_ARFF) {
 				arffCreated = true;
@@ -54,7 +73,7 @@ public class PassSuccessPredictor extends Predictor {
 			}
 
 		if (gameInformation.getCurrentBallPossessionPlayer() == null) {
-			if (Utils.DEBUGGING)
+			if (Utils.WRITE_DEBUGGING_LOGS)
 				System.out.println(TAG
 						+ "Prediction update failed: no player has ball");
 			return;
@@ -62,9 +81,6 @@ public class PassSuccessPredictor extends Predictor {
 
 		int idOfCurrentPlayerWithBall = gameInformation
 				.getCurrentBallPossessionPlayer().getId();
-
-		// System.out.println(TAG + "Last player: " + idOfLastPlayerWithBall
-		// + " Current player:" + idOfCurrentPlayerWithBall);
 
 		// update instance
 		((PassSuccessPredictionInstance) predictionInstance)
@@ -93,13 +109,13 @@ public class PassSuccessPredictor extends Predictor {
 		// pass occurred
 		if (idOfCurrentPlayerWithBall != idOfLastPlayerWithBall
 				&& idOfLastPlayerWithBall != -1) {
-			if (Utils.DEBUGGING)
+			if (Utils.WRITE_DEBUGGING_LOGS)
 				System.out.println(TAG + "A pass occured.");
 			train(gameInformation, "");
 		}
 		// no pass occurred
 		else {
-			if (Utils.DEBUGGING)
+			if (Utils.WRITE_DEBUGGING_LOGS)
 				System.out.println(TAG + "No pass occured.");
 			predict(gameInformation);
 		}
@@ -113,7 +129,7 @@ public class PassSuccessPredictor extends Predictor {
 	protected void predict(GameInformation gameInformation) {
 		float[] predictionsBundle = learner.makePrediction(predictionInstance);
 
-		if (Utils.DEBUGGING)
+		if (Utils.WRITE_DEBUGGING_LOGS)
 			System.out.println("PREDICTION" + "  pass success: "
 					+ predictionsBundle[0] + "%  pass fail: "
 					+ predictionsBundle[1] + "%");
@@ -138,7 +154,7 @@ public class PassSuccessPredictor extends Predictor {
 			successfulPassesCounter++;
 		}
 
-		if (Utils.DEBUGGING)
+		if (Utils.WRITE_DEBUGGING_LOGS)
 			System.out.println(TAG + "event occured: " + result);
 
 		((PassSuccessPredictionInstance) predictionInstance)
@@ -146,14 +162,13 @@ public class PassSuccessPredictor extends Predictor {
 
 		learner.train(predictionInstance);
 
-		// Utils.logArff(predictionInstance.getInstance());
-
-		System.out
-				.println(TAG
-						+ "Successful passes rate = "
-						+ ((float) successfulPassesCounter
-								/ ((float) successfulPassesCounter + (float) failedPassesCounter) * 100)
-						+ "%");
+		if (Utils.WRITE_INFO_LOGS)
+			System.out
+					.println(TAG
+							+ "Successful passes rate = "
+							+ ((float) successfulPassesCounter
+									/ ((float) successfulPassesCounter + (float) failedPassesCounter) * 100)
+							+ "%");
 
 	}
 

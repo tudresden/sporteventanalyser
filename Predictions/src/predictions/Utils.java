@@ -12,9 +12,14 @@ import weka.core.converters.ArffSaver;
 public class Utils {
 
 	/**
-	 * If set to <i>true</i>, more console outputs will be generated.
+	 * If set to <i>true</i>, console outputs for debugging will be generated.
 	 */
-	public static final boolean DEBUGGING = false;
+	public static final boolean WRITE_DEBUGGING_LOGS = false;
+
+	/**
+	 * If set to <i>true</i>, info console outputs will be generated.
+	 */
+	public static final boolean WRITE_INFO_LOGS = true;
 
 	/**
 	 * If set to <i>true</i>, all instances will be collected and an ARFF file
@@ -22,11 +27,20 @@ public class Utils {
 	 */
 	public static final boolean ARFF_WRITING_MODE = false;
 
+	/**
+	 * Own side of the field.
+	 */
 	public static final String FIELD_AREA_OWN_TEAM = "FIELD_AREA_OWN_TEAM";
-	public static final String FIELD_AREA_MIDDLE = "FIELD_AREA_MIDDLE";
-	public static final String FIELD_AREA_OPPONENTS = "FIELD_AREA_OPPONENTS";
 
-	// private static int single = 0;
+	/**
+	 * Middle of the playing field.
+	 */
+	public static final String FIELD_AREA_MIDDLE = "FIELD_AREA_MIDDLE";
+
+	/**
+	 * Opponent's playing field side.
+	 */
+	public static final String FIELD_AREA_OPPONENTS = "FIELD_AREA_OPPONENTS";
 
 	/**
 	 * Determines the current field area of a player.
@@ -35,10 +49,10 @@ public class Utils {
 	 *            the vertical position on the field
 	 * @param onOpponentSide
 	 *            if current player is on the opponents side
-	 * @return
+	 * @return the area, can be: <i>FIELD_AREA_OWN_TEAM</i>,
+	 *         <i>FIELD_AREA_MIDDLE</i>, <i>FIELD_AREA_OPPONENTS</i>
 	 */
 	public static final String getFieldArea(int y, boolean onOpponentSide) {
-		final int totalHeight = 2 * 33940;
 
 		// top field side
 		if (y > 10000) {
@@ -65,14 +79,16 @@ public class Utils {
 	 */
 	public static void createArffFileFromInstances(Instances dataSet,
 			String fileName) {
-		System.out.println("Creating arff file from " + dataSet.size()
-				+ " prediction instances.");
+
+		if (WRITE_INFO_LOGS)
+			System.out.println("Creating arff file from " + dataSet.size()
+					+ " prediction instances.");
 
 		// create unique file name
 		int fileNumber = 0;
 		String filePathString = "";
-		while (new File(filePathString = "../Predictions/prediction_logs/" + fileName + "_"
-				+ (++fileNumber) + ".arff").exists())
+		while (new File(filePathString = "../Predictions/prediction_logs/"
+				+ fileName + "_" + (++fileNumber) + ".arff").exists())
 			;
 
 		ArffSaver saver = new ArffSaver();
@@ -85,91 +101,5 @@ public class Utils {
 		}
 
 	}
-
-	// public static void logArff(Instance predictionInstance) {
-	// try {
-	// PrintWriter out = new PrintWriter(new FileWriter(
-	// "log.dataset.arff", true));
-	// String str = "";
-	// String header = "";
-	//
-	// int max = predictionInstance.numAttributes();
-	//
-	// for (int i = 0; i < max; i++) {
-	// if (single == 0)
-	// header += "@Attribute "
-	// + predictionInstance.attribute(i).name() + "\n";
-	// str += predictionInstance.attribute(i).value(0) + ",";
-	//
-	// }
-	// if (single == 0) {
-	// out.write(clean(header) + "\n");
-	// single = 1;
-	// }
-	//
-	// out.write(clean(str) + "\n");
-	// out.close();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// public void logIntToCsv(Integer dataSet[]) {
-	// try {
-	// PrintWriter out = new PrintWriter(new FileWriter("log.dataset.csv",
-	// true));
-	// String str = "";
-	// String header = "";
-	// int counter = 0;
-	// for (int data : dataSet) {
-	// if (this.single == 0)
-	// header += "data" + counter + ",";
-	// str += data + ",";
-	// counter++;
-	// }
-	// if (this.single == 0) {
-	// out.write(clean(header) + "\n");
-	// this.single = 1;
-	// }
-	//
-	// out.write(clean(str) + "\n");
-	// out.close();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// public void logInt(Integer dataSet[]) {
-	// try {
-	// PrintWriter out = new PrintWriter(new FileWriter(
-	// "log.dataset.arff", true));
-	// String str = "";
-	// String header = "";
-	// int counter = 0;
-	// for (int data : dataSet) {
-	// if (this.single == 0)
-	// header += "@attribute data" + counter + " numeric \n";
-	// str += data + ",";
-	// counter++;
-	// }
-	// if (this.single == 0) {
-	// out.write(clean(header) + "\n @data \n");
-	// this.single = 1;
-	// }
-	//
-	// out.write(clean(str) + "\n");
-	// out.close();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// public static String clean(String str) {
-	//
-	// if (str.length() > 0) {
-	// str = str.substring(0, str.length() - 1);
-	// }
-	// return str;
-	// }
 
 }
