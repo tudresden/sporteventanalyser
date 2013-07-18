@@ -81,6 +81,30 @@ video {
     #commentator {
       .infobox;
       text-align: center;
+      height: 16pt;
+      .says {
+        width: 89%;
+        float: left;
+      }
+      .prob_bars {
+        width: 10%;
+        float: left;
+        div {
+          height: 16pt;
+          width: 33%;
+          float: left;
+          vertical-align: bottom;
+        }
+        #prob_shotOnGoal {
+          background-color: @blue;
+        }
+        #prob_outOfPlay {
+          background-color: @red;
+        }
+        #prob_turnOver {
+          background-color: @green;
+        }
+      }
     }
   }
 }

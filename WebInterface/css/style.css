@@ -738,4 +738,28 @@ video {
   margin: 1.1pt;
   background: rgba(13, 54, 0, 0.5);
   text-align: center;
+  height: 16pt;
+}
+#content #center #commentator .says {
+  width: 89%;
+  float: left;
+}
+#content #center #commentator .prob_bars {
+  width: 10%;
+  float: left;
+}
+#content #center #commentator .prob_bars div {
+  height: 16pt;
+  width: 33%;
+  float: left;
+  vertical-align: bottom;
+}
+#content #center #commentator .prob_bars #prob_shotOnGoal {
+  background-color: #268bd2;
+}
+#content #center #commentator .prob_bars #prob_outOfPlay {
+  background-color: #dc322f;
+}
+#content #center #commentator .prob_bars #prob_turnOver {
+  background-color: #859900;
 }

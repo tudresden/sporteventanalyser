@@ -4,7 +4,7 @@ class Engine
     @bgcolor = 0.fffff0;
     @obj_stack = []
     @scene = new THREE.Scene
-    @camera = new THREE.PerspectiveCamera 75, @resolution[0] / @resolution[1], 1, 10000
+    @camera = new THREE.PerspectiveCamera 75, @resolution[0] / @resolution[1], 0.1, 10000
     @camera_mode = "BIRD"
 
     @amb_light = new THREE.AmbientLight 0xffffff, 1.0
@@ -16,7 +16,6 @@ class Engine
     @renderer.clearColor = @bgcolor
     @renderer.clear
     @renderer.setSize @resolution[0], @resolution[1]
-    console.log @camera
 
     now = new Date
     @start_time = now.getTime()
@@ -35,7 +34,7 @@ class Engine
     @players = []
 
   set_field: (@field) ->
-    @reality = @field.reality
+    @reality = @field.model.reality
     @.add @field
 
   reposition: (position) ->
@@ -81,15 +80,7 @@ class Engine
         @camera.position.y = 33 +  5 * Math.sin (time / 700)
         @camera.position.z = FIELD_WIDTH/2 +  5 * Math.sin (time / 1900)
         @camera.lookAt @mean_ball_pos
-    obj.follow(@camera.position, @camera_mode == "BIRD") for obj in @obj_stack
+    obj.follow(@camera, @camera_mode == "BIRD") for obj in @obj_stack
     obj.animate(time) for obj in @obj_stack
 
     @renderer.render @scene, @camera
-
-  select_players: (plr_ids) ->
-    if plr_ids.length is 0
-      @players.forEach (v, i) ->
-        v.selected = 2
-    else
-      @players.forEach (v, i) ->
-        v.selected = if v.id in plr_ids then 1 else 0

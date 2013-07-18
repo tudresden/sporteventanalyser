@@ -5,7 +5,6 @@
   <link media="all" rel="stylesheet" href="css/style.css" type="text/css"/>
   
   <!-- External -->
-  <!-- <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script> -->
   <script src="js/ext/jquery-1.9.1.min.js"></script>
   <script src="js/ext/jquery-ui.min.js"></script>
   <script src="js/ext/jquery.flot.min.js"></script>
@@ -25,9 +24,7 @@
   <script src="js/sporteventanalyser.pubsub.js"></script>
   
   <script src="js/ext/three.min.js"></script>
-  <script src="js/field.js"></script>
   <script src="js/engine.js"></script>
-  <script src="js/main.js"></script>
   <title>SEA</title>
 </head>
 <body>
@@ -94,7 +91,12 @@
         <div id="field">
         </div>
         <div id="commentator">
-          <span class="says">...</span>
+          <div class="says">...</div>
+          <div class="prob_bars">
+            <div id="prob_shotOnGoal" title="shotOnGoal"></div>
+            <div id="prob_outOfPlay" title="outOfPlay"></div>
+            <div id="prob_turnOver" title="turnOver"></div>
+          </div>
         </div>
         <div id="gametrack">
           <svg id="gametrack_display" xmlns="http://www.w3.org/2000/svg" version="1.1" width="620" height="42">

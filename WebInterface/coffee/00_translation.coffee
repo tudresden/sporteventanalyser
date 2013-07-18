@@ -10,9 +10,9 @@ translation_dict =
   "possessionTime": "Possession time"
   "totalDistance":  "Total distance"
   "commentPred:Any":        "Well.."
-  "commentPred:shotOnGoal": "There's going to be a goal."
-  "commentPred:outOfPlay":  "Out!"
-  "commentPred:turnOver":   "They'll lose the ball."
+  "commentPred:shotOnGoal": "They might be going to shoot at the goal."
+  "commentPred:outOfPlay":  "Out..! Probably."
+  "commentPred:turnOver":   "Maybe they'll lose the ball."
 
 t = (word) ->
   res = translation_dict["" + word]

@@ -1,13 +1,13 @@
-comment = console.log
-
-comment "# SEA - sport event analyzer"
-comment "## Initializing"
+console.info "# SEA - sport event analyzer"
+console.info "## Initializing"
 running = false
 
-ball = new Ball("img/ball.png")
-engine = new Engine(ball)
+ball = new BallModel()
+ball_3d = new Ball3d "img/ball.png", ball
+engine = new Engine(ball_3d)
 
-playersdict = {}
+playermodels = {}
+playerhtmls = {}
 tmp_team_name = ""
 tmp_counter = {true: 0, false: 0}
 teams = []
@@ -17,7 +17,7 @@ team_b_stats = {}
 observed_player_a = null
 observed_player_b = null
 
-comment "* current local time is: " + Date.now()
+console.info "* current local time is: " + Date.now()
 
 run = ->
   # animation loop
@@ -25,7 +25,7 @@ run = ->
   engine.render()
 
 replace_img_by_svg = ->
-  comment "* replace img with svg by the svg"
+  console.info "* replace img by the svg within"
   $("img").each () ->
     $img = $(@)
     imgid = $img.attr "id"
@@ -38,12 +38,6 @@ replace_img_by_svg = ->
         $svg = $svg.attr("class", imgclass) if imgclass?
         $svg = $svg.removeAttr "xmlns:a"
         $img.replaceWith $svg
-
-compose_stats_tbody = (stats) ->
-  res = "<tbody>"
-  $.each stats, (k, v) ->
-    res += "<tr><td>" + t(""+k) + "</td><td>" + v + "</td></tr>\n"
-  return res + "</tbody>"
 
 refresh_selection = (event, ui) ->
   all_plrs = []
@@ -58,25 +52,32 @@ refresh_selection = (event, ui) ->
 
   a_stats = $("#player_a_stats")
   if plr_ids_a.length
-    observed_player_a = a_plr = playersdict[plr_ids_a[0]]
+    observed_player_a = a_plr = playermodels[plr_ids_a[0]]
     a_stats.find(".player_name").text a_plr?.name
-    a_stats.find("tbody").replaceWith compose_stats_tbody a_plr?.stats
+    plrhtml = playerhtmls[a_plr.id]
+    a_stats.find("tbody").replaceWith plrhtml.tbody()
   else
     observed_player_a = null
     a_stats.find(".player_name").text teams[0]
-    a_stats.find("tbody").replaceWith compose_stats_tbody team_a_stats
+    a_stats.find("tbody").html ""
 
   b_stats = $("#player_b_stats")
   if plr_ids_b.length
-    observed_player_b = b_plr = playersdict[plr_ids_b[0]]
+    observed_player_b = b_plr = playermodels[plr_ids_b[0]]
     b_stats.find(".player_name").text b_plr?.name
-    b_stats.find("tbody").replaceWith compose_stats_tbody b_plr?.stats
+    plrhtml = playerhtmls[b_plr.id]
+    b_stats.find("tbody").replaceWith plrhtml.tbody()
   else
     observed_player_b = null
     b_stats.find(".player_name").text teams[1]
-    b_stats.find("tbody").replaceWith compose_stats_tbody team_b_stats
+    b_stats.find("tbody").html ""
 
-  engine.select_players all_plrs
+  if all_plrs.length is 0
+    $.each playermodels, (k, v) ->
+      v.selected = 2
+  else
+    $.each playermodels, (k, v) ->
+      v.selected = if k in all_plrs then 1 else 0
 
 add_player = (v, i) ->
   if i == 0
@@ -105,82 +106,85 @@ add_player = (v, i) ->
   else
     team_b.find("tr#"+v.PlayerID+" .smallinfo").append $("<img class=\"tshirt\" src=\"" + tshirt + "\"/>")
 
-  plr = new Player v.PlayerID, v.PlayerName, v.TeamName, tshirt
-  engine.add plr
-  engine.players.push plr
-  playersdict[v.PlayerID] = plr
-  playersdict["" + v.PlayerID] = plr
+  plr = new PlayerModel v.PlayerID, v.PlayerName, v.TeamName
+  plr_3d = new Player3d tshirt, plr
+  engine.add plr_3d
+  engine.players.push plr_3d
+  playermodels[v.PlayerID] = plr
+  playermodels["" + v.PlayerID] = plr
+  playerhtmls[v.PlayerID] = new PlayerHTML plr
 
 update_position = (v, i) ->
   switch v.constructor.name
     when "BallPosition"
-      data =
-        x: parseInt v.positionX
-        y: parseInt v.positionY
-        z: parseInt v.positionZ
-      ball.update Date.now(), engine.reposition data
+      data = {}
+      data.x = parseInt v.positionX if v.positionX?
+      data.y = parseInt v.positionY if v.positionY?
+      data.z = parseInt v.positionZ if v.positionZ?
+      ball.update_position Date.now(), engine.reposition data
     when "PlayerPosition"
-      data =
-        x: parseInt v.positionX
-        y: parseInt v.positionY
-      playersdict[v.id]?.update Date.now(), engine.reposition data
+      data = {}
+      data.x = parseInt v.positionX if v.positionX?
+      data.y = parseInt v.positionY if v.positionY?
+      playermodels[v.id]?.update_position Date.now(), engine.reposition data
     else
-      console.log "Unknown position update.", v
+      console.warn "Unknown position update.", v
 
 update_statistics = (v, i) ->
   switch v.constructor.name
     when "PlayerStatistic"
-      playersdict[v.id]?.update_stats Date.now(), v
-      if observed_player_a? and v.id == observed_player_a.id
-        a_stats = $("#player_a_stats")
-        a_stats.find("tbody").replaceWith compose_stats_tbody observed_player_a.stats
-      else if observed_player_b? and v.id == observed_player_b.id
-        b_stats = $("#player_b_stats")
-        b_stats.find("tbody").replaceWith compose_stats_tbody observed_player_b.stats
+      playermodels[v.id]?.update_stats Date.now(), v
+      if observed_player_a?
+        plrhtml = playerhtmls[observed_player_a.id]
+        $("#player_a_stats").find("tbody").replaceWith plrhtml.tbody()
+      else if observed_player_b?
+        plrhtml = playerhtmls[observed_player_b.id]
+        $("#player_b_stats").find("tbody").replaceWith plrhtml.tbody()
     else
-      console.log "Unknown Statistics", v
+      console.warn "Unknown Statistics", v
 
 update_commentator = (v) ->
   switch v.constructor.name
     when "CurrentPrognosisData"
-      saying = $("#commentator").find(".says")
+      commentator = $("#commentator")
+      saying = commentator.find(".says")
       data = v.attackResultPrediction
       if data?
-        console.log data
         max = 0.0
         probably = "Any"
         $.each data, (k) ->
-          d = parseInt data[k]
+          d = parseFloat data[k]
+          commentator.find("#prob_"+k).animate {"height": ((d*0.0097 + 0.0003) * 16)+"pt"}, 100
           if d > max
             max = d
             probably = k
         probably = t "commentPred:" + probably
         if saying.html() != probably
-          saying.fadeOut "fast", ->
-            saying.html(probably).fadeIn("fast")
+          saying.html(probably)
     else
-      console.log "unknown type of prediction: ", v
+      console.warn "unknown type of prediction: ", v
 
 establish_sea_connection = (onsuccess) ->
   sea.connect "seaclient@sea", "sea", "mobilis@sea", ->
     sea.getGameMappings (mappings) ->
-      comment "* Setting up field"
+      console.info "* Setting up field"
       gf = mappings.GameFieldSize
       reality =  # x and y confuse you here
         height: gf.GameFieldMaxX - gf.GameFieldMinX
         width: gf.GameFieldMaxY - gf.GameFieldMinY
         offy: parseInt gf.GameFieldMinX
         offx: parseInt gf.GameFieldMinY
-      field = new Field("img/Fussballfeld.png", reality)
-      engine.set_field field
+      field = new FieldModel reality
+      field3d = new Field3d "img/Fussballfeld.png", field
+      engine.set_field field3d
 
-      comment "* Setting up goal positions and size"
+      console.info "* Setting up goal positions and size"
       # TODO: engine.set_goals_pos mappings.Goals
       
-      comment "* Setting up players"
+      console.info "* Setting up players"
       mappings.PlayerMappings.forEach add_player
 
-    comment "* adding pos handler"
+    console.info "* adding pos handler"
 
     sea.pubsub.subscribeStatistic()
 
@@ -194,12 +198,12 @@ establish_sea_connection = (onsuccess) ->
       item.teamStatistics.forEach update_statistics
 
     #sea.pubsub.addCurrentHeatMapDataHandler (item) ->
-      #console.log "heatmap", item
+      #console.info "heatmap", item
 
     sea.pubsub.addCurrentPrognosisDataHandler update_commentator
       
-    sea.pubsub.addCurrentGameDataHandler (item) ->
-      console.log item
+    #sea.pubsub.addCurrentGameDataHandler (item) ->
+      #console.info item
 
     onsuccess?()
 
@@ -209,7 +213,7 @@ $ ->
 
   replace_img_by_svg()
 
-  console.log "* preparing view buttons"
+  console.info "* preparing view buttons"
   $("#perspectives_menu").buttonset
   for b in $("#perspectives_menu").find("input")
     do (b) ->
@@ -224,15 +228,15 @@ $ ->
             $("#heatmap").hide 0, ->
               $("#field").show(0)
 
-  console.log "* adding canvas"
+  console.info "* adding canvas"
   $("#field").append engine.get_canvas()
 
-  console.log "* making selectables"
+  console.info "* making selectables"
   $("#team_a, #team_b").selectable
     filter: 'tr'
     selected: refresh_selection
 
-  #console.log "* preparing diagrams"
+  #console.info "* preparing diagrams"
   #nodata = [[0, 0], [1, 0]]
   #options = 
   #  series:
