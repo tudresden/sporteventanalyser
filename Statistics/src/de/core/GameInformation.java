@@ -999,17 +999,21 @@ public class GameInformation implements UpdateListener
 
 	public void registerAllPlayerHeatMaps()
 	{
-		final int width = Config.heatMapInit.widthInCells;
-		final int height = Config.heatMapInit.heightInCells;
-		for (int id : Config.PLAYERIDS)
+		if (getStatisticsFacade() != null)
 		{
-			getStatisticsFacade().registerPlayerHeatMap(id, height, width);
+			for (int id : Config.PLAYERIDS)
+			{
+				getStatisticsFacade().registerPlayerHeatMap(id, Config.heatMapInit.heightInCells, Config.heatMapInit.widthInCells);
+			}
 		}
 	}
 
 	public void registerAllTeamHeatMaps()
 	{
-		getStatisticsFacade().registerTeamHeatMap(Team.GELB.toString(), Team.ROT.toString(), Config.heatMapInit.heightInCells, Config.heatMapInit.widthInCells);
+		if (getStatisticsFacade() != null)
+		{
+			getStatisticsFacade().registerTeamHeatMap(Team.GELB.toString(), Team.ROT.toString(), Config.heatMapInit.heightInCells, Config.heatMapInit.widthInCells);
+		}
 	}
 
 	public void update(EventBean[] newData, EventBean[] oldData)
