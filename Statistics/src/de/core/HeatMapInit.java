@@ -7,6 +7,6 @@ public class HeatMapInit
 	public int heightInCells;
 	public float widthResolution;
 	public float heightResolution;
-	public int yMinNegativeAbs;
-	public int xMinNegativeAbs;
+	public int yOffset;
+	public int xOffset;
 }

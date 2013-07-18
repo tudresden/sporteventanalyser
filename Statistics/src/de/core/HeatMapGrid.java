@@ -1,5 +1,7 @@
 package de.core;
 
+import java.awt.Point;
+
 public class HeatMapGrid
 {
 
@@ -12,9 +14,20 @@ public class HeatMapGrid
 	private int fieldYmax;
 	private int fieldXmin;
 	private int fieldXmax;
-	private int yMinNegativeAbs;
-	private int xMinNegativeAbs;
+	private int yOffset;
+	private int xOffset;
 	private int cellOfLastUpdate;
+	private Point positionOfLastUpdate;
+
+	public int getCellOfLastUpdate()
+	{
+		return cellOfLastUpdate;
+	}
+
+	public void setCellOfLastUpdate(int cellOfLastUpdate)
+	{
+		this.cellOfLastUpdate = cellOfLastUpdate;
+	}
 
 	public HeatMapGrid(HeatMapInit heatMapInit)
 	{
@@ -29,22 +42,24 @@ public class HeatMapGrid
 		widthResolution = heatMapInit.widthResolution;
 		heightResolution = heatMapInit.heightResolution;
 
-		yMinNegativeAbs = heatMapInit.yMinNegativeAbs;
-		xMinNegativeAbs = heatMapInit.xMinNegativeAbs;
+		yOffset = heatMapInit.yOffset;
+		xOffset = heatMapInit.xOffset;
 
 		this.grid = new int[widthInCells * heightInCells];
 	}
 
-	public int getGridCellFromPosition(int y, int x)
+	public int getGridCellIndexFromPosition(int y, int x)
 	{
 
 		if (fieldYmin <= y && y <= fieldYmax && fieldXmin <= x && x <= fieldXmax)
 		{
 
-			y += yMinNegativeAbs;
-			x += xMinNegativeAbs;
+			x += xOffset;
+			y += yOffset;
 			int column = (int) (y / widthResolution);
 			int row = (int) (x / heightResolution);
+			// int row = (int) (y / heightResolution);
+			// int column = (int) (x / widthResolution);
 
 			return row * widthInCells + column;
 		}
@@ -53,11 +68,31 @@ public class HeatMapGrid
 			return -1;
 	}
 
+	public Point getGridCellCoordinatesFromPosition(int y, int x)
+	{
+
+		if (fieldYmin <= y && y <= fieldYmax && fieldXmin <= x && x <= fieldXmax)
+		{
+			x += xOffset;
+			y += yOffset;
+			int column = (int) (y / widthResolution);
+			int row = (int) (x / heightResolution);
+
+			return new Point(row, column);
+		}
+
+		else
+			return null;
+	}
+
 	public void incrementCellValue(int y, int x)
 	{
-		int cellNr = this.getGridCellFromPosition(y, x);
+		Point cellCoordinates = this.getGridCellCoordinatesFromPosition(y, x);
+		int cellNr = cellCoordinates.x * widthInCells + cellCoordinates.y;
 		grid[cellNr]++;
 		cellOfLastUpdate = cellNr;
+		positionOfLastUpdate.x = x;
+		positionOfLastUpdate.y = y;
 	}
 
 	public int getGridSize()
@@ -157,5 +192,15 @@ public class HeatMapGrid
 			}
 			System.out.println(line + "\n");
 		}
+	}
+
+	public Point getPositionOfLastUpdate()
+	{
+		return positionOfLastUpdate;
+	}
+
+	public void setPositionOfLastUpdate(Point positionOfLastUpdate)
+	{
+		this.positionOfLastUpdate = positionOfLastUpdate;
 	}
 }

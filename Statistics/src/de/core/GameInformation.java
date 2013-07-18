@@ -73,7 +73,7 @@ public class GameInformation implements UpdateListener
 	 * The timestamp of the last pushed of statistics data.
 	 */
 	private long lastPushedStatistics = 0;
-	private boolean lastShotOnGoalDisplayed;
+	private boolean lastBallHitEvaluated;
 
 	/**
 	 * The timestamp of the last shot on goal.
@@ -98,6 +98,8 @@ public class GameInformation implements UpdateListener
 		this.statisticsFacade = statisticsFacade;
 		this.prophet = new Prophet(this);
 		config = new Config();
+		registerAllPlayerHeatMaps();
+		registerAllTeamHeatMaps();
 
 		logger.setLevel(Level.INFO);
 	}
@@ -596,6 +598,30 @@ public class GameInformation implements UpdateListener
 	}
 
 	/**
+	 * Calculates and returns heat map for a given team.
+	 * 
+	 * @param team
+	 *            <code>Team</code> enumeration
+	 * @return <code>HeatMapGrid</code> object.
+	 */
+	public HeatMapGrid calculateTeamHeatMap(Team team)
+	{
+		HeatMapGrid teamHeatMap = new HeatMapGrid(Config.heatMapInit);
+		for (int id : Config.PLAYERIDS)
+		{
+			Player player = (Player) getEntityFromId(id);
+			if (player.getTeam() == team)
+			{
+				for (int i = 0; i < teamHeatMap.getGridSize(); i++)
+				{
+					teamHeatMap.setCell(i, teamHeatMap.getCell(i) + player.getHeatmap().getCell(i));
+				}
+			}
+		}
+		return teamHeatMap;
+	}
+
+	/**
 	 * Returns the number of teammates in a area.
 	 * 
 	 * @param meters
@@ -849,7 +875,7 @@ public class GameInformation implements UpdateListener
 	 * @param newPosY
 	 *            new Y <code>Ball</code> position
 	 */
-	private boolean shotOnGoal(Ball ball, final int oldPosX, final int oldPosY, final int newPosX, final int newPosY)
+	private boolean shotOnGoal2(Ball ball, final int oldPosX, final int oldPosY, final int newPosX, final int newPosY)
 	{
 		final int vecX = newPosX - oldPosX;
 		final int vecY = newPosY - oldPosY;
@@ -869,6 +895,55 @@ public class GameInformation implements UpdateListener
 		{
 			System.out.println("TORSCHUSS AUF TOR2");
 			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Calculates if the <code>Ball</code> moves towards the goals
+	 * 
+	 * @param ball
+	 *            the <code>Ball</code> object
+	 * @param oldPosX
+	 *            old X <code>Ball</code> position
+	 * @param oldPosY
+	 *            old Y <code>Ball</code> position
+	 * @param newPosX
+	 *            new X <code>Ball</code> position
+	 * @param newPosY
+	 *            new Y <code>Ball</code> position
+	 */
+	private boolean shotOnGoal(Ball ball, final int oldPosX, final int oldPosY, final int newPosX, final int newPosY)
+	{
+		// motion vector entries of the ball
+		final int vecX = newPosX - oldPosX;
+		final int vecY = newPosY - oldPosY;
+
+		// motion vector of the ball needs to be multiplied
+		// by this factor to reach a particular goal
+		double factorToGoal1 = (Config.GOALONEY - oldPosY) / vecY;
+		double factorToGoal2 = (Config.GOALTWOY - oldPosY) / vecY;
+
+		// shot can only go towards a goal if the motion
+		// vector is oriented in the direction of that goal
+		// -> factor is positive
+		if (factorToGoal1 > 0)
+		{
+			double xValueAtGoal1 = oldPosX + (factorToGoal1 * vecX);
+			if (xValueAtGoal1 > Config.GOALONEMINX && xValueAtGoal1 < Config.GOALONEMAXX && ball.getAcceleration() >= 15000000)
+			{
+				System.out.println("SCHUSS AUF TOR1");
+				return true;
+			}
+		}
+		else if (factorToGoal2 > 0)
+		{
+			double xValueAtGoal2 = oldPosX + (factorToGoal2 * vecX);
+			if (xValueAtGoal2 > Config.GOALTWOMINX && xValueAtGoal2 < Config.GOALTWOMAXX && ball.getAcceleration() >= 15000000)
+			{
+				System.out.println("SCHUSS AUF TOR2");
+				return true;
+			}
 		}
 		return false;
 	}
@@ -920,6 +995,21 @@ public class GameInformation implements UpdateListener
 			}
 		}
 		return false;
+	}
+
+	public void registerAllPlayerHeatMaps()
+	{
+		final int width = Config.heatMapInit.widthInCells;
+		final int height = Config.heatMapInit.heightInCells;
+		for (int id : Config.PLAYERIDS)
+		{
+			getStatisticsFacade().registerPlayerHeatMap(id, height, width);
+		}
+	}
+
+	public void registerAllTeamHeatMaps()
+	{
+		getStatisticsFacade().registerTeamHeatMap(Team.GELB.toString(), Team.ROT.toString(), Config.heatMapInit.heightInCells, Config.heatMapInit.widthInCells);
 	}
 
 	public void update(EventBean[] newData, EventBean[] oldData)
@@ -981,9 +1071,10 @@ public class GameInformation implements UpdateListener
 			Player lastPlayer = getCurrentBallPossessionPlayer();
 
 			// new
-			if (!lastShotOnGoalDisplayed && lastHitPlayerID != 0 && (lastHitTimeStamp + 100000000000L) < event.getTimestamp())
+			if (!lastBallHitEvaluated && lastHitPlayerID != 0 && (lastHitTimeStamp + 100000000000L) < event.getTimestamp())
 			{
-				lastShotOnGoalDisplayed = true;
+				lastBallHitEvaluated = true;
+				// shot(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY());
 				if (shotOnGoal(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY()))
 				{
 					setLastShotOnGoalTimeStamp(lastHitTimeStamp);
@@ -992,7 +1083,6 @@ public class GameInformation implements UpdateListener
 						nearestPlayer.setShots(nearestPlayer.getShots() + 1);
 						nearestPlayer.setShotsOnGoal(nearestPlayer.getShotsOnGoal() + 1);
 					}
-					System.out.println("---#############---");
 				}
 			}
 
@@ -1010,7 +1100,7 @@ public class GameInformation implements UpdateListener
 						lastHitPosition.x = ball.getPositionX();
 						lastHitPosition.y = ball.getPositionY();
 						lastHitTimeStamp = event.getTimestamp();
-						lastShotOnGoalDisplayed = false;
+						lastBallHitEvaluated = false;
 					}
 
 					/* update ball contacts */
@@ -1123,6 +1213,10 @@ public class GameInformation implements UpdateListener
 				getStatisticsFacade().setPositionOfPlayer(player.getId(), player.getPositionX(), player.getPositionY(), player.getVelocityX(), player.getVelocityY());
 				getStatisticsFacade().setTotalDistance(player.getId(), player.getTotalDistance());
 				getStatisticsFacade().setPossessionTime(player.getId(), player.getBallPossessionTime());
+				HeatMapGrid playersHeatMap = player.getHeatmap();
+				Point positionOfLastUpdate = playersHeatMap.getPositionOfLastUpdate();
+				getStatisticsFacade().setValueInHeatMap(player.getId(), positionOfLastUpdate.x, positionOfLastUpdate.y, playersHeatMap.getCell(playersHeatMap.getCellOfLastUpdate()));
+				getStatisticsFacade().setValueInHeatMap(player.getTeam().toString(), positionOfLastUpdate.x, positionOfLastUpdate.y, playersHeatMap.getCell(playersHeatMap.getCellOfLastUpdate()));
 			}
 		}
 
