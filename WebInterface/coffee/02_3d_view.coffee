@@ -9,8 +9,8 @@ class Drawable3d
         if reset
           f.rotation.set -PI2, 0, 0
         else
-          #f.lookAt target.position
-          f.rotation.set 0, target.rotation.y, 0
+          f.lookAt target.position
+          #f.rotation.set 0, target.rotation.y, 0
 
   toString: ->
     @.constructor.name
@@ -86,7 +86,7 @@ class Player3d extends Moveable3d
     @shirt = new THREE.Mesh(geometry, material)
     @shirt.position.set 0, PLAYER_SIZE2, 0
 
-    geometry = new THREE.PlaneGeometry PLAYER_SIZE2, PLAYER_SIZE2
+    geometry = new THREE.PlaneGeometry PLAYER_SIZE, PLAYER_SIZE
     mat_cfg =
       map:         new THREE.ImageUtils.loadTexture "img/shadow.png"
       opacity:     0.8
