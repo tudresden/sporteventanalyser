@@ -47,7 +47,7 @@ public class Prophet {
 		 * attack result prediction
 		 */
 
-		listOfPredictors.add(new AttackResultPredictor(new IbkLearner(4)));
+		listOfPredictors.add(new AttackResultPredictor(new IbkLearner(2)));
 
 	}
 
