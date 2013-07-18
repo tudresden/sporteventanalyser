@@ -110,9 +110,8 @@ add_player = (v, i) ->
   plr_3d = new Player3d tshirt, plr
   engine.add plr_3d
   engine.players.push plr_3d
-  playermodels[v.PlayerID] = plr
-  playermodels["" + v.PlayerID] = plr
-  playerhtmls[v.PlayerID] = new PlayerHTML plr
+  playermodels[v.PlayerID] = playermodels["" + v.PlayerID] = plr
+  playerhtmls[v.PlayerID] = playerhtmls["" + v.PlayerID] = new PlayerHTML plr
 
 update_position = (v, i) ->
   switch v.constructor.name
@@ -154,15 +153,22 @@ update_commentator = (v) ->
         probably = "Any"
         $.each data, (k) ->
           d = parseFloat data[k]
-          commentator.find("#prob_"+k).animate {"height": ((d*0.0097 + 0.0003) * 16)+"pt"}, 100
+          commentator.find("#prob_"+k).animate {"height": ((d*0.0097 + 0.0003) * 16)+"pt"}, 200
           if d > max
             max = d
             probably = k
         probably = t "commentPred:" + probably
         if saying.html() != probably
-          saying.html(probably)
+          saying.hide(0, ->
+            saying.html(probably)
+          ).fadeIn "fast"
     else
       console.warn "unknown type of prediction: ", v
+
+update_gamedata = (k, v) ->
+  switch k
+    when "playingTime"
+      $("#content").find("#time").text if v.indexOf(':') < 2 then "0"+v  else v
 
 establish_sea_connection = (onsuccess) ->
   sea.connect "seaclient@sea", "sea", "mobilis@sea", ->
@@ -202,8 +208,8 @@ establish_sea_connection = (onsuccess) ->
 
     sea.pubsub.addCurrentPrognosisDataHandler update_commentator
       
-    #sea.pubsub.addCurrentGameDataHandler (item) ->
-      #console.info item
+    sea.pubsub.addCurrentGameDataHandler (item) ->
+      $.each item.playingTimeInformation, update_gamedata
 
     onsuccess?()
 
