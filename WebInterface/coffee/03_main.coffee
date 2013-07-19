@@ -165,10 +165,17 @@ update_commentator = (v) ->
     else
       console.warn "unknown type of prediction: ", v
 
-update_gamedata = (k, v) ->
-  switch k
-    when "playingTime"
-      $("#content").find("#time").text if v.indexOf(':') < 2 then "0"+v  else v
+update_gamedata = (item) ->
+  $.each item.playingTimeInformation, (k, v) ->
+    switch k
+      when "playingTime"
+        $("#content").find("#time").text if v.indexOf(':') < 2 then "0"+v  else v
+
+update_heatmap = (item) ->
+  if observed_player_a or observed_player_b
+    console.log item.playerHeatMaps
+  else
+    console.log item.teamHeatMaps
 
 establish_sea_connection = (onsuccess) ->
   sea.connect "seaclient@sea", "sea", "mobilis@sea", ->
@@ -203,13 +210,11 @@ establish_sea_connection = (onsuccess) ->
     sea.pubsub.addCurrentTeamDataHandler (item) ->
       item.teamStatistics.forEach update_statistics
 
-    #sea.pubsub.addCurrentHeatMapDataHandler (item) ->
-      #console.info "heatmap", item
+    sea.pubsub.addCurrentHeatMapDataHandler update_heatmap
 
     sea.pubsub.addCurrentPrognosisDataHandler update_commentator
       
-    sea.pubsub.addCurrentGameDataHandler (item) ->
-      $.each item.playingTimeInformation, update_gamedata
+    sea.pubsub.addCurrentGameDataHandler update_gamedata
 
     onsuccess?()
 
@@ -259,5 +264,6 @@ $ ->
       establish_sea_connection ->
         running = true
         requestAnimationFrame run
+        $("#heatmap").hide()
         $("#content").show().fadeIn "slow", ->
           $("#startbutton").fadeOut "fast"
