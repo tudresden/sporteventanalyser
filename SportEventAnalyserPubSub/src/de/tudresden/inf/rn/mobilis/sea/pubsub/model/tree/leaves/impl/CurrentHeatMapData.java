@@ -106,6 +106,8 @@ public class CurrentHeatMapData extends DataNode<CurrentHeatMapData> {
 	 *         no team does have such a teamname
 	 */
 	public TeamHeatMap getTeamHeatMap(String teamname) {
+		if (teamA == null)
+			return null;
 		if (teamA.getTeamname().equals(teamname))
 			return teamA;
 		if (teamB.getTeamname().equals(teamname))

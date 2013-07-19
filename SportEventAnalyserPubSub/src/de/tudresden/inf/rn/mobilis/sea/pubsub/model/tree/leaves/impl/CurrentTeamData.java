@@ -65,6 +65,8 @@ public class CurrentTeamData extends DataNode<CurrentTeamData> {
 	 *         if no team does have such a teamname
 	 */
 	public TeamStatistic getTeamStatistic(String teamname) {
+		if (teamA == null)
+			return null;
 		if (teamA.getTeamname().equals(teamname))
 			return teamA;
 		if (teamB.getTeamname().equals(teamname))
