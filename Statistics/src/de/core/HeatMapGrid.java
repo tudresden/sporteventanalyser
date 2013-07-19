@@ -17,7 +17,7 @@ public class HeatMapGrid
 	private int yOffset;
 	private int xOffset;
 	private int cellOfLastUpdate;
-	private Point positionOfLastUpdate;
+	private Point positionOfLastUpdate = new Point();
 
 	public int getCellOfLastUpdate()
 	{

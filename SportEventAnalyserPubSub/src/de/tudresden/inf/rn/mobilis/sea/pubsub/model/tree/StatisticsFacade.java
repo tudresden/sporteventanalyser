@@ -403,7 +403,7 @@ public class StatisticsFacade implements ICurrentPositionData,
 					.getTeamHeatMap(teamname);
 			if (teamHeatMap != null) {
 				int[][] map = teamHeatMap.getMap();
-				if (map.length > 0 && map.length < x && map[0].length < y) {
+				if (map.length > 0 && map.length > x && map[0].length > y) {
 					map[x][y] = value;
 				}
 			}
