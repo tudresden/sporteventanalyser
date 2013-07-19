@@ -1074,18 +1074,22 @@ public class GameInformation implements UpdateListener
 			Player nearestPlayer = getNearestPlayer(ball);
 			Player lastPlayer = getCurrentBallPossessionPlayer();
 
-			// new
 			if (!lastBallHitEvaluated && lastHitPlayerID != 0 && (lastHitTimeStamp + 100000000000L) < event.getTimestamp())
 			{
 				lastBallHitEvaluated = true;
-				// shot(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY());
-				if (shotOnGoal(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY()))
+				if (shot(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY()))
 				{
-					setLastShotOnGoalTimeStamp(lastHitTimeStamp);
 					if (nearestPlayer != null)
 					{
 						nearestPlayer.setShots(nearestPlayer.getShots() + 1);
-						nearestPlayer.setShotsOnGoal(nearestPlayer.getShotsOnGoal() + 1);
+					}
+					if (shotOnGoal(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY()))
+					{
+						setLastShotOnGoalTimeStamp(lastHitTimeStamp);
+						if (nearestPlayer != null)
+						{
+							nearestPlayer.setShotsOnGoal(nearestPlayer.getShotsOnGoal() + 1);
+						}
 					}
 				}
 			}
