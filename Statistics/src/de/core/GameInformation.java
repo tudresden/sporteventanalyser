@@ -93,6 +93,8 @@ public class GameInformation implements UpdateListener
 	 */
 	private long timeBall = 0;
 
+	private List<String> shotsOnGoal = new ArrayList<String>();
+
 	public GameInformation(StatisticsFacade statisticsFacade)
 	{
 		this.statisticsFacade = statisticsFacade;
@@ -913,7 +915,7 @@ public class GameInformation implements UpdateListener
 	 * @param newPosY
 	 *            new Y <code>Ball</code> position
 	 */
-	private boolean shotOnGoal(Ball ball, final int oldPosX, final int oldPosY, final int newPosX, final int newPosY)
+	private boolean shotOnGoal(Ball ball, final int oldPosX, final int oldPosY, final int newPosX, final int newPosY, final long hitTimeStamp, final long evaluationTimeStamp)
 	{
 		// motion vector entries of the ball
 		final int vecX = newPosX - oldPosX;
@@ -924,28 +926,59 @@ public class GameInformation implements UpdateListener
 		double factorToGoal1 = (Config.GOALONEY - oldPosY) / vecY;
 		double factorToGoal2 = (Config.GOALTWOY - oldPosY) / vecY;
 
+		// How many millimeter left and right of actual
+		// goal borders should be included?
+		final int marginAroundGoal = 1000;
+
 		// shot can only go towards a goal if the motion
 		// vector is oriented in the direction of that goal
 		// -> factor is positive
 		if (factorToGoal1 > 0)
 		{
 			double xValueAtGoal1 = oldPosX + (factorToGoal1 * vecX);
-			if (xValueAtGoal1 > Config.GOALONEMINX && xValueAtGoal1 < Config.GOALONEMAXX && ball.getAcceleration() >= 15000000)
+			// Time (in milliseconds) it would take the ball
+			// to reach the goal line 1 with the current speed
+			double durationToGoal1 = ((evaluationTimeStamp - hitTimeStamp) * factorToGoal1) / 1000000000;
+			if (xValueAtGoal1 > Config.GOALONEMINX - marginAroundGoal && xValueAtGoal1 < Config.GOALONEMAXX + marginAroundGoal && ball.getAcceleration() >= 15000000 && durationToGoal1 < 1500)
 			{
-				System.out.println("SCHUSS AUF TOR1");
+				// shotsOnGoal.add(currentGameTimeToReadable() + " - Tor1");
+				// printShotsOnGoal();
+				// System.out.println("SCHUSS AUF TOR1");
 				return true;
 			}
 		}
 		else if (factorToGoal2 > 0)
 		{
 			double xValueAtGoal2 = oldPosX + (factorToGoal2 * vecX);
-			if (xValueAtGoal2 > Config.GOALTWOMINX && xValueAtGoal2 < Config.GOALTWOMAXX && ball.getAcceleration() >= 15000000)
+			// Time (in milliseconds) it would take the ball
+			// to reach the goal line 2 with the current speed
+			double durationToGoal2 = ((double) (evaluationTimeStamp - hitTimeStamp) * factorToGoal2) / 1000000000;
+			if (xValueAtGoal2 > Config.GOALTWOMINX - marginAroundGoal && xValueAtGoal2 < Config.GOALTWOMAXX + marginAroundGoal && ball.getAcceleration() >= 15000000 && durationToGoal2 < 1500)
 			{
-				System.out.println("SCHUSS AUF TOR2");
+				// shotsOnGoal.add(currentGameTimeToReadable() + " - Tor2");
+				// printShotsOnGoal();
+				// System.out.println("SCHUSS AUF TOR2");
 				return true;
 			}
 		}
 		return false;
+	}
+
+	public void printShotsOnGoal()
+	{
+		System.out.println("\n---000---shotsOnGoal---000---");
+		for (String goalEvent : shotsOnGoal)
+		{
+			System.out.println(goalEvent);
+		}
+	}
+
+	public String currentGameTimeToReadable()
+	{
+		int sec = (int) currentGameTime / 1000;
+		int min = sec / 60;
+		sec = sec % 60;
+		return min + " min " + sec + " sec";
 	}
 
 	/**
@@ -962,7 +995,7 @@ public class GameInformation implements UpdateListener
 	 * @param newPosY
 	 *            new Y <code>Ball</code> position
 	 */
-	private boolean shot(Ball ball, final int oldPosX, final int oldPosY, final int newPosX, final int newPosY)
+	private boolean shot(Ball ball, final int oldPosX, final int oldPosY, final int newPosX, final int newPosY, final long hitTimeStamp, final long evaluationTimeStamp)
 	{
 		// motion vector entries of the ball
 		final int vecX = newPosX - oldPosX;
@@ -973,28 +1006,122 @@ public class GameInformation implements UpdateListener
 		double factorToGoalLine1 = (Config.GOALONEY - oldPosY) / vecY;
 		double factorToGoalLine2 = (Config.GOALTWOY - oldPosY) / vecY;
 
-		// shot can only go towards a goal if the motion
-		// vector is oriented in the direction of that goal
+		// How many millimeter left and right of actual
+		// goal borders should be included?
+		final int marginAroundGoal = 5000;
+
+		// shot can only go towards a goal line if the motion
+		// vector is oriented in the direction of that goal line
 		// -> factor is positive
 		if (factorToGoalLine1 > 0)
 		{
 			double xValueAtGoalLine1 = oldPosX + (factorToGoalLine1 * vecX);
-			if (xValueAtGoalLine1 > Config.GAMEFIELDMINX && xValueAtGoalLine1 < Config.GAMEFIELDMAXX && ball.getAcceleration() >= 15000000)
+			// Time (in milliseconds) it would take the ball
+			// to reach the goal line 1 with the current speed
+			double durationToGoalLine1 = ((evaluationTimeStamp - hitTimeStamp) * factorToGoalLine1) / 1000000000;
+			if (xValueAtGoalLine1 > Config.GOALONEMINX - marginAroundGoal && xValueAtGoalLine1 < Config.GOALONEMAXX + marginAroundGoal && ball.getAcceleration() >= 15000000 && durationToGoalLine1 < 1500)
 			{
-				System.out.println("SCHUSS RICHTUNG TOR1");
+				// shotsOnGoal.add(currentGameTimeToReadable() + " - Tor1");
+				// printShotsOnGoal();
+				// System.out.println("SCHUSS AUF TOR1");
 				return true;
 			}
 		}
 		else if (factorToGoalLine2 > 0)
 		{
 			double xValueAtGoalLine2 = oldPosX + (factorToGoalLine2 * vecX);
-			if (xValueAtGoalLine2 > Config.GAMEFIELDMINX && xValueAtGoalLine2 < Config.GAMEFIELDMAXX && ball.getAcceleration() >= 15000000)
+			// Time (in milliseconds) it would take the ball
+			// to reach the goal line 2 with the current speed
+			double durationToGoalLine2 = ((double) (evaluationTimeStamp - hitTimeStamp) * factorToGoalLine2) / 1000000000;
+			if (xValueAtGoalLine2 > Config.GOALTWOMINX - marginAroundGoal && xValueAtGoalLine2 < Config.GOALTWOMAXX + marginAroundGoal && ball.getAcceleration() >= 15000000 && durationToGoalLine2 < 1500)
 			{
-				System.out.println("SCHUSS RICHTUNG TOR2");
+				// shotsOnGoal.add(currentGameTimeToReadable() + " - Tor2");
+				// printShotsOnGoal();
+				// System.out.println("SCHUSS AUF TOR2");
 				return true;
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Decides if the <code>Ball</code> moves towards the goal lines or if it is even moving towards a goal
+	 * 
+	 * @param ball
+	 *            the <code>Ball</code> object
+	 * @param oldPosX
+	 *            old X <code>Ball</code> position
+	 * @param oldPosY
+	 *            old Y <code>Ball</code> position
+	 * @param newPosX
+	 *            new X <code>Ball</code> position
+	 * @param newPosY
+	 *            new Y <code>Ball</code> position
+	 */
+	private HitResult classifyHit(Ball ball, final int oldPosX, final int oldPosY, final int newPosX, final int newPosY, final long hitTimeStamp, final long evaluationTimeStamp)
+	{
+		// motion vector entries of the ball
+		final int vecX = newPosX - oldPosX;
+		final int vecY = newPosY - oldPosY;
+
+		// motion vector of the ball needs to be multiplied
+		// by this factor to reach a particular goal line
+		double factorToGoalLine1 = (Config.GOALONEY - oldPosY) / vecY;
+		double factorToGoalLine2 = (Config.GOALTWOY - oldPosY) / vecY;
+
+		// How many millimeter left and right of actual
+		// goal borders should be included?
+		final int marginShotOnGoal = 1000;
+		final int marginShot = 5000;
+
+		// shot can only go towards a goal line if the motion
+		// vector is oriented in the direction of that goal line
+		// -> factor must be positive
+		if (factorToGoalLine1 > 0)
+		{
+			double xValueAtGoalLine1 = oldPosX + (factorToGoalLine1 * vecX);
+			// Time (in milliseconds) it would take the ball
+			// to reach the goal line 1 with the current speed
+			double durationToGoalLine1 = ((evaluationTimeStamp - hitTimeStamp) * factorToGoalLine1) / 1000000000;
+			if (ball.getAcceleration() >= 15000000 && durationToGoalLine1 < 1500)
+			{
+				if (xValueAtGoalLine1 > Config.GOALONEMINX - marginShot && xValueAtGoalLine1 < Config.GOALONEMAXX + marginShot)
+				{
+					if (xValueAtGoalLine1 > Config.GOALONEMINX - marginShotOnGoal && xValueAtGoalLine1 < Config.GOALONEMAXX + marginShotOnGoal)
+					{
+						return HitResult.SHOTONGOAL;
+					}
+					else
+					{
+						return HitResult.SHOT;
+					}
+				}
+			}
+			return HitResult.NONE;
+		}
+		else if (factorToGoalLine2 > 0)
+		{
+			double xValueAtGoalLine2 = oldPosX + (factorToGoalLine2 * vecX);
+			// Time (in milliseconds) it would take the ball
+			// to reach the goal line 2 with the current speed
+			double durationToGoalLine2 = ((evaluationTimeStamp - hitTimeStamp) * factorToGoalLine2) / 1000000000;
+			if (ball.getAcceleration() >= 15000000 && durationToGoalLine2 < 1500)
+			{
+				if (xValueAtGoalLine2 > Config.GOALTWOMINX - marginShot && xValueAtGoalLine2 < Config.GOALTWOMAXX + marginShot)
+				{
+					if (xValueAtGoalLine2 > Config.GOALTWOMINX - marginShotOnGoal && xValueAtGoalLine2 < Config.GOALTWOMAXX + marginShotOnGoal)
+					{
+						return HitResult.SHOTONGOAL;
+					}
+					else
+					{
+						return HitResult.SHOT;
+					}
+				}
+			}
+			return HitResult.NONE;
+		}
+		return HitResult.NONE;
 	}
 
 	public void registerAllPlayerHeatMaps()
@@ -1077,13 +1204,14 @@ public class GameInformation implements UpdateListener
 			if (!lastBallHitEvaluated && lastHitPlayerID != 0 && (lastHitTimeStamp + 100000000000L) < event.getTimestamp())
 			{
 				lastBallHitEvaluated = true;
-				if (shot(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY()))
+				HitResult hitResult = classifyHit(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY(), lastHitTimeStamp, event.getTimestamp());
+				if (hitResult.ordinal() <= 1)
 				{
 					if (nearestPlayer != null)
 					{
 						nearestPlayer.setShots(nearestPlayer.getShots() + 1);
 					}
-					if (shotOnGoal(ball, lastHitPosition.x, lastHitPosition.y, event.getPositionX(), event.getPositionY()))
+					if (hitResult == HitResult.SHOTONGOAL)
 					{
 						setLastShotOnGoalTimeStamp(lastHitTimeStamp);
 						if (nearestPlayer != null)
@@ -1102,14 +1230,14 @@ public class GameInformation implements UpdateListener
 				{
 
 					// new
-					if (nearestPlayer.getId() != lastHitPlayerID)
-					{
-						lastHitPlayerID = nearestPlayer.getId();
-						lastHitPosition.x = ball.getPositionX();
-						lastHitPosition.y = ball.getPositionY();
-						lastHitTimeStamp = event.getTimestamp();
-						lastBallHitEvaluated = false;
-					}
+					// if (nearestPlayer.getId() != lastHitPlayerID)
+					// {
+					lastHitPlayerID = nearestPlayer.getId();
+					lastHitPosition.x = ball.getPositionX();
+					lastHitPosition.y = ball.getPositionY();
+					lastHitTimeStamp = event.getTimestamp();
+					lastBallHitEvaluated = false;
+					// }
 
 					/* update ball contacts */
 					if (lastPlayer != nearestPlayer)
