@@ -41,13 +41,17 @@ public class Prophet {
 		 * pass prediction
 		 */
 
-		listOfPredictors.add(new PassSuccessPredictor(new IbkLearner()));
+		listOfPredictors.add(new PassSuccessPredictor(new IbkLearner(3)));
+
+		// best accuracy:
+		// listOfPredictors.add(new PassSuccessPredictor(new IbkLearner()));
 
 		/*
 		 * attack result prediction
 		 */
 
-		listOfPredictors.add(new AttackResultPredictor(new IbkLearner(2)));
+		// best accuracy:
+		listOfPredictors.add(new AttackResultPredictor(new IbkLearner(8)));
 
 	}
 

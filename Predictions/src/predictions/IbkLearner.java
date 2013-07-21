@@ -158,7 +158,7 @@ public class IbkLearner extends Learner {
 						&& firstClassProbability >= thirdClassProbability
 						&& result.equals(getClassName(0))
 						|| secondClassProbability >= firstClassProbability
-						&& secondClassProbability >= thirdClassProbability
+						&& secondClassProbability > thirdClassProbability
 						&& result.equals(getClassName(1))
 						|| thirdClassProbability > secondClassProbability
 						&& thirdClassProbability > firstClassProbability

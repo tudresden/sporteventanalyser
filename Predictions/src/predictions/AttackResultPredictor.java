@@ -23,7 +23,7 @@ public class AttackResultPredictor extends Predictor {
 	/**
 	 * Specifies the number of instances to write to the ARFF file.
 	 */
-	private static final int NUMBER_OF_INSTANCES_FOR_ARFF = 350; // 352instances
+	private static final int NUMBER_OF_INSTANCES_FOR_ARFF = 330; // 332instances
 
 	/**
 	 * Stores the id of the last player with ball.
