@@ -1,6 +1,5 @@
 class Engine
-  constructor: (@ball) ->
-    @resolution = [640, 480]
+  constructor: (@ball, @resolution=[640, 480]) ->
     @bgcolor = 0.fffff0;
     @obj_stack = []
     @scene = new THREE.Scene
