@@ -29,7 +29,12 @@ class PlayerHTML extends HTMLView
       if k not in ["possessionTime",]
         res += "<tr><td>" + t(k) + "</td><td>" + v + "</td></tr>\n"
       else
-        res += "<tr><td>" + t(k) + "</td><td>" + Math.floor(v / 1000000000) + "</td></tr>\n"
+        seconds = v / 1000 / 1000 / 1000 / 1000
+        minutes = Math.floor seconds / 60
+        seconds = Math.floor seconds % 60
+        if seconds < 10
+          seconds = "0" + seconds
+        res += "<tr><td>" + t(k) + "</td><td>" + minutes + ":" + seconds + "</td></tr>\n"
     return res + "</tbody>"
 
   toString: ->
