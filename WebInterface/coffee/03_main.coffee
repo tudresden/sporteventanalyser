@@ -16,11 +16,11 @@ team_a_stats = {}
 team_b_stats = {}
 observed_player_a = null
 observed_player_b = null
+team_a_observed = false
 
 console.info "* current local time is: " + Date.now()
 
 run = ->
-  # animation loop
   requestAnimationFrame run
   engine.render()
 
@@ -113,39 +113,41 @@ add_player = (v, i) ->
   playermodels[v.PlayerID] = playermodels["" + v.PlayerID] = plr
   playerhtmls[v.PlayerID] = playerhtmls["" + v.PlayerID] = new PlayerHTML plr
 
-update_position = (v, i) ->
-  switch v.constructor.name
-    when "BallPosition"
-      data = {}
-      data.x = parseInt v.positionX if v.positionX?
-      data.y = parseInt v.positionY if v.positionY?
-      data.z = parseInt v.positionZ if v.positionZ?
-      ball.update_position Date.now(), engine.reposition data
-    when "PlayerPosition"
-      data = {}
-      data.x = parseInt v.positionX if v.positionX?
-      data.y = parseInt v.positionY if v.positionY?
-      playermodels[v.id]?.update_position Date.now(), engine.reposition data
-    else
-      console.warn "Unknown position update.", v
+update_position = (item) ->
+  item.positionNodes.forEach (v, i) ->
+    switch v.constructor.name
+      when "BallPosition"
+        data = {}
+        data.x = parseInt v.positionX if v.positionX?
+        data.y = parseInt v.positionY if v.positionY?
+        data.z = parseInt v.positionZ if v.positionZ?
+        ball.update_position Date.now(), engine.reposition data
+      when "PlayerPosition"
+        data = {}
+        data.x = parseInt v.positionX if v.positionX?
+        data.y = parseInt v.positionY if v.positionY?
+        playermodels[v.id]?.update_position Date.now(), engine.reposition data
+      else
+        console.warn "Unknown position update.", v
 
-update_statistics = (v, i) ->
-  switch v.constructor.name
-    when "PlayerStatistic"
-      playermodels[v.id]?.update_stats Date.now(), v
-      if observed_player_a?
-        plrhtml = playerhtmls[observed_player_a.id]
-        $("#player_a_stats").find("tbody").replaceWith plrhtml.tbody()
-      else if observed_player_b?
-        plrhtml = playerhtmls[observed_player_b.id]
-        $("#player_b_stats").find("tbody").replaceWith plrhtml.tbody()
-    else
-      console.warn "Unknown Statistics", v
+update_statistics = (item) ->
+  item.playerStatistics?.forEach (v, i) ->
+    switch v.constructor.name
+      when "PlayerStatistic"
+        playermodels[v.id]?.update_stats Date.now(), v
+        if observed_player_a?
+          plrhtml = playerhtmls[observed_player_a.id]
+          $("#player_a_stats").find("tbody").replaceWith plrhtml.tbody()
+        else if observed_player_b?
+          plrhtml = playerhtmls[observed_player_b.id]
+          $("#player_b_stats").find("tbody").replaceWith plrhtml.tbody()
+      else
+        console.warn "Unknown Statistics", v
 
 update_commentator = (v) ->
   switch v.constructor.name
     when "CurrentPrognosisData"
-      commentator = $("#commentator")
+      commentator = $("#attackprophet")
       saying = commentator.find(".says")
       data = v.attackResultPrediction
       if data?
@@ -153,7 +155,9 @@ update_commentator = (v) ->
         probably = "Any"
         $.each data, (k) ->
           d = parseFloat data[k]
-          commentator.find("#prob_"+k).animate {"height": ((d*0.0097 + 0.0003) * 16)+"pt"}, 200
+          height = (Math.floor(d*0.01*BARS_MAX_HEIGHT)+BARS_MIN_HEIGHT)
+          top = BARS_MAX_HEIGHT + BARS_MIN_HEIGHT - height
+          commentator.find("#prob_"+k).animate {"height": height+"pt", "margin-top": top+"pt"}, 200
           if d > max
             max = d
             probably = k
@@ -161,7 +165,27 @@ update_commentator = (v) ->
         if saying.html() != probably
           saying.hide(0, ->
             saying.html(probably)
-          ).fadeIn "fast"
+          ).fadeIn 200
+      commentator = $("#passprophet")
+      saying = commentator.find(".says")
+      data = v.passResultPrediction
+      if data?
+        max = 0.0
+        probably = "Any"
+        $.each data, (k) ->
+          d = parseFloat data[k]
+          height = (Math.floor(d*0.01*BARS_MAX_HEIGHT)+BARS_MIN_HEIGHT)
+          top = 0 #BARS_MAX_HEIGHT + BARS_MIN_HEIGHT - height
+          commentator.find("#prob_"+k).animate {"height": height+"pt", "margin-top": top+"pt"}, 200
+          if d > max
+            max = d
+            probably = k
+        probably = t "commentPred:" + probably
+        if saying.html() != probably
+          saying.hide(0, ->
+            saying.html(probably)
+          ).fadeIn 200
+      console.log v
     else
       console.warn "unknown type of prediction: ", v
 
@@ -175,7 +199,18 @@ update_heatmap = (item) ->
   if observed_player_a or observed_player_b
     console.log item.playerHeatMaps
   else
-    console.log item.teamHeatMaps
+    map = $("#heatmap")
+    $.each item.teamHeatMaps, (k, heatmap) ->
+      if heatmap.teamname == "GELB" and team_a_observed  # TODO needs hands-on if team names alter! (I suggest work on Statistics instead)
+        $.each eval(heatmap.map), (y, array) ->
+          $.each array, (x, val) ->
+            map.find("#"+x+"_"+y).opacity val
+      else
+        $.each eval(heatmap.map), (y, array) ->
+          $.each array, (x, val) ->
+            map.find("#"+x+"_"+y).css 
+              "fill": "rgba(255,0,0,"+val+")"
+              "stroke": "rgba(255,255,255,0.1)"
 
 establish_sea_connection = (onsuccess) ->
   sea.connect "seaclient@sea", "sea", "mobilis@sea", ->
@@ -201,14 +236,11 @@ establish_sea_connection = (onsuccess) ->
 
     sea.pubsub.subscribeStatistic()
 
-    sea.pubsub.addCurrentPositionDataHandler (item) ->
-      item.positionNodes.forEach update_position
+    sea.pubsub.addCurrentPositionDataHandler update_position
 
-    sea.pubsub.addCurrentPlayerDataHandler (item) ->
-      item.playerStatistics.forEach update_statistics
+    sea.pubsub.addCurrentPlayerDataHandler update_statistics
 
-    sea.pubsub.addCurrentTeamDataHandler (item) ->
-      item.teamStatistics.forEach update_statistics
+    sea.pubsub.addCurrentTeamDataHandler update_statistics
 
     sea.pubsub.addCurrentHeatMapDataHandler update_heatmap
 
@@ -229,7 +261,11 @@ $ ->
   for b in $("#perspectives_menu").find("input")
     do (b) ->
       switch b.id
-        when "HEAT"
+        when "HEAT_A"
+          b.onclick = ->
+            $("#field").hide 0, ->
+              $("#heatmap").show(0)
+        when "HEAT_B"
           b.onclick = ->
             $("#field").hide 0, ->
               $("#heatmap").show(0)
@@ -263,7 +299,7 @@ $ ->
     if not running
       establish_sea_connection ->
         running = true
-        requestAnimationFrame run
         $("#heatmap").hide()
         $("#content").show().fadeIn "slow", ->
-          $("#startbutton").fadeOut "fast"
+          $("#startbutton").fadeOut "fast", ->
+            run()
