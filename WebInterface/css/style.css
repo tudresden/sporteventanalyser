@@ -234,11 +234,12 @@ article {
   width: 100%;
 }
 article #content {
+  margin: 0 auto;
   display: table-row;
 }
 article #content #left,
 article #content #right {
-  width: 33%;
+  width: 300pt;
   display: table-cell;
 }
 article #content #left #team_a,
@@ -271,8 +272,8 @@ article #content #left #player_a_stats #player_b_plot,
 article #content #right #player_a_stats #player_b_plot,
 article #content #left #player_b_stats #player_b_plot,
 article #content #right #player_b_stats #player_b_plot {
-  height: 50pt;
   width: 200pt;
+  height: 50pt;
 }
 article #content #team_a input,
 article #content #team_b input {
@@ -283,7 +284,7 @@ article #content #goals {
 }
 article #content #field {
   width: 100%;
-  display: table-cell;
+  text-align: center;
 }
 article #content #heatmap {
   width: 640px;
@@ -728,7 +729,10 @@ video {
   margin: 1.1pt;
   background: rgba(13, 54, 0, 0.5);
 }
-#content #center #commentator {
+#content #center #heatmap_area {
+  background: url("img/Fussballfeld.svg") center center no-repeat;
+}
+#content #center .commentator {
   -webkit-border-radius: 5pt;
   -moz-border-radius: 5pt;
   -ms-border-radius: 5pt;
@@ -740,26 +744,27 @@ video {
   text-align: center;
   height: 16pt;
 }
-#content #center #commentator .says {
+#content #center .commentator .says {
   width: 89%;
   float: left;
 }
-#content #center #commentator .prob_bars {
+#content #center .commentator .prob_bars {
   width: 10%;
   float: left;
 }
-#content #center #commentator .prob_bars div {
+#content #center .commentator .prob_bars div {
   height: 16pt;
   width: 33%;
   float: left;
   vertical-align: bottom;
+  bottom: 0;
 }
-#content #center #commentator .prob_bars #prob_shotOnGoal {
+#content #center .commentator .prob_bars div:nth-child(0) {
   background-color: #268bd2;
 }
-#content #center #commentator .prob_bars #prob_outOfPlay {
+#content #center .commentator .prob_bars div:nth-child(1) {
   background-color: #dc322f;
 }
-#content #center #commentator .prob_bars #prob_turnOver {
+#content #center .commentator .prob_bars div:nth-child(2) {
   background-color: #859900;
 }
