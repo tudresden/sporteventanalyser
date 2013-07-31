@@ -122,13 +122,13 @@
 					this.map = map;
 				}
 			},
-			PassSuccessPredicition : function PassSuccessPredicition(passSuccessful) {
+			PassSuccessPrediction : function PassSuccessPrediction(passSuccessful) {
 				if (arguments[0] instanceof jQuery) {
-					var _PassSuccessPredicition = this;
+					var _PassSuccessPrediction = this;
 
 					arguments[0].children().each(function() {
 						switch($(this).prop("tagName")) {
-							case "passSuccessful": _PassSuccessPredicition.passSuccessful = $(this).text(); break;
+							case "passSuccessful": _PassSuccessPrediction.passSuccessful = $(this).text(); break;
 						}
 					});
 				} else {
@@ -233,7 +233,7 @@
 
 					arguments[0].children().each(function() {
 						switch($(this).prop("tagName")) {
-							case "PassSuccessPredicition": _CurrentPrognosisData.passSuccessPrediction = new sea.pubsub.ELEMENTS.PassSuccessPredicition($(this)); break;
+							case "PassSuccessPrediction": _CurrentPrognosisData.passSuccessPrediction = new sea.pubsub.ELEMENTS.PassSuccessPrediction($(this)); break;
 							case "AttackResultPrediction": _CurrentPrognosisData.attackResultPrediction = new sea.pubsub.ELEMENTS.AttackResultPrediction($(this)); break;
 						}
 					});
@@ -310,6 +310,7 @@
 			},
 			CurrentPrognosisDataHandler : function(_callback) {
 				return function($item) {
+					console.log(new sea.pubsub.ELEMENTS.CurrentPrognosisData($item.children()));
 					_callback.apply(this, [new sea.pubsub.ELEMENTS.CurrentPrognosisData($item.children())]);
 				}
 			},
