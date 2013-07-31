@@ -94,21 +94,26 @@ video {
         float: left;
         div {
           height: 16pt;
-          width: 33%;
           float: left;
           vertical-align: bottom;
           bottom: 0;
         }
-        div:nth-child(0) {
+        div:nth-child(1) {
           background-color: @blue;
         }
-        div:nth-child(1) {
+        div:nth-child(2) {
           background-color: @red;
         }
-        div:nth-child(2) {
+        div:nth-child(3) {
           background-color: @green;
         }
       }
+    }
+    #attackprophet .prob_bars div {
+      width: 33%;
+    }
+    #passprophet .prob_bars div {
+      width: 50%;
     }
   }
 }

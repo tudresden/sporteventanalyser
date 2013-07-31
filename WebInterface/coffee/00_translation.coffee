@@ -9,10 +9,12 @@ translation_dict =
   "tacklesWon":     "Tacklings won"
   "possessionTime": "Possession time"
   "totalDistance":  "Total distance"
-  "commentPred:Any":        "Well.."
-  "commentPred:shotOnGoal": "They might be going to shoot at the goal."
-  "commentPred:outOfPlay":  "Out..! Probably."
-  "commentPred:turnOver":   "Maybe they'll lose the ball."
+  "commentPred:Any":         "Well.."
+  "commentPred:shotOnGoal":  "They might be going to shoot at the goal."
+  "commentPred:outOfPlay":   "Out..! Probably."
+  "commentPred:turnOver":    "Maybe they'll lose the ball."
+  "commentPred:passSuccess": "Certainly this is a good pass."
+  "commentPred:passFail":    "Risky to pass at this moment."
 
 t = (word) ->
   res = translation_dict["" + word]

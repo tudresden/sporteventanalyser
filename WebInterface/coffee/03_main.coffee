@@ -155,37 +155,52 @@ update_commentator = (v) ->
         probably = "Any"
         $.each data, (k) ->
           d = parseFloat data[k]
+          if d > max
+            max = d
+            probably = k
+
           height = (Math.floor(d*0.01*BARS_MAX_HEIGHT)+BARS_MIN_HEIGHT)
           top = BARS_MAX_HEIGHT + BARS_MIN_HEIGHT - height
-          commentator.find("#prob_"+k).animate {"height": height+"pt", "margin-top": top+"pt"}, 200
-          if d > max
-            max = d
-            probably = k
+
+          title = k + ": " + d + "%"
+          bar = commentator.find("#prob_"+k)
+          if bar.attr(title) != title
+            bar.attr "title", title
+            bar.animate {"height": height+"pt", "margin-top": top+"pt"}, BARS_ANIM_FACTOR
+        
         probably = t "commentPred:" + probably
         if saying.html() != probably
           saying.hide(0, ->
             saying.html(probably)
-          ).fadeIn 200
+          ).fadeIn BARS_ANIM_FACTOR
+
       commentator = $("#passprophet")
       saying = commentator.find(".says")
-      data = v.passResultPrediction
-      if data?
-        max = 0.0
-        probably = "Any"
-        $.each data, (k) ->
-          d = parseFloat data[k]
-          height = (Math.floor(d*0.01*BARS_MAX_HEIGHT)+BARS_MIN_HEIGHT)
+      data = v.passSuccessPrediction
+      if data?  # Probablility for success of pass
+        d = parseFloat data.passSuccessful
+
+        height = (Math.floor(d*0.01*BARS_MAX_HEIGHT)+BARS_MIN_HEIGHT)
+        top = 0 #BARS_MAX_HEIGHT + BARS_MIN_HEIGHT - height
+        bar = commentator.find("#prob_success")
+        title = "Success: " + d + "%"
+        if bar.attr("title") != title
+          bar.animate {"height": height+"pt", "margin-top": top+"pt"}, BARS_ANIM_FACTOR
+          bar.attr "title", title
+
+          height = (Math.floor((100.0-d)*0.01*BARS_MAX_HEIGHT)+BARS_MIN_HEIGHT)
           top = 0 #BARS_MAX_HEIGHT + BARS_MIN_HEIGHT - height
-          commentator.find("#prob_"+k).animate {"height": height+"pt", "margin-top": top+"pt"}, 200
-          if d > max
-            max = d
-            probably = k
-        probably = t "commentPred:" + probably
+          bar = commentator.find("#prob_fail")
+          bar.animate {"height": height+"pt", "margin-top": top+"pt"}, BARS_ANIM_FACTOR
+          bar.attr "title", "Fail: " + (100.0 - d) + "%"
+
+        probably = t "commentPred:passFail"
+        if d > 0.5
+          probably = t "commentPred:passSuccess"
         if saying.html() != probably
           saying.hide(0, ->
             saying.html(probably)
-          ).fadeIn 200
-      console.log v
+          ).fadeIn BARS_ANIM_FACTOR
     else
       console.warn "unknown type of prediction: ", v
 
@@ -197,7 +212,7 @@ update_gamedata = (item) ->
 
 update_heatmap = (item) ->
   if observed_player_a or observed_player_b
-    console.log item.playerHeatMaps
+    #console.log item.playerHeatMaps
   else
     map = $("#heatmap")
     $.each item.teamHeatMaps, (k, heatmap) ->
