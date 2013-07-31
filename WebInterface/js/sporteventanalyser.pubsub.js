@@ -310,7 +310,6 @@
 			},
 			CurrentPrognosisDataHandler : function(_callback) {
 				return function($item) {
-					console.log(new sea.pubsub.ELEMENTS.CurrentPrognosisData($item.children()));
 					_callback.apply(this, [new sea.pubsub.ELEMENTS.CurrentPrognosisData($item.children())]);
 				}
 			},
