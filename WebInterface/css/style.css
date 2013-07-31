@@ -754,17 +754,22 @@ video {
 }
 #content #center .commentator .prob_bars div {
   height: 16pt;
-  width: 33%;
   float: left;
   vertical-align: bottom;
   bottom: 0;
 }
-#content #center .commentator .prob_bars div:nth-child(0) {
+#content #center .commentator .prob_bars div:nth-child(1) {
   background-color: #268bd2;
 }
-#content #center .commentator .prob_bars div:nth-child(1) {
+#content #center .commentator .prob_bars div:nth-child(2) {
   background-color: #dc322f;
 }
-#content #center .commentator .prob_bars div:nth-child(2) {
+#content #center .commentator .prob_bars div:nth-child(3) {
   background-color: #859900;
+}
+#content #center #attackprophet .prob_bars div {
+  width: 33%;
+}
+#content #center #passprophet .prob_bars div {
+  width: 50%;
 }
