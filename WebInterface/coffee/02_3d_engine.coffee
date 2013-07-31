@@ -75,9 +75,9 @@ class Engine
         @camera.position.set FIELD_WIDTH/2, 6, 0
         @camera.lookAt @mean_ball_pos
       else
-        @camera.position.x =       5 * Math.cos (time / 1300)
-        @camera.position.y = 33 +  5 * Math.sin (time / 700)
-        @camera.position.z = FIELD_WIDTH/2 +  5 * Math.sin (time / 1900)
+        @camera.position.x =                 5 * Math.cos (time / 1300)
+        @camera.position.y = FIELD_WIDTH/3 + 5 * Math.sin (time / 700)
+        @camera.position.z = FIELD_WIDTH/2 + 5 * Math.sin (time / 1900)
         @camera.lookAt @mean_ball_pos
     obj.follow(@camera, @camera_mode == "BIRD") for obj in @obj_stack
     obj.animate(time) for obj in @obj_stack
