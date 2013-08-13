@@ -5,6 +5,8 @@ Basierend auf den Rohdaten des im Nürnberger Grundig-Stadions installierten Red
 Zur Anwendung kommt hierbei auch das an der TU Dresden entwickelte [Mobilis-Framework](ttps://github.com/mobilis/mobilis). 
 
 Weitere Informationen zum Projekt sind der [Aufgabenstellung](http://www.rn.inf.tu-dresden.de/lectures/KIIR/kp-iir-ss13_fuba.pdf) und dem [Wiki](https://github.com/tudresden/sporteventanalyser/wiki) zu entnehmen.
+Ein Screencast der Anwendung ist bei [Youtube](http://www.youtube.com/watch?v=IoPneiSOIew) zu finden.
 
 
 ![Visualisierung SEA](https://raw.github.com/tudresden/sporteventanalyser/master/Wiki/img/Screen_1.png)
+![Visualisierung SEA](https://raw.github.com/tudresden/sporteventanalyser/master/Wiki/img/Screen_2.png)
